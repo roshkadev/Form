@@ -1,0 +1,22 @@
+{
+  "name": "Form",
+  "version": "0.1.0",
+  "summary": "A short description of Form.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/guarani/Form",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "guarani": "pvonschrottky@roshka.com"
+  },
+  "source": {
+    "git": "https://github.com/guarani/Form.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "Form/Classes/**/*"
+}
