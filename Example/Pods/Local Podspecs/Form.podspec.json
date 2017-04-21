@@ -1,9 +1,9 @@
 {
   "name": "Form",
   "version": "0.1.0",
-  "summary": "A short description of Form.",
-  "description": "TODO: Add long description of the pod here.",
-  "homepage": "https://github.com/guarani/Form",
+  "summary": "Form is a form builder in Swift.",
+  "description": "Form allows you to create complex forms easily.",
+  "homepage": "https://github.com/roshkadev/Form",
   "license": {
     "type": "MIT",
     "file": "LICENSE"

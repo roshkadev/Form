@@ -7,12 +7,18 @@
 //
 
 import UIKit
+import Form
 
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        Form(in: self).add {
+            Input()
+        }
+        
+        
     }
 
     override func didReceiveMemoryWarning() {

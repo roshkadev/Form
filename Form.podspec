@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
 
   s.description      = 'Form allows you to create complex forms easily.'
 
-  s.homepage         = 'https://github.com/guarani/Form'
+  s.homepage         = 'https://github.com/roshkadev/Form'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'guarani' => 'pvonschrottky@roshka.com' }
