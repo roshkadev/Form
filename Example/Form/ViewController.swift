@@ -15,7 +15,13 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         Form(in: self).add {
-            Input()
+            Input().placeholder("Enter your username")
+        }.add {
+            Input().placeholder("Enter your password")    
+        }.add {
+            Input().placeholder("Enter your age")
+        }.add {
+            Input().placeholder("Enter your favorite color")
         }
         
         
