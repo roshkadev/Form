@@ -15,11 +15,13 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         Form(in: self).add {
-            Input().placeholder("Enter your username")
+            Input().placeholder("Enter your username").blur(.range(3, 10)).text("paulvs")
         }.add {
-            Input().placeholder("Enter your password")    
-        }.add {
-            Input().placeholder("Enter your age")
+            Input().placeholder("Enter your password").live(.max(10), .shake)
+        }.add { Input()
+            .placeholder("Enter your age")
+            .keyboardType(.numberPad)
+            .live(.currency(Locale.current))
         }.add {
             Input().placeholder("Enter your favorite color")
         }
