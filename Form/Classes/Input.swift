@@ -8,23 +8,22 @@
 
 import UIKit
 
-public class Input: NSObject, Field {
+final public class Input: NSObject, Field {
     
     public var view: UIView
-    public var space = Space.default
+    public var padding = Space.default
     var textField: UITextField
     
-    public var events = [Event]()
+    public var validations = [Validation]()
+    public var handlers = [(event: Event, callback: ((Input) -> Void))]()
     
     override public init() {
-        
         
         view = UIView()
         textField = UITextField()
         
         super.init()
         
-        view.backgroundColor = UIColor.orange
         textField.delegate = self
         
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -32,16 +31,25 @@ public class Input: NSObject, Field {
         
         view.addSubview(textField)
         
-        let autolayoutViews: [String: Any] = [
-            "textField": textField
-        ]
-        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[textField]-|", options: [], metrics: nil, views: autolayoutViews))
-        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[textField]-|", options: [], metrics: nil, views: autolayoutViews))
+        view.addConstraint(NSLayoutConstraint(item: textField, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: padding.left))
+        view.addConstraint(NSLayoutConstraint(item: textField, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: padding.top))
+        view.addConstraint(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: textField, attribute: .right, multiplier: 1, constant: padding.right))
+        view.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: textField, attribute: .bottom, multiplier: 1, constant: padding.bottom))
         
+        textField.addTarget(self, action: #selector(editingChanged), for: .editingChanged)
+        
+    }
+    
+    func editingChanged(textField: UITextField) {
+        handlers.filter { $0.event == .change }.forEach { $0.callback(self) }
     }
     
     deinit {
         print("Input deinitialized")
+    }
+    
+    public var text: String? {
+        return textField.text
     }
     
     public func text(_ text: String?) -> Self {
@@ -59,122 +67,68 @@ public class Input: NSObject, Field {
         return self
     }
     
-    public func isValid() -> (result: Bool, message: String?) {
-//        return true
-//        if let validator = validator {
-//            switch validator {
-//            case .isEmpty(let message):
-//                let result = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == true
-//                return (result, message)
-//            }
-//        }
-        return (true, nil)
+    public func validateForEvent(event: Event, with text: String?) -> Bool {
+        
+        let trimmedText = text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let hasText = trimmedText.isEmpty == false
+        let lengthOfText = trimmedText.characters.count
+        
+        let failingValidation: ValidationResult? = validations.map {
+            switch $0 {
+            case (event, .empty, let reaction):
+                return (true, reaction)
+            case (event, .nonempty, let reaction):
+                return (hasText, reaction)
+            case (event, .max(let max), let reaction):
+                return (lengthOfText <= max, reaction)
+            case (event, .min(let min), let reaction):
+                return (lengthOfText >= min, reaction)
+            case (event, .range(let min, let max), let reaction):
+                return (lengthOfText > max || lengthOfText < min, reaction)
+            default:
+                return (true, .none)
+            }
+        }.filter { $0.isValid == false }.first
+        
+        if let failingValidation = failingValidation {
+            switch failingValidation.reaction {
+            case .shake:
+                textField.shake()
+            default:
+                break
+            }
+            return false
+        }
+        
+        return true
     }
 }
 
-extension Input: Restrict {
-    
-    public func blur(_ restriction: Restriction) -> Self {
-        events.append(Event.blur(restriction, .none))
-        return self
-    }
-    
-    public func live(_ restriction: Restriction) -> Self {
-        events.append(Event.live(restriction, .none))
-        return self
-    }
-    
-    public func submit(_ restriction: Restriction) -> Self {
-        events.append(Event.submit(restriction, .none))
-        
-        return self
-    }
-    
-    
-    public func blur(_ restriction: Restriction, _ reaction: Reaction) -> Self {
-        events.append(Event.blur(restriction, reaction))
-        return self
-    }
-    
-    public func live(_ restriction: Restriction, _ reaction: Reaction) -> Self {
-        events.append(Event.live(restriction, reaction))
-        return self
-    }
-    
-    public func submit(_ restriction: Restriction, _ reaction: Reaction) -> Self {
-        events.append(Event.submit(restriction, reaction))
-        return self
-    }
+extension Input: OnEvent {
 
+    public func on(_ event: Event, callback: @escaping ((Input) -> Void)) -> Self {
+        handlers.append((event, callback))
+        return self
+    }
     
-
+    public func validateForEvent(event: Event) -> Bool {
+        return validateForEvent(event: event, with: textField.text)
+    }
 }
 
 extension Input: UITextFieldDelegate {
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        
-        let text = (textField.text ?? "") as NSString
-        let newText = text.replacingCharacters(in: range, with: string)
-        let length = newText.characters.count
-        
-        return !events.reduce(false, { result, event in
-            switch event {
-            case .live(.some, _):
-                return result || newText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            case .live(.max(let max), let reaction):
-                
-                let res = result || length > max
-                
-                if res {
-                
-                    switch reaction {
-                    case .shake:
-                        textField.shake()
-                    default:
-                        break
-                    }
-                }
-                return res
-            case .live(.min(let min), _):
-                return result || length < min
-            case .live(.range(let min, let max), _):
-                return result || (length > max || length < min)
-            case .live(.currency(let locale), _):
-                let numberFormatter = NumberFormatter()
-                numberFormatter.numberStyle = .currency
-                numberFormatter.maximumFractionDigits = 0
-                numberFormatter.locale = locale
-                numberFormatter.currencySymbol = ""
-                var raw = newText.replacingOccurrences(of: numberFormatter.decimalSeparator, with: ".")
-                raw = raw.replacingOccurrences(of: numberFormatter.groupingSeparator, with: "")
-                let integer = Double(raw)!
-                let number = NSNumber(value: integer)
-                let string = numberFormatter.string(from: number)
-                textField.text = string
-                return false
-            default:
-                return result
-            }
-        })
+
+        // Apply any change validations.
+        return validateForEvent(event: .change, with: ((textField.text ?? "") as NSString).replacingCharacters(in: range, with: string))
     }
     
     public func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-        let text = (textField.text ?? "") as NSString
-        let length = text.length
         
-        return !events.reduce(false, { result, event in
-            switch event {
-            case .blur(.some, _):
-                return result || text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            case .blur(.max(let max), _):
-                return result || length > max
-            case .blur(.min(let min), _):
-                return result || length < min
-            case .blur(.range(let min, let max), _):
-                return result || (length > max || length < min)
-            default:
-                return result
-            }
-        })
+        // Apply any blur callbacks.
+        handlers.filter { $0.event == .blur }.forEach { $0.callback(self) }
+        
+        // Apply any blur validations.
+        return validateForEvent(event: .blur, with: textField.text)
     }
 }

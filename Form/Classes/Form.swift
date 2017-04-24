@@ -9,51 +9,11 @@
 import UIKit
 import ObjectiveC
 
-public protocol Restrict {
-    var events: [Event] { get set }
-    func live(_ restriction: Restriction) -> Self
-    func blur(_ restriction: Restriction) -> Self
-    func submit(_ restriction: Restriction) -> Self
-    
-    func live(_ restriction: Restriction, _ reaction: Reaction) -> Self
-    func blur(_ restriction: Restriction, _ reaction: Reaction) -> Self
-    func submit(_ restriction: Restriction, _ reaction: Reaction) -> Self
-}
-
 public protocol Field {
     var view: UIView { get set }
-    var space: Space { get set }
-    func isValid() -> (result: Bool, message: String?)
+    var padding: Space { get set }
 }
 
-public enum Event {
-    case live(Restriction, Reaction)
-    case blur(Restriction, Reaction)
-    case submit(Restriction, Reaction)
-}
-
-public enum Reaction {
-    case none
-    case outline
-    case highlight
-    case shake
-    case alert(String)
-    case popup(String)
-    case submit(Restriction)
-}
-
-
-public enum Restriction {
-    case none
-    case some
-    case max(Int)
-    case min(Int)
-    case range(Int, Int)
-    case regex(String)
-    case email
-    case url
-    case currency(Locale)
-}
 
 class FormScrollView: UIScrollView {
     var form: Form!
@@ -75,7 +35,6 @@ public class Form: NSObject {
         super.init()
         
         scrollView.form = self
-        scrollView.backgroundColor = UIColor.green
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         containingView.addSubview(scrollView)
         let autolayoutViews: [String: Any] = [
@@ -91,33 +50,24 @@ public class Form: NSObject {
     }
     
     @discardableResult
-    public func add(_ space: Space = .default, _ add: ((Void) -> Field?)) -> Self {
+    public func add(_ margin: Space = .default, _ add: ((Void) -> Field?)) -> Self {
         
         guard var field = add() else { return self }
-        field.space = space
         
         scrollView.addSubview(field.view)
         
 
         if let lastField = fields.last {
-            containingView.addConstraint(NSLayoutConstraint(item: field.view, attribute: .top, relatedBy: .equal, toItem: lastField.view, attribute: .bottom, multiplier: 1, constant: space.top))
+            containingView.addConstraint(NSLayoutConstraint(item: field.view, attribute: .top, relatedBy: .equal, toItem: lastField.view, attribute: .bottom, multiplier: 1, constant: margin.top))
         } else {
-            containingView.addConstraint(NSLayoutConstraint(item: field.view, attribute: .top, relatedBy: .equal, toItem: scrollView, attribute: .top, multiplier: 1, constant: space.top))
+            containingView.addConstraint(NSLayoutConstraint(item: field.view, attribute: .top, relatedBy: .equal, toItem: scrollView, attribute: .top, multiplier: 1, constant: margin.top))
         }
         
-        containingView.addConstraint(NSLayoutConstraint(item: field.view, attribute: .left, relatedBy: .equal, toItem: containingView, attribute: .left, multiplier: 1, constant: space.left))
-        containingView.addConstraint(NSLayoutConstraint(item: containingView, attribute: .right, relatedBy: .equal, toItem: field.view, attribute: .right, multiplier: 1, constant: space.right))
+        containingView.addConstraint(NSLayoutConstraint(item: field.view, attribute: .left, relatedBy: .equal, toItem: containingView, attribute: .left, multiplier: 1, constant: margin.left))
+        containingView.addConstraint(NSLayoutConstraint(item: containingView, attribute: .right, relatedBy: .equal, toItem: field.view, attribute: .right, multiplier: 1, constant: margin.right))
         
         fields.append(field)
         
-        return self
-    }
-
-    public func validate(_ validator: ((Bool) -> Void)) -> Self {
-        let isValid = fields.reduce(true) {
-            $0 || $1.isValid().result
-        }
-        validator(isValid)
         return self
     }
 }

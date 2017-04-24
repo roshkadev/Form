@@ -15,15 +15,28 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         Form(in: self).add {
-            Input().placeholder("Enter your username").blur(.range(3, 10)).text("paulvs")
+            Input()
+            .placeholder("Enter your username")
+            .on(.change, .max(10)).on(.change) {
+                print("First callback: ", $0.text)
+            }.on(.change) {
+                print("Second callback: ", $0.text)
+            }.on(.blur) {
+                print("Blur callback: ", $0.text)
+            }
         }.add {
-            Input().placeholder("Enter your password").live(.max(10), .shake)
-        }.add { Input()
+            Input()
+            .placeholder("Enter your password")
+            .on(.change, .max(10), .shake)
+        }.add {
+            Input()
             .placeholder("Enter your age")
             .keyboardType(.numberPad)
-            .live(.currency(Locale.current))
         }.add {
-            Input().placeholder("Enter your favorite color")
+            Input()
+            .placeholder("Enter your favorite color")
+        }.add {
+            Submit()
         }
         
         
