@@ -11,6 +11,7 @@ import UIKit
 final public class Submit: NSObject {
     
     // #MARK - Field
+    public var form: Form!
     public var view: UIView
     public var padding = Space.none
     
@@ -25,6 +26,8 @@ final public class Submit: NSObject {
         
         view.translatesAutoresizingMaskIntoConstraints = false
         button.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.red
+        button.backgroundColor = UIColor.yellow
         
         view.addSubview(button)
 
@@ -33,6 +36,16 @@ final public class Submit: NSObject {
         view.addConstraint(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: button, attribute: .right, multiplier: 1, constant: padding.right))
         view.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: button, attribute: .bottom, multiplier: 1, constant: padding.bottom))
         
+        button.addTarget(self, action: #selector(action), for: .touchUpInside)
+    }
+    
+    public func title(_ text: String?) -> Self {
+        button.setTitle(text, for: .normal)
+        return self
+    }
+    
+    func action(button: UIButton) {
+        form.fields.
     }
 }
 

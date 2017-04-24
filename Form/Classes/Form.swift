@@ -10,6 +10,7 @@ import UIKit
 import ObjectiveC
 
 public protocol Field {
+    var form: Form! { get set }
     var view: UIView { get set }
     var padding: Space { get set }
 }
@@ -53,6 +54,7 @@ public class Form: NSObject {
     public func add(_ margin: Space = .default, _ add: ((Void) -> Field?)) -> Self {
         
         guard var field = add() else { return self }
+        field.form = self
         
         scrollView.addSubview(field.view)
         

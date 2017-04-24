@@ -10,12 +10,13 @@ import UIKit
 
 final public class Input: NSObject, Field {
     
+    public var form: Form!
     public var view: UIView
     public var padding = Space.default
     var textField: UITextField
     
     public var validations = [Validation]()
-    public var handlers = [(event: Event, callback: ((Input) -> Void))]()
+    public var handlers = [(event: Event, handler: ((Input) -> Void))]()
     
     override public init() {
         
@@ -41,7 +42,7 @@ final public class Input: NSObject, Field {
     }
     
     func editingChanged(textField: UITextField) {
-        handlers.filter { $0.event == .change }.forEach { $0.callback(self) }
+        handlers.filter { $0.event == .change }.forEach { $0.handler(self) }
     }
     
     deinit {
@@ -94,6 +95,8 @@ final public class Input: NSObject, Field {
             switch failingValidation.reaction {
             case .shake:
                 textField.shake()
+            case .alert(let message):
+                print(message)
             default:
                 break
             }
@@ -104,13 +107,15 @@ final public class Input: NSObject, Field {
     }
 }
 
-extension Input: OnEvent {
+extension Input: OnHandleEvent {
 
-    public func on(_ event: Event, callback: @escaping ((Input) -> Void)) -> Self {
-        handlers.append((event, callback))
+    public func on(_ event: Event, handler: @escaping ((Input) -> Void)) -> Self {
+        handlers.append((event, handler))
         return self
     }
-    
+}
+
+extension Input: OnValidationEvent {
     public func validateForEvent(event: Event) -> Bool {
         return validateForEvent(event: event, with: textField.text)
     }
@@ -126,7 +131,7 @@ extension Input: UITextFieldDelegate {
     public func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         
         // Apply any blur callbacks.
-        handlers.filter { $0.event == .blur }.forEach { $0.callback(self) }
+        handlers.filter { $0.event == .blur }.forEach { $0.handler(self) }
         
         // Apply any blur validations.
         return validateForEvent(event: .blur, with: textField.text)

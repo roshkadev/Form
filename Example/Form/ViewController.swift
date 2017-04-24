@@ -17,13 +17,7 @@ class ViewController: UIViewController {
         Form(in: self).add {
             Input()
             .placeholder("Enter your username")
-            .on(.change, .max(10)).on(.change) {
-                print("First callback: ", $0.text)
-            }.on(.change) {
-                print("Second callback: ", $0.text)
-            }.on(.blur) {
-                print("Blur callback: ", $0.text)
-            }
+            .on(.submit, .max(10), .alert("Max 10 characters"))
         }.add {
             Input()
             .placeholder("Enter your password")
@@ -36,7 +30,7 @@ class ViewController: UIViewController {
             Input()
             .placeholder("Enter your favorite color")
         }.add {
-            Submit()
+            Submit().title("Gooooo!")
         }
         
         

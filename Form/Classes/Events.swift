@@ -48,19 +48,22 @@ public typealias ValidationResult = (isValid: Bool, reaction: Reaction)
 /// `OnEvent` is a protocol for reference types that respresent
 /// form fields whose input may be restricted in one or more ways.
 /// e.g. Input, Select, Radio, etc.
-public protocol OnEvent: class {
+public protocol OnValidationEvent: class {
     
     var validations: [Validation] { get set }
     func on(_ event: Event, _ restriction: Restriction) -> Self
     func on(_ event: Event, _ restriction: Restriction, _ reaction: Reaction) -> Self
     func validateForEvent(event: Event) -> Bool
-    
-    var handlers: [(event: Event, callback: ((Self) -> Void))] { get set }
-    func on(_ event: Event, callback: @escaping ((Self) -> Void)) -> Self
 }
 
 
-extension OnEvent {
+public protocol OnHandleEvent: class {
+    var handlers: [(event: Event, handler: ((Self) -> Void))] { get set }
+    func on(_ event: Event, handler: @escaping ((Self) -> Void)) -> Self
+}
+
+
+extension OnValidationEvent {
     
     public func on(_ event: Event, _ restriction: Restriction) -> Self {
         validations.append(Validation(event, restriction, .stop))
