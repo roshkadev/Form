@@ -43,11 +43,6 @@ public class Form: NSObject {
         ]
         containingView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[scrollView]|", options: [], metrics: nil, views: autolayoutViews))
         containingView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[scrollView]|", options: [], metrics: nil, views: autolayoutViews))
-        
-    }
-    
-    deinit {
-        print("Form deinitialized")
     }
     
     @discardableResult
@@ -71,6 +66,12 @@ public class Form: NSObject {
         fields.append(field)
         
         return self
+    }
+    
+    
+    
+    deinit {
+        print("Form deinitialized")
     }
 }
 

@@ -789,9 +789,9 @@
 			children = (
 				9C3DE8D691956E29CEF8928063D8D495 /* Form.swift */,
 				DB09AA70AEBD1FB765DA6245C1E57AD6 /* Input.swift */,
+				3D6478B252D918FE2D3234F02C3F01B5 /* Submit.swift */,
 				F8140DA7962A209832D7A8A5BDC4A3CB /* Events.swift */,
 				F92041EABD984130C31F252C4E93FDBF /* Space.swift */,
-				3D6478B252D918FE2D3234F02C3F01B5 /* Submit.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";

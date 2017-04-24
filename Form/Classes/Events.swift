@@ -6,9 +6,7 @@
 //
 // Call cocoapod "Torn"
 
-import UIKit
-
-/// `Event` encaptulates events that can trigger restrictions to be enforced.
+/// An `Event` associated with a `Field`.
 public enum Event {
     case change
     case blur
@@ -27,9 +25,7 @@ public enum Restriction {
     case currency(Locale)
 }
 
-/// `Reaction` is an enumeration of ways a form field can respond
-/// to restrictions.
-/// e.g. Input, Select, Radio, etc.
+/// A `Reaction` is the response by a `Field` to a `Restriction`
 public enum Reaction {
     case none
     case stop
@@ -45,10 +41,8 @@ public typealias Validation = (event: Event, restriction: Restriction, reaction:
 public typealias ValidationResult = (isValid: Bool, reaction: Reaction)
 
 
-/// `OnEvent` is a protocol for reference types that respresent
-/// form fields whose input may be restricted in one or more ways.
-/// e.g. Input, Select, Radio, etc.
-public protocol OnValidationEvent: class {
+/// `OnValidationEvent` is a protocol used to bind a `Restriction` to a `Event` on a `Field`.
+public protocol OnValidationEvent: class, Field {
     
     var validations: [Validation] { get set }
     func on(_ event: Event, _ restriction: Restriction) -> Self
@@ -56,13 +50,7 @@ public protocol OnValidationEvent: class {
     func validateForEvent(event: Event) -> Bool
 }
 
-
-public protocol OnHandleEvent: class {
-    var handlers: [(event: Event, handler: ((Self) -> Void))] { get set }
-    func on(_ event: Event, handler: @escaping ((Self) -> Void)) -> Self
-}
-
-
+/// Provide a default implementation of the `OnValidationEvent`.
 extension OnValidationEvent {
     
     public func on(_ event: Event, _ restriction: Restriction) -> Self {
@@ -75,3 +63,11 @@ extension OnValidationEvent {
         return self
     }
 }
+
+/// `OnHandleEvent` is a protocol used to bind an event handler to an `Event`.
+public protocol OnHandleEvent: class, Field {
+    var handlers: [(event: Event, handler: ((Self) -> Void))] { get set }
+    func on(_ event: Event, handler: @escaping ((Self) -> Void)) -> Self
+}
+
+

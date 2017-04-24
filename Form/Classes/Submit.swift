@@ -45,7 +45,10 @@ final public class Submit: NSObject {
     }
     
     func action(button: UIButton) {
-        form.fields.
+        let validatableFields = form.fields.flatMap { $0 as? OnValidationEvent }
+        let validationResults = validatableFields.map {
+            $0.validateForEvent(event: .submit)
+        }
     }
 }
 
