@@ -10,7 +10,7 @@ import UIKit
 
 final public class Input: NSObject, Field {
     
-    public var form: Form!
+    public var form: Form
     public var view: UIView
     public var padding = Space.default
     var textField: UITextField
@@ -18,13 +18,14 @@ final public class Input: NSObject, Field {
     public var validations = [Validation]()
     public var handlers = [(event: Event, handler: ((Input) -> Void))]()
     
-    override public init() {
+    public init(_ form: Form) {
         
+        self.form = form
         view = UIView()
         textField = UITextField()
         
         super.init()
-        
+            
         textField.delegate = self
         
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -38,6 +39,8 @@ final public class Input: NSObject, Field {
         view.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: textField, attribute: .bottom, multiplier: 1, constant: padding.bottom))
         
         textField.addTarget(self, action: #selector(editingChanged), for: .editingChanged)
+        
+        form.add { self }
         
     }
     
@@ -65,6 +68,11 @@ final public class Input: NSObject, Field {
     
     public func keyboardType(_ keyboardType: UIKeyboardType) -> Self {
         textField.keyboardType = keyboardType
+        return self
+    }
+    
+    public func secure(_ isSecure: Bool, pairedWith: Input? = nil) -> Self {
+        textField.isSecureTextEntry = isSecure
         return self
     }
     

@@ -10,9 +10,18 @@ import UIKit
 import ObjectiveC
 
 public protocol Field {
-    var form: Form! { get set }
+    
+    var form: Form { get set }
     var view: UIView { get set }
     var padding: Space { get set }
+    func style(_ style: ((Field) -> Void)) -> Self
+}
+
+extension Field {
+    public func style(_ style: ((Field) -> Void)) -> Self {
+        style(self)
+        return self
+    }
 }
 
 
@@ -27,7 +36,7 @@ public class Form: NSObject {
     var fields: [Field]
     
     @discardableResult
-    public init(in viewController: UIViewController) {
+    public init(in viewController: UIViewController, constructor: ((Form) -> Void)? = nil) {
         
         fields = []
         containingView = viewController.view
@@ -43,6 +52,8 @@ public class Form: NSObject {
         ]
         containingView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[scrollView]|", options: [], metrics: nil, views: autolayoutViews))
         containingView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[scrollView]|", options: [], metrics: nil, views: autolayoutViews))
+        
+        constructor?(self)
     }
     
     @discardableResult

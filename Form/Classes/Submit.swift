@@ -11,14 +11,15 @@ import UIKit
 final public class Submit: NSObject {
     
     // #MARK - Field
-    public var form: Form!
+    public var form: Form
     public var view: UIView
     public var padding = Space.none
     
     var button: UIButton
     
-    override public init() {
+    public init(_ form: Form) {
         
+        self.form = form
         view = UIView()
         button = UIButton()
         
@@ -37,6 +38,8 @@ final public class Submit: NSObject {
         view.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: button, attribute: .bottom, multiplier: 1, constant: padding.bottom))
         
         button.addTarget(self, action: #selector(action), for: .touchUpInside)
+        
+        form.add { self }
     }
     
     public func title(_ text: String?) -> Self {

@@ -6,8 +6,16 @@
 //
 // Call cocoapod "Torn"
 
+
+public enum Tense {
+    case will
+    case on
+    case did
+}
+
 /// An `Event` associated with a `Field`.
 public enum Event {
+    case focus
     case change
     case blur
     case submit
