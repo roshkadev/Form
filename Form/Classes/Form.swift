@@ -79,6 +79,16 @@ public class Form: NSObject {
         return self
     }
     
+    @discardableResult
+    public func navigation(_ navigation: Bool) -> Self {
+        let inputs = fields.flatMap { $0 as? Input }
+        inputs.forEach {
+            if $0.textField.keyboardType == .numberPad || $0.textField.keyboardType == .decimalPad || $0.textField.keyboardType == .phonePad {
+                $0.textField.inputAccessoryView = NextInputAccessoryView()
+            }
+        }
+        return self
+    }
     
     
     deinit {

@@ -55,7 +55,7 @@ public protocol OnPickerValidationEvent: class, Field {
     var validations: [PickerValidation] { get set }
     func on(_ event: PickerEvent, _ restriction: PickerRestriction) -> Self
     func on(_ event: PickerEvent, _ restriction: PickerRestriction, _ reaction: PickerReaction) -> Self
-    func validateForEvent(event: Event) -> Bool
+    func validateForEvent(event: PickerEvent) -> Bool
 }
 
 /// Provide a default implementation of the `OnPickerValidationEvent`.
@@ -104,8 +104,11 @@ final public class Picker: NSObject, Field {
         
         super.init()
         
+        textField.borderStyle = .roundedRect
         textField.delegate = self
         textField.inputView = pickerView
+        
+        pickerView.delegate = self
         
         view.translatesAutoresizingMaskIntoConstraints = false
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -201,16 +204,21 @@ extension Picker: OnPickerValidationEvent {
 
 extension Picker: UIPickerViewDataSource {
     public func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return options.count
+        return 1
     }
     
     public func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return options.count
     }
+    
+    public func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return options[row] as? String
+    }
 }
 
 extension Picker: UIPickerViewDelegate {
     public func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        textField.text = options[row] as? String
         _ = validateForEvent(event: .change)
     }
 }

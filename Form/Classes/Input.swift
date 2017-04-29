@@ -25,7 +25,8 @@ final public class Input: NSObject, Field {
         textField = UITextField()
         
         super.init()
-            
+        
+        textField.borderStyle = .roundedRect
         textField.delegate = self
         
         view.translatesAutoresizingMaskIntoConstraints = false
