@@ -45,6 +45,10 @@ final public class Input: NSObject, Field {
         
     }
     
+    public func becomeFirstResponder() {
+        textField.becomeFirstResponder()
+    }
+    
     func editingChanged(textField: UITextField) {
         handlers.filter { $0.event == .change }.forEach { $0.handler(self) }
     }
@@ -139,10 +143,19 @@ extension Input: UITextFieldDelegate {
     
     public func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         
+
+        
         // Apply any blur callbacks.
         handlers.filter { $0.event == .blur }.forEach { $0.handler(self) }
         
         // Apply any blur validations.
         return validateForEvent(event: .blur, with: textField.text)
+    }
+    
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField.returnKeyType ==  .next {
+            form.didTapNextFrom(field: self)
+        }
+        return true
     }
 }

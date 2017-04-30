@@ -15,6 +15,7 @@ public protocol Field {
     var view: UIView { get set }
     var padding: Space { get set }
     func style(_ style: ((Field) -> Void)) -> Self
+    func becomeFirstResponder()
 }
 
 extension Field {
@@ -22,8 +23,11 @@ extension Field {
         style(self)
         return self
     }
+    
+    public func becomeFirstResponder() {
+        
+    }
 }
-
 
 class FormScrollView: UIScrollView {
     var form: Form!
@@ -81,15 +85,32 @@ public class Form: NSObject {
     
     @discardableResult
     public func navigation(_ navigation: Bool) -> Self {
-        let inputs = fields.flatMap { $0 as? Input }
-        inputs.forEach {
+
+        fields.flatMap { $0 as? Input }.forEach {
             if $0.textField.keyboardType == .numberPad || $0.textField.keyboardType == .decimalPad || $0.textField.keyboardType == .phonePad {
                 $0.textField.inputAccessoryView = NextInputAccessoryView()
+            } else {
+                $0.textField.returnKeyType = .next
             }
         }
+        
+        fields.flatMap { $0 as? Picker }.forEach {
+//            $0.textField?.inputAccessoryView = NextInputAccessoryView()
+        }
+        
         return self
     }
     
+    func didTapNextFrom(field: Field) {
+        let index = fields.index {
+            $0.view == field.view
+        }?.distance(to: fields.startIndex)
+        
+        if let index = index, index < fields.count {
+            let nextField = fields[index]
+            nextField.becomeFirstResponder()
+        }
+    }
     
     deinit {
         print("Form deinitialized")

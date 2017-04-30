@@ -17,7 +17,14 @@ class ViewController: UIViewController {
         Form(in: self) { form in
             
             let username = Input(form).placeholder("Enter your username").on(.submit, .max(10), .alert("Max 10 characters"))
-            let profession = Picker(form).options(["Brickie", "Chef", "Singer"])
+            let profession = Picker(form, embedded: true).placeholder("Enter your profession").options([
+                PickerOption("Construction 👷"),
+                PickerOption("Astronaut  👩‍🚀"),
+                PickerOption("Clerk 💁"),
+                PickerOption("Alchemist 👨‍🔬"),
+                PickerOption("Hiring Manager Hiring Manager 👨", "hn_manager"),
+            ]).disable(row: 3)
+            
             let password = Input(form).placeholder("Enter your password").on(.change, .max(10), .shake).on(.change) {
                 print($0.text)
             }.on(.blur) { _ in
