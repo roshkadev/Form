@@ -13,6 +13,7 @@ final public class Submit: NSObject {
     // #MARK - Field
     public var form: Form
     public var view: UIView
+    public var bottomLayoutConstraint: NSLayoutConstraint?
     public var padding = Space.none
     
     var button: UIButton

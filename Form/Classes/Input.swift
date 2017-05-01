@@ -12,6 +12,7 @@ final public class Input: NSObject, Field {
     
     public var form: Form
     public var view: UIView
+    public var bottomLayoutConstraint: NSLayoutConstraint?
     public var padding = Space.default
     var textField: UITextField
     
@@ -45,7 +46,11 @@ final public class Input: NSObject, Field {
         
     }
     
-    public func becomeFirstResponder() {
+    public var canBecomeFirstResponder: Bool {
+        return true
+    }
+    
+    public func becomeFirstResponder(){
         textField.becomeFirstResponder()
     }
     
@@ -135,6 +140,13 @@ extension Input: OnValidationEvent {
 }
 
 extension Input: UITextFieldDelegate {
+    
+    
+    public func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        form.assign(firstResponder: view)
+        return true
+    }
+    
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
 
         // Apply any change validations.

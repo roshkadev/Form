@@ -16,26 +16,35 @@ class ViewController: UIViewController {
         
         Form(in: self) { form in
             
-            let username = Input(form).placeholder("Enter your username").on(.submit, .max(10), .alert("Max 10 characters"))
-            let profession = Picker(form, embedded: true).placeholder("Enter your profession").options([
-                PickerOption("Construction 👷"),
-                PickerOption("Astronaut  👩‍🚀"),
-                PickerOption("Clerk 💁"),
-                PickerOption("Alchemist 👨‍🔬"),
-                PickerOption("Hiring Manager Hiring Manager 👨", "hn_manager"),
+            let firstName = Input(form).placeholder("First name")
+            
+            let lastName = Input(form).placeholder("Last name")
+            
+            let profession = Picker(form, embedded: true).placeholder("Profession").options([
+                PickerOption("Construction worker 👷", "construction"),
+                PickerOption("Astronaut 👩‍🚀", "astronaut"),
+                PickerOption("Clerk 💁", "clerk"),
+                PickerOption("Alchemist 👨‍🔬", "alchemist"),
+                PickerOption("Hiring Manager 👨", "hn_manager"),
             ]).disable(row: 3)
             
-            let password = Input(form).placeholder("Enter your password").on(.change, .max(10), .shake).on(.change) {
+            let dateOfBirth = DatePicker(form, style: .embedded).placeholder("Date of birth").earliest(date: Date())
+            
+            let email = Input(form).placeholder("Email")
+
+            
+            let username = Input(form).placeholder("Choose your username").on(.submit, .max(10), .alert("Max 10 characters"))
+            
+            let password = Input(form).placeholder("Enter a password").on(.change, .max(10), .shake).on(.change) {
                 print($0.text)
             }.on(.blur) { _ in
                 print("bluuur")
             }.secure(true, pairedWith: username)
-            let age = Input(form).placeholder("Enter your age").keyboardType(.numberPad)
-            let color = Input(form).placeholder("Enter your favorite color")
+            
             let submit = Submit(form).title("Gooooo!").style { sub in
                 sub.view.layer.cornerRadius = 10
                 sub.view.layer.masksToBounds = true
-
+                
             }
             
         }.navigation(true)
@@ -45,6 +54,5 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
 }
 

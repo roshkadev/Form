@@ -14,6 +14,8 @@ class PickerInputView: UIView {
     @IBOutlet weak var button: UIButton!
     @IBOutlet weak var shadowView: UIView!
     
+    var buttonCallback: (() -> Void)!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -25,14 +27,8 @@ class PickerInputView: UIView {
 //        shadowView.layer.shadowOpacity = 1
 //        shadowView.layer.shadowOffset = CGSize(width: 0, height: 1)
     }
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
-    }
-    */
+
     @IBAction func buttonAction(_ sender: Any) {
-        print("Hello")
+        buttonCallback()
     }
 }

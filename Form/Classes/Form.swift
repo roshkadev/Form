@@ -9,23 +9,44 @@
 import UIKit
 import ObjectiveC
 
+/// Encapsulates behaviours common to all form fields.
 public protocol Field {
-    
+
+    /// This field's containing `Form`.
     var form: Form { get set }
+    
+    /// This field's view.
     var view: UIView { get set }
+    
+    /// The constraint used to show and hide the field.
+    var bottomLayoutConstraint: NSLayoutConstraint? { get set }
+    
+    /// This field's padding.
     var padding: Space { get set }
+    
+    /// A closure to arbitrarily style the field.
     func style(_ style: ((Field) -> Void)) -> Self
+    
+    /// Return false if field could not become first responder, true otherwise.
+    var canBecomeFirstResponder: Bool { get }
+    
+    /// Ask the field to become first responder, if possible.
     func becomeFirstResponder()
 }
 
+/// Provides a default implementation for some field behaviours.
 extension Field {
     public func style(_ style: ((Field) -> Void)) -> Self {
         style(self)
         return self
     }
     
+    public var canBecomeFirstResponder: Bool {
+        return false
+    }
+    
     public func becomeFirstResponder() {
-        
+        // Do nothing.
     }
 }
 
@@ -38,6 +59,7 @@ public class Form: NSObject {
     var scrollView: FormScrollView
     var containingView: UIView
     var fields: [Field]
+    var currentFirstResponder: UIView?
     
     @discardableResult
     public init(in viewController: UIViewController, constructor: ((Form) -> Void)? = nil) {
@@ -47,6 +69,8 @@ public class Form: NSObject {
         scrollView = FormScrollView()
         
         super.init()
+        
+        
         
         scrollView.form = self
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -58,8 +82,22 @@ public class Form: NSObject {
         containingView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[scrollView]|", options: [], metrics: nil, views: autolayoutViews))
         
         constructor?(self)
+        
+        // Register for keyboard notifications to allow form fields to avoid the keyboard.
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: .UIKeyboardWillHide, object: nil)
     }
     
+    
+    
+    
+    deinit {
+        print("Form deinitialized")
+    }
+}
+
+extension Form {
+
     @discardableResult
     public func add(_ margin: Space = .default, _ add: ((Void) -> Field?)) -> Self {
         
@@ -68,15 +106,28 @@ public class Form: NSObject {
         
         scrollView.addSubview(field.view)
         
-
-        if let lastField = fields.last {
+        if var lastField = fields.last, let bottomConstraint = lastField.bottomLayoutConstraint {
+            // The form already contains one or more fields.
+            
             containingView.addConstraint(NSLayoutConstraint(item: field.view, attribute: .top, relatedBy: .equal, toItem: lastField.view, attribute: .bottom, multiplier: 1, constant: margin.top))
+            containingView.removeConstraint(bottomConstraint)
+            lastField.bottomLayoutConstraint = nil
+            
         } else {
+            // This field is the first field in the form.
             containingView.addConstraint(NSLayoutConstraint(item: field.view, attribute: .top, relatedBy: .equal, toItem: scrollView, attribute: .top, multiplier: 1, constant: margin.top))
         }
         
         containingView.addConstraint(NSLayoutConstraint(item: field.view, attribute: .left, relatedBy: .equal, toItem: containingView, attribute: .left, multiplier: 1, constant: margin.left))
         containingView.addConstraint(NSLayoutConstraint(item: containingView, attribute: .right, relatedBy: .equal, toItem: field.view, attribute: .right, multiplier: 1, constant: margin.right))
+        
+        // Add constraints to make the scroll view use the width of the containing view.
+        containingView.addConstraint(NSLayoutConstraint(item: field.view, attribute: .left, relatedBy: .equal, toItem: scrollView, attribute: .left, multiplier: 1, constant: margin.left))
+        containingView.addConstraint(NSLayoutConstraint(item: scrollView, attribute: .right, relatedBy: .equal, toItem: field.view, attribute: .right, multiplier: 1, constant: margin.right))
+        
+        let bottomConstraint = NSLayoutConstraint(item: scrollView, attribute: .bottom, relatedBy: .equal, toItem: field.view, attribute: .bottom, multiplier: 1, constant: Space.bottom.bottom)
+        containingView.addConstraint(bottomConstraint)
+        field.bottomLayoutConstraint = bottomConstraint
         
         fields.append(field)
         
@@ -101,19 +152,53 @@ public class Form: NSObject {
         return self
     }
     
+    func assign(firstResponder: UIView) {
+        currentFirstResponder = firstResponder
+    }
+    
+    
+    /// Assign the next field as first responder.
     func didTapNextFrom(field: Field) {
-        let index = fields.index {
-            $0.view == field.view
-        }?.distance(to: fields.startIndex)
         
-        if let index = index, index < fields.count {
-            let nextField = fields[index]
+        let focusableFields = fields.filter { $0.canBecomeFirstResponder }
+        let index = focusableFields.index { $0.view == field.view }
+        
+        if let nextIndex = index?.advanced(by: 1), focusableFields.indices.contains(nextIndex) {
+            let nextField = focusableFields[focusableFields.startIndex.distance(to: nextIndex)]
             nextField.becomeFirstResponder()
+        } else {
+            // Wrap around to bring focus to the first field in the form.
+            let nextIndex = focusableFields.startIndex
+            if focusableFields.indices.contains(nextIndex) {
+                let nextField = focusableFields[focusableFields.startIndex]
+                nextField.becomeFirstResponder()
+            }
+        }
+    }
+}
+
+extension Form {
+    func keyboardWillShow(notification: Notification) {
+        
+        if let info = notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue, let currentFirstResponder = currentFirstResponder {
+            let keyboardHeight = info.cgRectValue.size.height
+            let contentInset = UIEdgeInsetsMake(0, 0, keyboardHeight, 0)
+            scrollView.contentInset = contentInset
+            scrollView.scrollIndicatorInsets = contentInset
+            
+            var availableRect = containingView.frame
+            availableRect.size.height -= keyboardHeight
+            if availableRect.contains(currentFirstResponder.frame) == false {
+                print(scrollView.frame, scrollView.contentSize, currentFirstResponder.frame)
+                scrollView.scrollRectToVisible(currentFirstResponder.frame, animated: true)
+            }
+            
         }
     }
     
-    deinit {
-        print("Form deinitialized")
+    func keyboardWillHide(notification: Notification) {
+        scrollView.contentInset = .zero
+        scrollView.scrollIndicatorInsets = .zero
     }
 }
 

@@ -93,6 +93,9 @@ final public class Picker: NSObject, Field {
     /// This field's view.
     public var view: UIView
     
+    /// The constraint used to show and hide the field.
+    public var bottomLayoutConstraint: NSLayoutConstraint?
+    
     /// The underlying text field of this `Picker`. Is nil when `Picker` is embedded.
     var textField: UITextField?
     
@@ -139,14 +142,17 @@ final public class Picker: NSObject, Field {
             textField.borderStyle = .roundedRect
             textField.delegate = self
             textField.inputView = pickerInputView
-            textField.translatesAutoresizingMaskIntoConstraints = false
             
-            view.addSubview(textField)
             
-            view.addConstraint(NSLayoutConstraint(item: textField, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: padding.left))
-            view.addConstraint(NSLayoutConstraint(item: textField, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: padding.top))
-            view.addConstraint(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: textField, attribute: .right, multiplier: 1, constant: padding.right))
-            view.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: textField, attribute: .bottom, multiplier: 1, constant: padding.bottom))
+            textField.form_fill(parentView: view, withPadding: padding)
+//            textField.translatesAutoresizingMaskIntoConstraints = false
+//            
+//            view.addSubview(textField)
+//            
+//            view.addConstraint(NSLayoutConstraint(item: textField, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: padding.left))
+//            view.addConstraint(NSLayoutConstraint(item: textField, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: padding.top))
+//            view.addConstraint(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: textField, attribute: .right, multiplier: 1, constant: padding.right))
+//            view.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: textField, attribute: .bottom, multiplier: 1, constant: padding.bottom))
             
             pickerInputView.backgroundColor = UIColor.lightGray
             
@@ -154,13 +160,14 @@ final public class Picker: NSObject, Field {
             
             self.textField = textField
         } else {
-            pickerInputView.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(pickerInputView)
-            
-            view.addConstraint(NSLayoutConstraint(item: pickerInputView, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: padding.left))
-            view.addConstraint(NSLayoutConstraint(item: pickerInputView, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: padding.top))
-            view.addConstraint(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: pickerInputView, attribute: .right, multiplier: 1, constant: padding.right))
-            view.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: pickerInputView, attribute: .bottom, multiplier: 1, constant: padding.bottom))
+            pickerInputView.form_fill(parentView: view, withPadding: padding)
+//            pickerInputView.translatesAutoresizingMaskIntoConstraints = false
+//            view.addSubview(pickerInputView)
+//            
+//            view.addConstraint(NSLayoutConstraint(item: pickerInputView, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: padding.left))
+//            view.addConstraint(NSLayoutConstraint(item: pickerInputView, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: padding.top))
+//            view.addConstraint(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: pickerInputView, attribute: .right, multiplier: 1, constant: padding.right))
+//            view.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: pickerInputView, attribute: .bottom, multiplier: 1, constant: padding.bottom))
             pickerInputView.button.isHidden = true
         }
         
