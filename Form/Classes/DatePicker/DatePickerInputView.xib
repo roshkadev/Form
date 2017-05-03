@@ -4,6 +4,7 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -32,7 +33,7 @@
                         <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
-                        <action selector="buttonAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="MF9-Qx-ts6"/>
+                        <action selector="buttonAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="4hI-64-01V"/>
                     </connections>
                 </button>
             </subviews>

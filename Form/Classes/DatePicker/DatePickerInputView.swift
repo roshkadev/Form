@@ -22,7 +22,7 @@ class DatePickerInputView: UIView {
     }
 
 
-    @IBAction func buttonAction(sender: AnyObject) {
+    @IBAction func buttonAction(_ sender: Any) {
         buttonCallback()
     }
 }

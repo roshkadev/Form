@@ -34,7 +34,7 @@
                         <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
-                        <action selector="buttonAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="XVw-Sc-Qv7"/>
+                        <action selector="buttonAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="Vei-On-2hc"/>
                     </connections>
                 </button>
             </subviews>

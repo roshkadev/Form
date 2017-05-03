@@ -9,27 +9,23 @@
 import UIKit
 
 
-/// A `PickerEvent` associated with a `Picker`.
+/// An `PickerEvent` is an event associated with an `Picker`.
 public enum PickerEvent {
-    
     case shouldFocus    // Return `false` to disable `Picker` focus.
     case focus          // The `Picker` gained focus.
-    
     case onChange       // The value of the `Picker` has changed.
-    
     case shouldBlur     // Return `false` to disable `Picker` blur.
     case blur           // The `Picker` lost focus.
-    
     case submit         // The containing `Form` received a `FormEvent.submit` event.
 }
 
-/// A restiction associated with a `Picker`
+/// An `PickerRestriction` is an condition that an `Picker` may satisfy.
 public enum PickerRestriction {
     case empty
     case nonempty
 }
 
-/// A `Reaction` is the response by a `Field` to a `Restriction`
+/// A `PickerReaction` is the response of a `Picker` to a `PickerReaction`.
 public enum PickerReaction {
     case none
     case previous
@@ -38,35 +34,17 @@ public enum PickerReaction {
     case shake
     case alert(String)
     case popup(String)
-    case submit(Restriction)
+    case submit(PickerRestriction)
+}
+
+public enum PickerPresentationStyle {
+    case keyboard
+    case embedded
+    case dialog
 }
 
 public typealias PickerValidation = (event: PickerEvent, restriction: PickerRestriction, reaction: PickerReaction)
 public typealias PickerValidationResult = (isValid: Bool, reaction: PickerReaction)
-
-
-/// `OnPickerValidationEvent` is a protocol used to bind a `PickerRestriction` to a `PickerEvent` on a `Picker`.
-public protocol OnPickerValidationEvent: class, Field {
-    
-    var validations: [PickerValidation] { get set }
-    func bind(_ event: PickerEvent, _ restriction: PickerRestriction, _ reaction: PickerReaction) -> Self
-    func validateForEvent(event: PickerEvent) -> Bool
-}
-
-/// Provide a default implementation of the `OnPickerValidationEvent`.
-extension OnPickerValidationEvent {
-    
-    public func bind(_ event: PickerEvent, _ restriction: PickerRestriction, _ reaction: PickerReaction) -> Self {
-        validations.append(PickerValidation(event, restriction, reaction))
-        return self
-    }
-}
-
-/// `OnHandlePickerEvent` is a protocol used to bind an event handler to an `PickerEvent`.
-public protocol OnHandlePickerEvent: class, Field {
-    var handlers: [(event: PickerEvent, handler: ((Picker) -> Void))] { get set }
-    func bind(_ event: PickerEvent, handler: @escaping ((Picker) -> Void)) -> Self
-}
 
 /// A `PickerOption`
 public struct PickerOption {
@@ -85,7 +63,7 @@ extension PickerOption: Equatable {
     }
 }
 
-final public class Picker: NSObject, Field {
+final public class Picker: NSObject {
     
     /// This field's containing `Form`.
     public var form: Form
@@ -110,6 +88,9 @@ final public class Picker: NSObject, Field {
     /// This field's padding.
     public var padding = Space.default
     
+    ///
+    var style: PickerPresentationStyle
+    
     /// Storage for this field's validations.
     public var validations = [PickerValidation]()
     
@@ -123,20 +104,23 @@ final public class Picker: NSObject, Field {
     var selectedOption: PickerOption?
     var defaultIndex: Int?
     
-    public init(_ form: Form, embedded: Bool = false) {
+    public init(_ form: Form, style: PickerPresentationStyle = .keyboard) {
         
         self.form = form
+        self.style = style
         view = UIView()
         
         pickerInputView = UINib(nibName: "PickerInputView", bundle: Bundle(for: type(of: self))).instantiate(withOwner: nil, options: nil)[0] as! PickerInputView
         
         super.init()
     
+        pickerInputView.buttonCallback = { form.didTapNextFrom(field: self) }
         pickerView.delegate = self
         view.translatesAutoresizingMaskIntoConstraints = false
         
         
-        if embedded == false {
+        switch style {
+        case .keyboard:
             
             let textField = UITextField()
             textField.borderStyle = .roundedRect
@@ -145,33 +129,67 @@ final public class Picker: NSObject, Field {
             
             
             textField.form_fill(parentView: view, withPadding: padding)
-//            textField.translatesAutoresizingMaskIntoConstraints = false
-//            
-//            view.addSubview(textField)
-//            
-//            view.addConstraint(NSLayoutConstraint(item: textField, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: padding.left))
-//            view.addConstraint(NSLayoutConstraint(item: textField, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: padding.top))
-//            view.addConstraint(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: textField, attribute: .right, multiplier: 1, constant: padding.right))
-//            view.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: textField, attribute: .bottom, multiplier: 1, constant: padding.bottom))
+
             
             pickerInputView.backgroundColor = UIColor.lightGray
             
             textField.addTarget(self, action: #selector(editingChanged), for: .editingChanged)
             
             self.textField = textField
-        } else {
+        case .embedded:
             pickerInputView.form_fill(parentView: view, withPadding: padding)
-//            pickerInputView.translatesAutoresizingMaskIntoConstraints = false
-//            view.addSubview(pickerInputView)
-//            
-//            view.addConstraint(NSLayoutConstraint(item: pickerInputView, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: padding.left))
-//            view.addConstraint(NSLayoutConstraint(item: pickerInputView, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: padding.top))
-//            view.addConstraint(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: pickerInputView, attribute: .right, multiplier: 1, constant: padding.right))
-//            view.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: pickerInputView, attribute: .bottom, multiplier: 1, constant: padding.bottom))
             pickerInputView.button.isHidden = true
+        case .dialog:
+            break
         }
         
         form.add { self }
+    }
+    
+    public func bind(_ event: PickerEvent, handler: @escaping ((Picker) -> Void)) -> Self {
+        handlers.append((event, handler))
+        return self
+    }
+    
+    public func bind(_ event: PickerEvent, _ restriction: PickerRestriction, _ reaction: PickerReaction) -> Self {
+        validations.append(PickerValidation(event, restriction, reaction))
+        return self
+    }
+    
+    public func validateForEvent(event: PickerEvent) -> Bool {
+        
+        // Apply any event handlers.
+        handlers.filter { $0.event == event }.forEach { $0.handler(self) }
+        
+        let isEmpty = (textField?.text ?? "").isEmpty
+        let selectedRow = pickerView.selectedRow(inComponent: 0)    // TO-DO support multiple components
+        
+        let failingValidation: PickerValidationResult? = validations.filter {
+            $0.event == event   // Only get events of the specified type.
+            }.map {
+                switch $0 {
+                case (_, .empty, let reaction):
+                    return (isEmpty, reaction)
+                case (_, .nonempty, let reaction):
+                    return (!isEmpty, reaction)
+                default:
+                    return (true, .none)
+                }
+            }.filter { $0.isValid == false }.first
+        
+        if let failingValidation = failingValidation {
+            switch failingValidation.reaction {
+            case .shake:
+                textField?.shake()
+            case .alert(let message):
+                print(message)
+            default:
+                break
+            }
+            return false
+        }
+        
+        return true
     }
     
     public func options(_ options: [PickerOption]) -> Self {
@@ -225,6 +243,21 @@ final public class Picker: NSObject, Field {
 
 }
 
+extension Picker: Field {
+    public func style(_ style: ((Field) -> Void)) -> Self {
+        style(self)
+        return self
+    }
+    
+    public var canBecomeFirstResponder: Bool {
+        return style == .keyboard
+    }
+    
+    public func becomeFirstResponder() {
+        if style == .keyboard { textField?.becomeFirstResponder() }
+    }
+}
+
 // #MARK: Construction.
 extension Picker {
 
@@ -238,56 +271,8 @@ extension Picker {
 // #MARK: Target actions.
 extension Picker {
     
-    /// On-Change event handler.
     func editingChanged(textField: UITextField) {
-        handlers.filter {
-            $0.event == .onChange
-        }.forEach { $0.handler(self) }
-    }
-}
-
-extension Picker: OnHandlePickerEvent {
-    public func bind(_ event: PickerEvent, handler: @escaping ((Picker) -> Void)) -> Self {
-        handlers.append((event, handler))
-        return self
-    }
-}
-
-extension Picker: OnPickerValidationEvent {
-    public func validateForEvent(event: PickerEvent) -> Bool {
-        
-        // Apply any event handlers.
-        handlers.filter { $0.event == event }.forEach { $0.handler(self) }
-        
-        let isEmpty = (textField?.text ?? "").isEmpty
-        let selectedRow = pickerView.selectedRow(inComponent: 0)    // TO-DO support multiple components
-        
-        let failingValidation: PickerValidationResult? = validations.filter {
-            $0.event == event   // Only get events of the specified type.
-        }.map {
-            switch $0 {
-            case (_, .empty, let reaction):
-                return (isEmpty, reaction)
-            case (_, .nonempty, let reaction):
-                return (!isEmpty, reaction)
-            default:
-                return (true, .none)
-            }
-        }.filter { $0.isValid == false }.first
-        
-        if let failingValidation = failingValidation {
-            switch failingValidation.reaction {
-            case .shake:
-                textField?.shake()
-            case .alert(let message):
-                print(message)
-            default:
-                break
-            }
-            return false
-        }
-        
-        return true
+        handlers.filter { $0.event == .onChange }.forEach { $0.handler(self) }
     }
 }
 

@@ -49,8 +49,7 @@ final public class Submit: NSObject {
     }
     
     func action(button: UIButton) {
-        let validatableFields = form.fields.flatMap { $0 as? OnValidationEvent }
-        let validationResults = validatableFields.map {
+        let validatableFields = form.fields.flatMap { $0 as? Input }.map {
             $0.validateForEvent(event: .submit)
         }
     }
@@ -62,4 +61,8 @@ extension Submit: Field {
         return (true, nil)
     }
     
+    public func style(_ style: ((Field) -> Void)) -> Self {
+        style(self)
+        return self
+    }
 }

@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import ObjectiveC
 
 /// Encapsulates behaviours common to all form fields.
 public protocol Field {
@@ -36,10 +35,6 @@ public protocol Field {
 
 /// Provides a default implementation for some field behaviours.
 extension Field {
-    public func style(_ style: ((Field) -> Void)) -> Self {
-        style(self)
-        return self
-    }
     
     public var canBecomeFirstResponder: Bool {
         return false
@@ -60,6 +55,7 @@ public class Form: NSObject {
     var containingView: UIView
     var fields: [Field]
     var currentFirstResponder: UIView?
+    var enableNavigation = true
     
     @discardableResult
     public init(in viewController: UIViewController, constructor: ((Form) -> Void)? = nil) {
@@ -70,26 +66,20 @@ public class Form: NSObject {
         
         super.init()
         
-        
-        
         scrollView.form = self
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         containingView.addSubview(scrollView)
-        let autolayoutViews: [String: Any] = [
-            "scrollView": scrollView
-        ]
+        let autolayoutViews: [String: Any] = [ "scrollView": scrollView ]
         containingView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[scrollView]|", options: [], metrics: nil, views: autolayoutViews))
         containingView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[scrollView]|", options: [], metrics: nil, views: autolayoutViews))
         
+        // Add the fields to the form.
         constructor?(self)
         
         // Register for keyboard notifications to allow form fields to avoid the keyboard.
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: .UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: .UIKeyboardWillHide, object: nil)
     }
-    
-    
-    
     
     deinit {
         print("Form deinitialized")
@@ -136,7 +126,7 @@ extension Form {
     
     @discardableResult
     public func navigation(_ navigation: Bool) -> Self {
-
+        enableNavigation = navigation
         fields.flatMap { $0 as? Input }.forEach {
             if $0.textField.keyboardType == .numberPad || $0.textField.keyboardType == .decimalPad || $0.textField.keyboardType == .phonePad {
                 $0.textField.inputAccessoryView = NextInputAccessoryView()
@@ -185,12 +175,15 @@ extension Form {
             let contentInset = UIEdgeInsetsMake(0, 0, keyboardHeight, 0)
             scrollView.contentInset = contentInset
             scrollView.scrollIndicatorInsets = contentInset
-            
+
+            let statusBarHeight = UIApplication.shared.statusBarFrame.height
             var availableRect = containingView.frame
-            availableRect.size.height -= keyboardHeight
+            availableRect.origin.y = statusBarHeight
+            availableRect.size.height -= keyboardHeight - statusBarHeight
             if availableRect.contains(currentFirstResponder.frame) == false {
                 print(scrollView.frame, scrollView.contentSize, currentFirstResponder.frame)
-                scrollView.scrollRectToVisible(currentFirstResponder.frame, animated: true)
+                let currentFirstResponderFrame = currentFirstResponder.frame.insetBy(dx: 0, dy: -16)
+                scrollView.scrollRectToVisible(currentFirstResponderFrame, animated: true)
             }
             
         }
