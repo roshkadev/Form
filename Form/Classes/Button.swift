@@ -8,7 +8,7 @@
 
 import UIKit
 
-final public class Button: NSObject {
+final public class Button: NSObject, Field {
     
     // #MARK - Field
     public var form: Form
@@ -45,6 +45,7 @@ final public class Button: NSObject {
         form.add { self }
     }
     
+    @discardableResult
     public func title(_ text: String?) -> Self {
         button.setTitle(text, for: .normal)
         return self
@@ -56,16 +57,8 @@ final public class Button: NSObject {
 //        }
         print(form.parameters)
     }
-}
-
-extension Button: Field {
-
-
-
-    public func isValid() -> (result: Bool, message: String?) {
-        return (true, nil)
-    }
     
+    @discardableResult
     public func style(_ style: ((Field) -> Void)) -> Self {
         style(self)
         return self

@@ -8,7 +8,6 @@
 
 import UIKit
 
-
 /// A `DatePickerEvent` associated with a `DatePicker`.
 public enum DatePickerEvent {
     case shouldFocus    // Return `false` to disable `DatePicker` focus. Not applicable to embedded pickers.
@@ -46,10 +45,8 @@ public enum DatePickerPresentationStyle {
     case dialog
 }
 
-
 public typealias DatePickerValidation = (event: DatePickerEvent, restriction: DatePickerRestriction, reaction: DatePickerReaction)
 public typealias DatePickerValidationResult = (isValid: Bool, reaction: DatePickerReaction)
-
 
 public class DatePicker: NSObject {
     
@@ -60,7 +57,6 @@ public class DatePicker: NSObject {
     public var view: UIView
     
     public var key: String?
-    public var value: Any?
     
     /// The constraint used to show and hide the field.
     public var bottomLayoutConstraint: NSLayoutConstraint?
@@ -118,7 +114,6 @@ public class DatePicker: NSObject {
             self.textField = textField
         case .embedded:
             datePickerInputView.form_fill(parentView: view, withPadding: padding)
-            datePickerInputView.button.isHidden = true
         case .dialog:
             break
         }
@@ -126,9 +121,28 @@ public class DatePicker: NSObject {
         form.add { self }
     }
     
-    override public func awakeFromNib() {
-        super.awakeFromNib()
-        
+    public var value: Any? {
+        switch style {
+        case .keyboard:
+            if let text = textField?.text?.trimmingCharacters(in: .whitespacesAndNewlines), text.isEmpty == false {
+                return text
+            }
+            return nil
+        case .embedded:
+            if let text = textField?.text?.trimmingCharacters(in: .whitespacesAndNewlines), text.isEmpty == false {
+                return text
+            }
+            return nil
+        default:
+            return nil
+        }
+
+    }
+    
+    @discardableResult
+    public func key(_ key: String?) -> Self {
+        self.key = key
+        return self
     }
     
     func valueChanged(sender: UIDatePicker) {

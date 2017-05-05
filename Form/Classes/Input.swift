@@ -52,6 +52,7 @@ public class Input: NSObject {
     public var key: String?
     public var bottomLayoutConstraint: NSLayoutConstraint?
     public var padding = Space.default
+    var label: UILabel
     var textField: UITextField
     
     public var validations = [InputValidation]()
@@ -61,20 +62,28 @@ public class Input: NSObject {
         
         self.form = form
         view = UIView()
+        label = UILabel()
         textField = UITextField()
         
         super.init()
+    
         
         textField.borderStyle = .roundedRect
         textField.delegate = self
         
         view.translatesAutoresizingMaskIntoConstraints = false
         textField.translatesAutoresizingMaskIntoConstraints = false
+        label.translatesAutoresizingMaskIntoConstraints = false
         
+        view.addSubview(label)
         view.addSubview(textField)
         
+        view.addConstraint(NSLayoutConstraint(item: label, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: padding.left))
+        view.addConstraint(NSLayoutConstraint(item: label, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: padding.top))
+        view.addConstraint(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: label, attribute: .right, multiplier: 1, constant: padding.right))
+        
         view.addConstraint(NSLayoutConstraint(item: textField, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: padding.left))
-        view.addConstraint(NSLayoutConstraint(item: textField, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: padding.top))
+        view.addConstraint(NSLayoutConstraint(item: textField, attribute: .top, relatedBy: .equal, toItem: label, attribute: .bottom, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: textField, attribute: .right, multiplier: 1, constant: padding.right))
         view.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: textField, attribute: .bottom, multiplier: 1, constant: padding.bottom))
         
@@ -160,6 +169,12 @@ public class Input: NSObject {
     
     public func text(_ text: String?) -> Self {
         textField.text = text
+        return self
+    }
+    
+    @discardableResult
+    public func title(_ title: String?) -> Self {
+        label.text = title
         return self
     }
 

@@ -18,7 +18,7 @@ class ViewController: UIViewController {
             
             Input(form).placeholder("First name").key("first_name")
             
-            let lastName = Input(form).placeholder("Last name").key("last_name")
+            Input(form).title("Enter your last name").placeholder("Last name").key("last_name")
             
             let profession = Picker(form, style: .embedded).placeholder("Profession").options([
                 PickerOption("Construction worker 👷", "construction"),
@@ -30,18 +30,24 @@ class ViewController: UIViewController {
             
             let dateOfBirth = DatePicker(form, style: .keyboard).placeholder("Date of birth").bind(.onChange, .weekday, .shake)
             
-            let email = Input(form).placeholder("Email").key("email")
+            Input(form).title("Email").placeholder("Enter your email address").key("email")
 
             
-            let username = Input(form).placeholder("Choose your username").bind(.submit, .max(10), .alert("Max 10 characters")).key("username")
+            Input(form).title("Username").placeholder("Choose your username").bind(.submit, .max(10), .alert("Max 10 characters")).key("username")
             
-            let password = Input(form).placeholder("Enter a password").bind(.onChange, .max(10), .shake).bind(.onChange) {
+            let passwordInput = Input(form).title("Password").placeholder("Enter a password").bind(.onChange, .max(10), .shake).bind(.onChange) {
                 print($0.text)
             }.bind(.blur) { _ in
                 print("bluuur")
-            }.secure(true, pairedWith: username).key("password")
+            }.secure(true).key("password")
             
-            let submit = Button(form).title("Gooooo!").style { sub in
+            Input(form).title("Password").placeholder("Enter a password").bind(.onChange, .max(10), .shake).bind(.onChange) {
+                print($0.text)
+            }.bind(.blur) { _ in
+                    print("bluuur")
+            }.secure(true, pairedWith: passwordInput).key("password")
+            
+            Button(form).title("Gooooo!").style { sub in
                 sub.view.layer.cornerRadius = 10
                 sub.view.layer.masksToBounds = true
             }

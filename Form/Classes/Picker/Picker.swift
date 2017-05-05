@@ -142,7 +142,6 @@ final public class Picker: NSObject {
             self.textField = textField
         case .embedded:
             pickerInputView.form_fill(parentView: view, withPadding: padding)
-            pickerInputView.button.isHidden = true
         case .dialog:
             break
         }
