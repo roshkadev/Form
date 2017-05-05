@@ -68,7 +68,7 @@
 		69DA8B003216466C60F029CBD79897F1 /* UIImage+Compare.m in Sources */ = {isa = PBXBuildFile; fileRef = ABA451463938AAC29772A9BA4A644712 /* UIImage+Compare.m */; };
 		6CDBA48C3A8621E4EE1DAFFE240F0D82 /* CwlCatchBadInstruction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5AB00D217C687CB83AE825D8B15F32 /* CwlCatchBadInstruction.swift */; settings = {COMPILER_FLAGS = "-DPRODUCT_NAME=Nimble/Nimble"; }; };
 		6E397D9FB11A47E48D70287D734B12B2 /* BeLessThan.swift in Sources */ = {isa = PBXBuildFile; fileRef = F59D049190E109365BF9BA6BF1409B7F /* BeLessThan.swift */; settings = {COMPILER_FLAGS = "-DPRODUCT_NAME=Nimble/Nimble"; }; };
-		7161799C854AE9A35281E2155657EA26 /* Submit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8051304C79832ED3E1C1DC65047086B0 /* Submit.swift */; };
+		7161799C854AE9A35281E2155657EA26 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8051304C79832ED3E1C1DC65047086B0 /* Button.swift */; };
 		737E19F3254F5929263982C29237C0BA /* CwlBadInstructionException.swift in Sources */ = {isa = PBXBuildFile; fileRef = E024920AB8586A368B7A80B2476E9E8D /* CwlBadInstructionException.swift */; settings = {COMPILER_FLAGS = "-DPRODUCT_NAME=Nimble/Nimble"; }; };
 		74BE659608CC330081C12C777A7154F8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C8CBBF32C39839511129EB1C04B4277 /* Foundation.framework */; };
 		74FD712F3B503891B6BD9E5CD287E481 /* AssertionDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F6F40857C901AB4593AB1E6813F723D /* AssertionDispatcher.swift */; settings = {COMPILER_FLAGS = "-DPRODUCT_NAME=Nimble/Nimble"; }; };
@@ -304,7 +304,7 @@
 		7C45A6E3A25E698F2E2AA157150B9231 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7EB9685CE2F44160E003CBE369BC12D1 /* RaisesException.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RaisesException.swift; path = Sources/Nimble/Matchers/RaisesException.swift; sourceTree = "<group>"; };
 		7EF60AC0AF9A8589E5BD931EAC70C737 /* World.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = World.swift; path = Sources/Quick/World.swift; sourceTree = "<group>"; };
-		8051304C79832ED3E1C1DC65047086B0 /* Submit.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Submit.swift; sourceTree = "<group>"; };
+		8051304C79832ED3E1C1DC65047086B0 /* Button.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
 		806494D484FE0209AC2B5D52500B0405 /* DatePicker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DatePicker.swift; sourceTree = "<group>"; };
 		8097EE8731D164114FC89F9177529CC8 /* Pods-Form_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Form_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		814044D9DC540957290C399CB1D970D1 /* FBSnapshotTestCase.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FBSnapshotTestCase.h; path = FBSnapshotTestCase/FBSnapshotTestCase.h; sourceTree = "<group>"; };
@@ -819,7 +819,7 @@
 				BE1DA2976597027F4C3C70C4CE24D704 /* Input.swift */,
 				356BA09D066040BE21CA4B3D47C6E0D4 /* NextInputAccessoryView.swift */,
 				A5936999DC2F7F314436B449B05C35FE /* Space.swift */,
-				8051304C79832ED3E1C1DC65047086B0 /* Submit.swift */,
+				8051304C79832ED3E1C1DC65047086B0 /* Button.swift */,
 				BE480181A5781075EC843541CB6FAA20 /* Utilities.swift */,
 				0D306FD34AE16124306E56426D170A76 /* DatePicker */,
 				818FC6E9D4057E3BAA4D304E5A2EE6E9 /* Picker */,
@@ -1246,7 +1246,7 @@
 				FE76BC4231C5A565F606E6FE3C173243 /* PickerInputView.swift in Sources */,
 				23D86189F1DB1941D33BBB452AE60F1E /* PickerInputView.xib in Sources */,
 				00FA9953825B79EC7579333D9ADB3790 /* Space.swift in Sources */,
-				7161799C854AE9A35281E2155657EA26 /* Submit.swift in Sources */,
+				7161799C854AE9A35281E2155657EA26 /* Button.swift in Sources */,
 				759CBFCFA4CC1CF517AF307CE53FDD64 /* Utilities.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

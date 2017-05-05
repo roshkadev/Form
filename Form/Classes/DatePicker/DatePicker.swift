@@ -59,6 +59,9 @@ public class DatePicker: NSObject {
     /// This field's view.
     public var view: UIView
     
+    public var key: String?
+    public var value: Any?
+    
     /// The constraint used to show and hide the field.
     public var bottomLayoutConstraint: NSLayoutConstraint?
     
@@ -138,6 +141,7 @@ public class DatePicker: NSObject {
 }
 
 extension DatePicker: Field {
+    
     public func style(_ style: ((Field) -> Void)) -> Self {
         style(self)
         return self

@@ -71,6 +71,9 @@ final public class Picker: NSObject {
     /// This field's view.
     public var view: UIView
     
+    public var key: String?
+    public var value: Any?
+    
     /// The constraint used to show and hide the field.
     public var bottomLayoutConstraint: NSLayoutConstraint?
     
@@ -103,6 +106,7 @@ final public class Picker: NSObject {
     var disabledRowRanges = [CountableClosedRange<Int>]()
     var selectedOption: PickerOption?
     var defaultIndex: Int?
+
     
     public init(_ form: Form, style: PickerPresentationStyle = .keyboard) {
         
@@ -244,6 +248,7 @@ final public class Picker: NSObject {
 }
 
 extension Picker: Field {
+
     public func style(_ style: ((Field) -> Void)) -> Self {
         style(self)
         return self

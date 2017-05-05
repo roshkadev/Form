@@ -8,11 +8,13 @@
 
 import UIKit
 
-final public class Submit: NSObject {
+final public class Button: NSObject {
     
     // #MARK - Field
     public var form: Form
     public var view: UIView
+    public var key: String?
+    public var value: Any?
     public var bottomLayoutConstraint: NSLayoutConstraint?
     public var padding = Space.none
     
@@ -49,13 +51,16 @@ final public class Submit: NSObject {
     }
     
     func action(button: UIButton) {
-        let validatableFields = form.fields.flatMap { $0 as? Input }.map {
-            $0.validateForEvent(event: .submit)
-        }
+//        let validatableFields = form.fields.flatMap { $0 as? Input }.map {
+//            $0.validateForEvent(event: .submit)
+//        }
+        print(form.parameters)
     }
 }
 
-extension Submit: Field {
+extension Button: Field {
+
+
 
     public func isValid() -> (result: Bool, message: String?) {
         return (true, nil)

@@ -31,6 +31,12 @@ public protocol Field {
     
     /// Ask the field to become first responder, if possible.
     func becomeFirstResponder()
+    
+    /// A key associated with this field's value.
+    var key: String? { get set }
+    
+    /// This field's value.
+    var value: Any? { get }
 }
 
 /// Provides a default implementation for some field behaviours.
@@ -43,6 +49,8 @@ extension Field {
     public func becomeFirstResponder() {
         // Do nothing.
     }
+    
+    var value: Any? { return nil }
 }
 
 class FormScrollView: UIScrollView {
@@ -79,6 +87,16 @@ public class Form: NSObject {
         // Register for keyboard notifications to allow form fields to avoid the keyboard.
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: .UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: .UIKeyboardWillHide, object: nil)
+    }
+    
+    public var parameters: [String: Any]? {
+        return fields.reduce([String: Any](), { partialResult, field in
+            guard let key = field.key else { return partialResult }
+            guard let value = field.value else { return partialResult }
+            var updatedResult = partialResult
+            updatedResult[key] = value
+            return updatedResult
+        })
     }
     
     deinit {
@@ -145,7 +163,6 @@ extension Form {
     func assign(firstResponder: UIView) {
         currentFirstResponder = firstResponder
     }
-    
     
     /// Assign the next field as first responder.
     func didTapNextFrom(field: Field) {

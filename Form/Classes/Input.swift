@@ -49,6 +49,7 @@ public class Input: NSObject {
     
     public var form: Form
     public var view: UIView
+    public var key: String?
     public var bottomLayoutConstraint: NSLayoutConstraint?
     public var padding = Space.default
     var textField: UITextField
@@ -140,8 +141,21 @@ public class Input: NSObject {
         handlers.filter { $0.event == .onChange }.forEach { $0.handler(self) }
     }
     
+    public var value: Any? {
+        if let text = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines), text.isEmpty == false {
+            return text
+        }
+        return nil
+    }
+    
     public var text: String? {
         return textField.text
+    }
+    
+    @discardableResult
+    public func key(_ key: String?) -> Self {
+        self.key = key
+        return self
     }
     
     public func text(_ text: String?) -> Self {
