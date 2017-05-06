@@ -9,6 +9,21 @@
 import UIKit
 import Form
 
+class User {
+    var firstName: String?
+    var lastName: String?
+    var profession: String?
+    var dateOfBirth: Date?
+    var email: String?
+    var username: String?
+    var password: String?
+    
+    var description: String? {
+        return Mirror(reflecting: self).children.flatMap { $0 }.reduce("") { $0 + "\($1.label): \($1.value)" }
+    }
+}
+
+
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
@@ -16,38 +31,37 @@ class ViewController: UIViewController {
         
         Form(in: self) { form in
             
-            Input(form).placeholder("First name").key("first_name")
+            let user = User()
             
-            Input(form).title("Enter your last name").placeholder("Last name").key("last_name")
+            Input(form).title("Enter your first name").placeholder("First name").bind { user.firstName = $0 }
             
-            let profession = Picker(form, style: .embedded).placeholder("Profession").options([
+            Input(form).title("Enter your last name").placeholder("Last name").bind { user.lastName = $0 }
+            
+            Picker(form, style: .embedded).placeholder("Profession").options([
                 PickerOption("Construction worker 👷", "construction"),
                 PickerOption("Astronaut 👩‍🚀", "astronaut"),
                 PickerOption("Clerk 💁", "clerk"),
                 PickerOption("Alchemist 👨‍🔬", "alchemist"),
                 PickerOption("Hiring Manager 👨", "hn_manager"),
-            ]).disable(row: 3)
+            ]).disable(row: 3).bind { user.profession = $0 }
             
-            let dateOfBirth = DatePicker(form, style: .keyboard).placeholder("Date of birth").bind(.onChange, .weekday, .shake)
+            DatePicker(form, style: .keyboard).placeholder("Date of birth").bind(.onChange, .weekday, .shake).bind { user.dateOfBirth = $0 }
             
-            Input(form).title("Email").placeholder("Enter your email address").key("email")
+            Input(form).title("Email").placeholder("Enter your email address").bind { user.email = $0 }
 
             
-            Input(form).title("Username").placeholder("Choose your username").bind(.submit, .max(10), .alert("Max 10 characters")).key("username")
-            
-            let passwordInput = Input(form).title("Password").placeholder("Enter a password").bind(.onChange, .max(10), .shake).bind(.onChange) {
-                print($0.text)
-            }.bind(.blur) { _ in
-                print("bluuur")
-            }.secure(true).key("password")
+            Input(form).title("Username").placeholder("Choose your username").bind(.submit, .max(10), .alert("Max 10 characters")).bind { user.username = $0 }
             
             Input(form).title("Password").placeholder("Enter a password").bind(.onChange, .max(10), .shake).bind(.onChange) {
                 print($0.text)
             }.bind(.blur) { _ in
-                    print("bluuur")
-            }.secure(true, pairedWith: passwordInput).key("password")
+                print("bluuur")
+            }.secure(true).key("password").bind { user.password = $0 }
             
-            Button(form).title("Gooooo!").style { sub in
+            Button(form) { _ in
+                print(form.parameters)
+                print(user.description)
+            }.title("Gooooo!").style { sub in
                 sub.view.layer.cornerRadius = 10
                 sub.view.layer.masksToBounds = true
             }

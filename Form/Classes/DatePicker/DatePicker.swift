@@ -140,6 +140,15 @@ public class DatePicker: NSObject {
     }
     
     @discardableResult
+    public func bind(_ binding:@escaping ((Date?) -> Void)) -> Self {
+        handlers.append((.onChange, {
+            binding($0.datePicker.date)
+        }))
+        return self
+    }
+    
+    
+    @discardableResult
     public func key(_ key: String?) -> Self {
         self.key = key
         return self
@@ -149,6 +158,8 @@ public class DatePicker: NSObject {
         let isValid = validateForEvent(event: DatePickerEvent.onChange)
         if isValid {
             lastDate = sender.date
+            handlers.filter { $0.event == .onChange }.forEach { $0 }
+            
         }
         
     }

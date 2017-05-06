@@ -20,18 +20,21 @@ final public class Button: NSObject, Field {
     
     var button: UIButton
     
-    public init(_ form: Form) {
+    var tapCallback: ((Button) -> Void)?
+    
+    public init(_ form: Form, onTap: @escaping ((Button) -> Void)) {
         
         self.form = form
         view = UIView()
         button = UIButton()
+        tapCallback = onTap
         
         super.init()
         
         view.translatesAutoresizingMaskIntoConstraints = false
         button.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = UIColor.red
-        button.backgroundColor = UIColor.yellow
+        button.backgroundColor = UIColor.green
         
         view.addSubview(button)
 
@@ -52,10 +55,7 @@ final public class Button: NSObject, Field {
     }
     
     func action(button: UIButton) {
-//        let validatableFields = form.fields.flatMap { $0 as? Input }.map {
-//            $0.validateForEvent(event: .submit)
-//        }
-        print(form.parameters)
+        tapCallback?(self)
     }
     
     @discardableResult

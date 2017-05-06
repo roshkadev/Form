@@ -149,11 +149,21 @@ final public class Picker: NSObject {
         form.add { self }
     }
     
+    @discardableResult
+    public func bind(_ binding:@escaping ((String?) -> Void)) -> Self {
+        bind(.onChange, handler: {
+            binding($0.text)
+        })
+        return self
+    }
+    
+    @discardableResult
     public func bind(_ event: PickerEvent, handler: @escaping ((Picker) -> Void)) -> Self {
         handlers.append((event, handler))
         return self
     }
     
+    @discardableResult
     public func bind(_ event: PickerEvent, _ restriction: PickerRestriction, _ reaction: PickerReaction) -> Self {
         validations.append(PickerValidation(event, restriction, reaction))
         return self

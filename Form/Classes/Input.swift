@@ -45,11 +45,17 @@ public enum InputReaction {
 public typealias InputValidation = (event: InputEvent, restriction: InputRestriction, reaction: InputReaction)
 public typealias InputValidationResult = (isValid: Bool, reaction: InputReaction)
 
+public class InputKey {
+    public var key: String?
+    public init(_ key: inout String?) { self.key = key }
+}
+
 public class Input: NSObject {
     
     public var form: Form
     public var view: UIView
     public var key: String?
+    public var attachedTo: InputKey?
     public var bottomLayoutConstraint: NSLayoutConstraint?
     public var padding = Space.default
     var label: UILabel
@@ -93,16 +99,27 @@ public class Input: NSObject {
         
     }
     
+    @discardableResult
+    public func bind(_ binding:@escaping ((String?) -> Void)) -> Self {
+        bind(.onChange, handler: {
+            binding($0.text)
+        })
+        return self
+    }
+    
+    @discardableResult
     public func bind(_ event: InputEvent, _ restriction: InputRestriction) -> Self {
         validations.append(InputValidation(event, restriction, .stop))
         return self
     }
     
+    @discardableResult
     public func bind(_ event: InputEvent, _ restriction: InputRestriction, _ reaction: InputReaction) -> Self {
         validations.append(InputValidation(event, restriction, reaction))
         return self
     }
     
+    @discardableResult
     public func bind(_ event: InputEvent, handler: @escaping ((Input) -> Void)) -> Self {
         handlers.append((event, handler))
         return self
@@ -167,6 +184,14 @@ public class Input: NSObject {
         return self
     }
     
+    @discardableResult
+    public func attach(_  to: inout InputKey) -> Self {
+        to.key = "hello"
+        self.attachedTo = to
+        self.attachedTo?.key = "goodbye"
+        return self
+    }
+    
     public func text(_ text: String?) -> Self {
         textField.text = text
         return self
@@ -222,6 +247,7 @@ extension Input: UITextFieldDelegate {
     }
     
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        attachedTo?.key = textField.text
         return validateForEvent(event: .onChange, with: ((textField.text ?? "") as NSString).replacingCharacters(in: range, with: string))
     }
     
