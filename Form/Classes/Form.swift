@@ -32,6 +32,9 @@ public protocol Field {
     /// Ask the field to become first responder, if possible.
     func becomeFirstResponder()
     
+    /// Ask the field to resign first responder, if possible.
+    func resignFirstResponder()
+    
     /// A key associated with this field's value.
     var key: String? { get set }
     
@@ -47,6 +50,10 @@ extension Field {
     }
     
     public func becomeFirstResponder() {
+        // Do nothing.
+    }
+    
+    public func resignFirstResponder() {
         // Do nothing.
     }
     
@@ -167,18 +174,25 @@ extension Form {
     /// Assign the next field as first responder.
     func didTapNextFrom(field: Field) {
         
-        let focusableFields = fields.filter { $0.canBecomeFirstResponder }
-        let index = focusableFields.index { $0.view == field.view }
+        func moveFocus(fromField: Field, toField: Field) {
+            if toField.canBecomeFirstResponder {
+                toField.becomeFirstResponder()
+            } else {
+                fromField.resignFirstResponder()
+                let offset = CGPoint(x: 0, y: field.view.frame.origin.y - scrollView.frame.height)
+                scrollView.setContentOffset(offset, animated: true)
+            }
+        }
         
-        if let nextIndex = index?.advanced(by: 1), focusableFields.indices.contains(nextIndex) {
-            let nextField = focusableFields[focusableFields.startIndex.distance(to: nextIndex)]
-            nextField.becomeFirstResponder()
+        let index = fields.index { $0.view == field.view }
+        if let nextIndex = index?.advanced(by: 1), fields.indices.contains(nextIndex) {
+            let nextField = fields[fields.startIndex.distance(to: nextIndex)]
+            moveFocus(fromField: field, toField: nextField)
         } else {
             // Wrap around to bring focus to the first field in the form.
-            let nextIndex = focusableFields.startIndex
-            if focusableFields.indices.contains(nextIndex) {
-                let nextField = focusableFields[focusableFields.startIndex]
-                nextField.becomeFirstResponder()
+            if fields.indices.contains(fields.startIndex) {
+                let nextField = fields[fields.startIndex]
+                moveFocus(fromField: field, toField: nextField)
             }
         }
     }

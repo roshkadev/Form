@@ -237,6 +237,10 @@ extension Input: Field {
     public func becomeFirstResponder(){
         textField.becomeFirstResponder()
     }
+    
+    public func resignFirstResponder(){
+        textField.becomeFirstResponder()
+    }
 }
 
 extension Input: UITextFieldDelegate {
