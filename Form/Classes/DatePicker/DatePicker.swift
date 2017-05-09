@@ -48,7 +48,7 @@ public enum DatePickerPresentationStyle {
 public typealias DatePickerValidation = (event: DatePickerEvent, restriction: DatePickerRestriction, reaction: DatePickerReaction)
 public typealias DatePickerValidationResult = (isValid: Bool, reaction: DatePickerReaction)
 
-public class DatePicker: NSObject {
+final public class DatePicker: NSObject {
     
     /// This field's containing `Form`.
     public var form: Form
@@ -59,7 +59,7 @@ public class DatePicker: NSObject {
     public var key: String?
     
     /// The constraint used to show and hide the field.
-    public var bottomLayoutConstraint: NSLayoutConstraint?
+    public var topLayoutConstraint: NSLayoutConstraint?
     
     /// The underlying text field of this `DatePicker`. nil when embedded is true.
     var textField: UITextField?
@@ -167,7 +167,7 @@ public class DatePicker: NSObject {
 
 extension DatePicker: Field {
     
-    public func style(_ style: ((Field) -> Void)) -> Self {
+    public func style(_ style: ((DatePicker) -> Void)) -> Self {
         style(self)
         return self
     }

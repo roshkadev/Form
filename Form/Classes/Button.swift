@@ -15,7 +15,7 @@ final public class Button: NSObject, Field {
     public var view: UIView
     public var key: String?
     public var value: Any?
-    public var bottomLayoutConstraint: NSLayoutConstraint?
+    public var topLayoutConstraint: NSLayoutConstraint?
     public var padding = Space.none
     
     var button: UIButton
@@ -59,7 +59,7 @@ final public class Button: NSObject, Field {
     }
     
     @discardableResult
-    public func style(_ style: ((Field) -> Void)) -> Self {
+    public func style(_ style: ((Button) -> Void)) -> Self {
         style(self)
         return self
     }

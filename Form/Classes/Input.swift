@@ -50,13 +50,13 @@ public class InputKey {
     public init(_ key: inout String?) { self.key = key }
 }
 
-public class Input: NSObject {
+final public class Input: NSObject {
     
     public var form: Form
     public var view: UIView
     public var key: String?
     public var attachedTo: InputKey?
-    public var bottomLayoutConstraint: NSLayoutConstraint?
+    public var topLayoutConstraint: NSLayoutConstraint?
     public var padding = Space.default
     var label: UILabel
     var textField: UITextField
@@ -225,7 +225,7 @@ public class Input: NSObject {
 
 extension Input: Field {
     
-    public func style(_ style: ((Field) -> Void)) -> Self {
+    public func style(_ style: ((Input) -> Void)) -> Self {
         style(self)
         return self
     }

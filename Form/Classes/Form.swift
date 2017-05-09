@@ -5,6 +5,31 @@
 //  Created by Roshka on 4/21/17.
 //
 //
+//  - Show and hide field(s) DONE
+//  - Add new field (Switch) DONE
+//  - Add new field (Slider)
+//  - Add new field (Stepper)
+//  - Add new field (SegmentedSwitch)
+//  - Add new Picker type (keyboard and table view based actionsheet)
+//  - Add new field Location (apple maps)
+//  - Add new field Image (gallery and camera)
+//  - Add Switch radio groups
+//  - Add Check radio groups
+//  - Add option to hide and also to disable fields
+//  - Add Input security groupings
+//  - Add custom field example
+//  - Add currency option for Inputs
+
+
+
+
+//  - Smart navigation to go to next Field (even if not a first responder), ignore hidden fields.
+//  - Ignore hidden fields when validating a form
+//  - Add label types (above, inset, floating)
+//  - Add new field (TextArea) with dynamic height and placeholder
+//  - Add new field (Check) with dynamic height and placeholder
+//  - Date picker, add common date formatters
+
 
 import UIKit
 
@@ -17,14 +42,14 @@ public protocol Field {
     /// This field's view.
     var view: UIView { get set }
     
-    /// The constraint used to show and hide the field.
-    var bottomLayoutConstraint: NSLayoutConstraint? { get set }
-    
     /// This field's padding.
     var padding: Space { get set }
     
+    /// The constraint used show/hide fields.
+    var topLayoutConstraint: NSLayoutConstraint? { get set }
+    
     /// A closure to arbitrarily style the field.
-    func style(_ style: ((Field) -> Void)) -> Self
+    func style(_ style: ((Self) -> Void)) -> Self
     
     /// Return false if field could not become first responder, true otherwise.
     var canBecomeFirstResponder: Bool { get }
@@ -40,6 +65,14 @@ public protocol Field {
     
     /// This field's value.
     var value: Any? { get }
+    
+    // #MARK: - Visibility
+    
+    func show()
+    
+    func hide()
+    
+    func toggleVisibility()
 }
 
 /// Provides a default implementation for some field behaviours.
@@ -58,6 +91,35 @@ extension Field {
     }
     
     var value: Any? { return nil }
+    
+    
+    public func show() {}
+    
+    public func hide() {}
+    
+    public func toggleVisibility() {
+        
+        if view.isHidden {
+            view.isHidden = false
+            view.alpha = 0
+            topLayoutConstraint?.constant = 0
+            UIView.animate(withDuration: 0.5, animations: {
+                self.view.alpha = 1
+                self.form.scrollView.layoutIfNeeded()
+            }, completion: { _ in
+                
+            })
+        } else {
+            topLayoutConstraint?.constant =  -view.frame.height
+            view.alpha = 1
+            UIView.animate(withDuration: 0.5, animations: {
+                self.view.alpha = 0
+                self.form.scrollView.layoutIfNeeded()
+            }, completion: { _ in
+                self.view.isHidden = true
+            })
+        }
+    }
 }
 
 class FormScrollView: UIScrollView {
@@ -71,6 +133,9 @@ public class Form: NSObject {
     var fields: [Field]
     var currentFirstResponder: UIView?
     var enableNavigation = true
+    
+    /// The constraint used to add fields.
+    var bottomLayoutConstraint: NSLayoutConstraint?
     
     @discardableResult
     public init(in viewController: UIViewController, constructor: ((Form) -> Void)? = nil) {
@@ -121,16 +186,20 @@ extension Form {
         
         scrollView.addSubview(field.view)
         
-        if var lastField = fields.last, let bottomConstraint = lastField.bottomLayoutConstraint {
+        if var lastField = fields.last, let bottomConstraint = field.form.bottomLayoutConstraint {
             // The form already contains one or more fields.
             
-            containingView.addConstraint(NSLayoutConstraint(item: field.view, attribute: .top, relatedBy: .equal, toItem: lastField.view, attribute: .bottom, multiplier: 1, constant: margin.top))
+            let layoutConstraint = NSLayoutConstraint(item: field.view, attribute: .top, relatedBy: .equal, toItem: lastField.view, attribute: .bottom, multiplier: 1, constant: margin.top)
+            field.topLayoutConstraint = layoutConstraint
+            containingView.addConstraint(layoutConstraint)
             containingView.removeConstraint(bottomConstraint)
-            lastField.bottomLayoutConstraint = nil
+            field.form.bottomLayoutConstraint = nil
             
         } else {
             // This field is the first field in the form.
-            containingView.addConstraint(NSLayoutConstraint(item: field.view, attribute: .top, relatedBy: .equal, toItem: scrollView, attribute: .top, multiplier: 1, constant: margin.top))
+            let layoutConstraint = NSLayoutConstraint(item: field.view, attribute: .top, relatedBy: .equal, toItem: scrollView, attribute: .top, multiplier: 1, constant: margin.top)
+            field.topLayoutConstraint = layoutConstraint
+            containingView.addConstraint(layoutConstraint)
         }
         
         containingView.addConstraint(NSLayoutConstraint(item: field.view, attribute: .left, relatedBy: .equal, toItem: containingView, attribute: .left, multiplier: 1, constant: margin.left))
@@ -142,7 +211,7 @@ extension Form {
         
         let bottomConstraint = NSLayoutConstraint(item: scrollView, attribute: .bottom, relatedBy: .equal, toItem: field.view, attribute: .bottom, multiplier: 1, constant: Space.bottom.bottom)
         containingView.addConstraint(bottomConstraint)
-        field.bottomLayoutConstraint = bottomConstraint
+        field.form.bottomLayoutConstraint = bottomConstraint
         
         fields.append(field)
         

@@ -75,7 +75,7 @@ final public class Picker: NSObject {
     public var value: Any?
     
     /// The constraint used to show and hide the field.
-    public var bottomLayoutConstraint: NSLayoutConstraint?
+    public var topLayoutConstraint: NSLayoutConstraint?
     
     /// The underlying text field of this `Picker`. Is nil when `Picker` is embedded.
     var textField: UITextField?
@@ -258,7 +258,7 @@ final public class Picker: NSObject {
 
 extension Picker: Field {
 
-    public func style(_ style: ((Field) -> Void)) -> Self {
+    public func style(_ style: ((Picker) -> Void)) -> Self {
         style(self)
         return self
     }
