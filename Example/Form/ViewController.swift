@@ -71,6 +71,14 @@ class ViewController: UIViewController {
                 Input(form).title("Twitter profile").placeholder("URL").bind(.submit, .max(10), .alert("Max 10 characters")).bind { user.stackOverflow = $0 }
             }
             
+            SwitchGroup(form) {
+                Switch(form).title("Intern")
+                Switch(form).title("Junior Developer")
+                Switch(form).title("Developer")
+                Switch(form).title("Senior Developer")
+            }
+            
+            
 
             
             Button(form) { _ in

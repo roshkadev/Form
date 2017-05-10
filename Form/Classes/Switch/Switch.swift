@@ -87,6 +87,7 @@ final public class Switch: NSObject {
     }
     
     func toggleAction(sender: UISwitch) {
+        onToggleCallback?(sender.isOn)
         toggledFieldGroups.forEach {
             $0.forEach {
                 $0.toggleVisibility()
