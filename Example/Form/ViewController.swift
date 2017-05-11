@@ -9,7 +9,17 @@
 import UIKit
 import Form
 
+
+
 class User {
+    
+    enum Position {
+        case intern
+        case junior
+        case middle
+        case senior
+    }
+    
     var firstName: String?
     var lastName: String?
     var profession: String?
@@ -19,6 +29,7 @@ class User {
     var password: String?
     var github: String?
     var stackOverflow: String?
+    var position: Position?
     
     var description: String? {
         return Mirror(reflecting: self).children.flatMap { $0 }.reduce("") { $0 + "\($1.label): \($1.value)" }
@@ -71,7 +82,7 @@ class ViewController: UIViewController {
                 Input(form).title("Twitter profile").placeholder("URL").bind(.submit, .max(10), .alert("Max 10 characters")).bind { user.stackOverflow = $0 }
             }
             
-            SwitchGroup(form) {
+            RadioGroup<User.Position>(form) {
                 Switch(form).title("Intern")
                 Switch(form).title("Junior Developer")
                 Switch(form).title("Developer")
