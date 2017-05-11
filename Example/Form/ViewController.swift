@@ -82,12 +82,12 @@ class ViewController: UIViewController {
                 Input(form).title("Twitter profile").placeholder("URL").bind(.submit, .max(10), .alert("Max 10 characters")).bind { user.stackOverflow = $0 }
             }
             
-            RadioGroup<User.Position>(form) {
-                Switch(form).title("Intern")
-                Switch(form).title("Junior Developer")
-                Switch(form).title("Developer")
-                Switch(form).title("Senior Developer")
-            }
+            RadioGroup(form, radios: [
+                (.intern, "Intern"),
+                (.junior, "Junior"),
+                (.middle, "Developer"),
+                (.senior, "Senior"),
+            ], binding: { user.position = $0 })
             
             
 

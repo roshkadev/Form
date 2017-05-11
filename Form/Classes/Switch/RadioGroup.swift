@@ -8,37 +8,34 @@
 
 import UIKit
 
-public protocol RadioProtocol: Field {
-    var isOn: Bool { get set }
-    func on(_ callback: @escaping (Bool) -> ())
-}
+//public protocol RadioProtocol: Field {
+//    var isOn: Bool { get set }
+//    func on(_ callback: @escaping (Bool) -> ())
+//}
+//
+//public protocol RadioGroupProtocol {
+//    
+//}
 
-public protocol RadioGroupProtocol {
-    
-}
-
-final public class RadioGroup<T>: NSObject {
+final public class RadioGroup: NSObject {
     
     @discardableResult
-    public init(_ form: Form, _ addFields: (T) -> ()) {
-        
-        let before = form.fields.flatMap { $0 as? RadioProtocol }
-        addFields()
-        let after = form.fields.flatMap { $0 as? RadioProtocol }
-        let added = after.filter {
-            before.map { $0.view }.contains($0.view) == false
-        }
-        
-        for (_, var new) in added.enumerated() {
-            new.on { isOn in
-                
-                let others = added.filter { $0.view != new.view }
-                for (_, var other) in others.enumerated() {
-                    if isOn {
-                        other.isOn = false
-                    } else {
-                        new.isOn = true
+    public init<T>(_ form: Form, radios: [(val: T, title: String)], binding:@escaping ((T?) -> Void)) {
+        super.init()
+        let fields = radios.map { radio in
+            Switch(form).title(radio.title)
+        }.flatMap { $0 as? Switch }
+
+        for (idx, var field) in fields.enumerated() {
+            field.onToggle { isOn in
+                binding(radios[idx].val)
+                if isOn {
+                    let others = fields.filter { $0.view != field.view }
+                    for (_, var other) in others.enumerated() {
+                        other.switch.isOn = false
                     }
+                } else {
+                    field.switch.isOn = true
                 }
             }
         }
