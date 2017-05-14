@@ -20,7 +20,7 @@ import UIKit
 final public class RadioGroup: NSObject {
     
     @discardableResult
-    public init<T>(_ form: Form, radios: [(val: T, title: String)], binding:@escaping ((T?) -> Void)) {
+    public init<T>(_ form: Form, with radios: [(val: T, title: String)], binding:@escaping ((T?) -> Void)) {
         super.init()
         let fields = radios.map { radio in
             Switch(form).title(radio.title)

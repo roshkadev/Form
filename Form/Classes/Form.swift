@@ -7,8 +7,8 @@
 //
 //  - Show and hide field(s) DONE
 //  - Add new field (Switch) DONE
-//  - Add new field (Slider)
-//  - Add new field (Stepper)
+//  - Add new field (Slider) DONE
+//  - Add new field (Stepper) DONE
 //  - Add new field (SegmentedSwitch)
 //  - Add new Picker type (keyboard and table view based actionsheet)
 //  - Add new field Location (apple maps)

@@ -82,15 +82,22 @@ class ViewController: UIViewController {
                 Input(form).title("Twitter profile").placeholder("URL").bind(.submit, .max(10), .alert("Max 10 characters")).bind { user.stackOverflow = $0 }
             }
             
-            RadioGroup(form, radios: [
+            RadioGroup(form, with: [
                 (.intern, "Intern"),
                 (.junior, "Junior"),
                 (.middle, "Developer"),
                 (.senior, "Senior"),
             ], binding: { user.position = $0 })
             
+            Slider(form).title("Experience (years)").style {
+                $0.slider.minimumValueImage = "🐣".image()
+                $0.slider.maximumValueImage = "🦉".image()
+                $0.slider.setThumbImage("⚫️".image(), for: .normal)
+            }
             
+            Stepper(form).title("Experience (years)")
 
+            TextArea(form).title("Tell us a little about yourself")
             
             Button(form) { _ in
                 print(form.parameters)
@@ -114,3 +121,18 @@ class ViewController: UIViewController {
     }
 }
 
+
+extension String {
+    func image() -> UIImage? {
+        let size = CGSize(width: 30, height: 35)
+        UIGraphicsBeginImageContextWithOptions(size, false, 0);
+        UIColor.white.set()
+        let rect = CGRect(origin: .zero, size: size)
+        UIRectFill(CGRect(origin: .zero, size: size))
+        (self as NSString).draw(in: rect, withAttributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 30)])
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image
+    }
+    
+}
