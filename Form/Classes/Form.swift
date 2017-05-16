@@ -19,6 +19,12 @@
 //  - Add Input security groupings
 //  - Add custom field example
 //  - Add currency option for Inputs
+//  - Add tags for text view and text field
+//  - Support rotation
+//  - Support device text size
+//  - Stop scroll on edges of fields
+//  - UI tests
+//  - Unit tests
 
 
 
@@ -33,113 +39,34 @@
 
 import UIKit
 
-/// Encapsulates behaviours common to all form fields.
-public protocol Field {
-
-    /// This field's containing `Form`.
-    var form: Form { get set }
-    
-    /// This field's view.
-    var view: UIView { get set }
-    
-    /// This field's padding.
-    var padding: Space { get set }
-    
-    /// The constraint used show/hide fields.
-    var topLayoutConstraint: NSLayoutConstraint? { get set }
-    
-    /// A closure to arbitrarily style the field.
-    func style(_ style: ((Self) -> Void)) -> Self
-    
-    /// Return false if field could not become first responder, true otherwise.
-    var canBecomeFirstResponder: Bool { get }
-    
-    /// Ask the field to become first responder, if possible.
-    func becomeFirstResponder()
-    
-    /// Ask the field to resign first responder, if possible.
-    func resignFirstResponder()
-    
-    /// A key associated with this field's value.
-    var key: String? { get set }
-    
-    /// This field's value.
-    var value: Any? { get }
-    
-    // #MARK: - Visibility
-    
-    func show()
-    
-    func hide()
-    
-    func toggleVisibility()
-}
-
-/// Provides a default implementation for some field behaviours.
-extension Field {
-    
-    public var canBecomeFirstResponder: Bool {
-        return false
-    }
-    
-    public func becomeFirstResponder() {
-        // Do nothing.
-    }
-    
-    public func resignFirstResponder() {
-        // Do nothing.
-    }
-    
-    var value: Any? { return nil }
-    
-    
-    public func show() {}
-    
-    public func hide() {}
-    
-    public func toggleVisibility() {
-        
-        if view.isHidden {
-            view.isHidden = false
-            view.alpha = 0
-            topLayoutConstraint?.constant = 0
-            UIView.animate(withDuration: 0.5, animations: {
-                self.view.alpha = 1
-                self.form.scrollView.layoutIfNeeded()
-            }, completion: { _ in
-                
-            })
-        } else {
-            topLayoutConstraint?.constant =  -view.frame.height
-            view.alpha = 1
-            UIView.animate(withDuration: 0.5, animations: {
-                self.view.alpha = 0
-                self.form.scrollView.layoutIfNeeded()
-            }, completion: { _ in
-                self.view.isHidden = true
-            })
-        }
-    }
-}
-
 class FormScrollView: UIScrollView {
     var form: Form!
 }
 
 public class Form: NSObject {
     
+    var viewController: UIViewController!
     var scrollView: FormScrollView
     var containingView: UIView
     var fields: [Field]
-    var currentFirstResponder: UIView?
+    var activeField: Field?
     var enableNavigation = true
+    var isPagedScrollingEnabled = false
+    
+    var nextView: UIView!
+    var nextButton: UIButton!
+    var nextViewVerticalConstraint: NSLayoutConstraint!
+    var currentField: Field?
     
     /// The constraint used to add fields.
     var bottomLayoutConstraint: NSLayoutConstraint?
     
+    let nextButtonWidth: CGFloat = 30
+    
     @discardableResult
     public init(in viewController: UIViewController, constructor: ((Form) -> Void)? = nil) {
         
+        self.viewController = viewController
         fields = []
         containingView = viewController.view
         scrollView = FormScrollView()
@@ -147,6 +74,7 @@ public class Form: NSObject {
         super.init()
         
         scrollView.form = self
+        scrollView.delegate = self
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         containingView.addSubview(scrollView)
         let autolayoutViews: [String: Any] = [ "scrollView": scrollView ]
@@ -158,7 +86,26 @@ public class Form: NSObject {
         
         // Register for keyboard notifications to allow form fields to avoid the keyboard.
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow), name: .UIKeyboardDidShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: .UIKeyboardWillHide, object: nil)
+        
+        nextView = UIView()
+        nextView.backgroundColor = .green
+        nextView.translatesAutoresizingMaskIntoConstraints = false
+        containingView.addSubview(nextView)
+        nextButton = UIButton()
+        nextButton.translatesAutoresizingMaskIntoConstraints = false
+        nextButton.setTitle("▶️", for: .normal)
+        nextButton.addTarget(self, action: #selector(nextButtonAction), for: .touchUpInside)
+        nextView.addSubview(nextButton)
+        containingView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:[nextView(\(nextButtonWidth))]|", options: [], metrics: nil, views: [ "nextView": nextView ]))
+        containingView.addConstraint(NSLayoutConstraint(item: nextView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 0, constant: 50))
+        nextViewVerticalConstraint = NSLayoutConstraint(item: nextView, attribute: .bottom, relatedBy: .equal, toItem: containingView, attribute: .bottom, multiplier: 1, constant: 0)
+        containingView.addConstraint(nextViewVerticalConstraint!)
+        
+        nextView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[nextButton]|", options: [], metrics: nil, views: [ "nextButton": nextButton ]))
+        nextView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[nextButton]|", options: [], metrics: nil, views: [ "nextButton": nextButton ]))
+        
     }
     
     public var parameters: [String: Any]? {
@@ -173,6 +120,50 @@ public class Form: NSObject {
     
     deinit {
         print("Form deinitialized")
+    }
+}
+
+extension Form: UIScrollViewDelegate {
+    
+    public func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        
+        guard isPagedScrollingEnabled else { return }
+        
+        print("original target: ", targetContentOffset.pointee)
+        var targetOffset = targetContentOffset.pointee
+        targetOffset.x = scrollView.center.x
+        let scrollHeight = scrollView.bounds.height - scrollView.contentInset.bottom
+        
+        targetOffset.y += scrollHeight
+        print("target: ", targetOffset)
+        print("scrollView: ", scrollView.bounds.height)
+        print("scrollView bottom: ", scrollView.contentInset.bottom)
+        let field = fields.filter {
+            return $0.view.frame.contains(targetOffset)
+        }.first
+        if let field = field {
+            
+            let finalTargetOffset = field.view.frame.origin.y - scrollHeight + field.view.frame.height
+            print("Found: ", finalTargetOffset)
+            targetContentOffset.pointee.y = finalTargetOffset
+        }
+
+        
+        
+//        let targetCellIndexPath = self.indexPathForRowAtPoint(targetContentOffsetCorrected)
+//        
+//        let targetCellRect = self.rectForRowAtIndexPath(targetCellIndexPath!)
+//        
+//        var targetCellYCenter = targetCellRect.origin.y
+//        
+//        let isJumpingDown = (targetContentOffsetCorrected.y % cellHeight) > (cellHeight / 2)
+//        
+//        if isJumpingDown == true {
+//            let nextPlace = Int(targetContentOffsetCorrected.y) / Int(cellHeight)
+//            targetCellYCenter = (CGFloat(nextPlace) * cellHeight) + cellHeight
+//        }
+//        
+//        targetContentOffset.memory.y = targetCellYCenter - contentInsetY
     }
 }
 
@@ -203,11 +194,13 @@ extension Form {
         }
         
         containingView.addConstraint(NSLayoutConstraint(item: field.view, attribute: .left, relatedBy: .equal, toItem: containingView, attribute: .left, multiplier: 1, constant: margin.left))
-        containingView.addConstraint(NSLayoutConstraint(item: containingView, attribute: .right, relatedBy: .equal, toItem: field.view, attribute: .right, multiplier: 1, constant: margin.right))
+        field.rightContainerLayoutConstraint = NSLayoutConstraint(item: containingView, attribute: .right, relatedBy: .equal, toItem: field.view, attribute: .right, multiplier: 1, constant: margin.right)
+        containingView.addConstraint(field.rightContainerLayoutConstraint)
         
         // Add constraints to make the scroll view use the width of the containing view.
         containingView.addConstraint(NSLayoutConstraint(item: field.view, attribute: .left, relatedBy: .equal, toItem: scrollView, attribute: .left, multiplier: 1, constant: margin.left))
-        containingView.addConstraint(NSLayoutConstraint(item: scrollView, attribute: .right, relatedBy: .equal, toItem: field.view, attribute: .right, multiplier: 1, constant: margin.right))
+        field.rightScrollLayoutConstraint = NSLayoutConstraint(item: scrollView, attribute: .right, relatedBy: .equal, toItem: field.view, attribute: .right, multiplier: 1, constant: margin.right)
+        containingView.addConstraint(field.rightScrollLayoutConstraint)
         
         let bottomConstraint = NSLayoutConstraint(item: scrollView, attribute: .bottom, relatedBy: .equal, toItem: field.view, attribute: .bottom, multiplier: 1, constant: Space.bottom.bottom)
         containingView.addConstraint(bottomConstraint)
@@ -236,24 +229,53 @@ extension Form {
         return self
     }
     
-    func assign(firstResponder: UIView) {
-        currentFirstResponder = firstResponder
+    @discardableResult
+    public func pagedScrolling(_ pagedScrolling: Bool) -> Self {
+        isPagedScrollingEnabled = pagedScrolling
+        return self
+    }
+    
+    internal func assign(activeField: Field) {
+        self.activeField = activeField
     }
     
     /// Assign the next field as first responder.
-    func didTapNextFrom(field: Field) {
+    internal func didTapNextFrom(field: Field) {
+        
+        func moveNextButton(to toField: Field?) {
+            if let constraint = nextViewVerticalConstraint {
+                containingView.removeConstraint(constraint)
+            }
+            
+            guard let toField = toField else {
+                nextView.isHidden = true
+                return
+            }
+            
+            nextView.isHidden = false
+            toField.rightContainerLayoutConstraint.constant = 100
+            toField.rightScrollLayoutConstraint.constant = 100
+            
+            nextViewVerticalConstraint = NSLayoutConstraint(item: nextView, attribute: .bottom, relatedBy: .equal, toItem: toField.view, attribute: .bottom, multiplier: 1, constant: 0)
+            containingView.addConstraint(nextViewVerticalConstraint!)
+            currentField = toField
+        }
         
         func moveFocus(fromField: Field, toField: Field) {
             if toField.canBecomeFirstResponder {
                 toField.becomeFirstResponder()
+                if toField.canShowNextButton == false {
+                    moveNextButton(to: toField)
+                } else {
+                    moveNextButton(to: nil)
+                }
             } else {
                 fromField.resignFirstResponder()
-                let offset = CGPoint(x: 0, y: field.view.frame.origin.y - scrollView.frame.height)
-                scrollView.setContentOffset(offset, animated: true)
+                moveNextButton(to: toField)
             }
         }
         
-        let index = fields.index { $0.view == field.view }
+        let index = fields.filter { $0.view.isHidden == false }.index { $0.view == field.view }
         if let nextIndex = index?.advanced(by: 1), fields.indices.contains(nextIndex) {
             let nextField = fields[fields.startIndex.distance(to: nextIndex)]
             moveFocus(fromField: field, toField: nextField)
@@ -265,25 +287,36 @@ extension Form {
             }
         }
     }
+    
+    func nextButtonAction(button: UIButton) {
+        if let field = currentField {
+            didTapNextFrom(field: field)
+        }
+    }
 }
 
 extension Form {
     func keyboardWillShow(notification: Notification) {
         
-        if let info = notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue, let currentFirstResponder = currentFirstResponder {
+        if let info = notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue {
             let keyboardHeight = info.cgRectValue.size.height
             let contentInset = UIEdgeInsetsMake(0, 0, keyboardHeight, 0)
             scrollView.contentInset = contentInset
             scrollView.scrollIndicatorInsets = contentInset
-
-            let statusBarHeight = UIApplication.shared.statusBarFrame.height
+        }
+    }
+    
+    func keyboardDidShow(notification: Notification) {
+        if let info = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue, let activeView = activeField?.view, let bottomPadding = activeField?.padding.bottom {
+            let keyboardHeight = info.cgRectValue.size.height
+            let statusBarHeight: CGFloat = 0 //UIApplication.shared.statusBarFrame.height
+            let navBarHeight = viewController.navigationController?.navigationBar.frame.height ?? 0
             var availableRect = containingView.frame
-            availableRect.origin.y = statusBarHeight
-            availableRect.size.height -= keyboardHeight - statusBarHeight
-            if availableRect.contains(currentFirstResponder.frame) == false {
-                print(scrollView.frame, scrollView.contentSize, currentFirstResponder.frame)
-                let currentFirstResponderFrame = currentFirstResponder.frame.insetBy(dx: 0, dy: -16)
-                scrollView.scrollRectToVisible(currentFirstResponderFrame, animated: true)
+            availableRect.origin.y = statusBarHeight + navBarHeight
+            availableRect.size.height -= keyboardHeight - statusBarHeight - navBarHeight
+            if availableRect.contains(activeView.frame) == false {
+                print(scrollView.frame, scrollView.contentSize, activeView.frame)
+                scrollView.setContentOffset(CGPoint(x: 0, y: scrollView.contentOffset.y + bottomPadding), animated: true)
             }
             
         }

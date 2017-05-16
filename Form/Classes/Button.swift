@@ -16,6 +16,8 @@ final public class Button: NSObject, Field {
     public var key: String?
     public var value: Any?
     public var topLayoutConstraint: NSLayoutConstraint?
+    public var rightContainerLayoutConstraint: NSLayoutConstraint!
+    public var rightScrollLayoutConstraint: NSLayoutConstraint!
     public var padding = Space.none
     
     var button: UIButton
@@ -33,8 +35,6 @@ final public class Button: NSObject, Field {
         
         view.translatesAutoresizingMaskIntoConstraints = false
         button.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor.red
-        button.backgroundColor = UIColor.green
         
         view.addSubview(button)
 

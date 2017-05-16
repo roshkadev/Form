@@ -14,6 +14,8 @@ final public class Slider: NSObject {
     public var label: UILabel
     public var slider: UISlider
     public var topLayoutConstraint: NSLayoutConstraint?
+    public var rightContainerLayoutConstraint: NSLayoutConstraint!
+    public var rightScrollLayoutConstraint: NSLayoutConstraint!
     public var padding = Space.default
     public var key: String?
     public var value: Any? {

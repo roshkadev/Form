@@ -22,16 +22,22 @@ final public class RadioGroup: NSObject {
     @discardableResult
     public init<T>(_ form: Form, with radios: [(val: T, title: String)], binding:@escaping ((T?) -> Void)) {
         super.init()
+        
+        // This adds the radios to the form.
         let fields = radios.map { radio in
             Switch(form).title(radio.title)
-        }.flatMap { $0 as? Switch }
+        }
+        
+        fields.forEach { field in
+            field.peerFields = fields
+        }
 
-        for (idx, var field) in fields.enumerated() {
+        for (idx, field) in fields.enumerated() {
             field.onToggle { isOn in
                 binding(radios[idx].val)
                 if isOn {
                     let others = fields.filter { $0.view != field.view }
-                    for (_, var other) in others.enumerated() {
+                    for (_, other) in others.enumerated() {
                         other.switch.isOn = false
                     }
                 } else {

@@ -57,6 +57,8 @@ final public class Input: NSObject {
     public var key: String?
     public var attachedTo: InputKey?
     public var topLayoutConstraint: NSLayoutConstraint?
+    public var rightContainerLayoutConstraint: NSLayoutConstraint!
+    public var rightScrollLayoutConstraint: NSLayoutConstraint!
     public var padding = Space.default
     var label: UILabel
     var textField: UITextField
@@ -76,7 +78,7 @@ final public class Input: NSObject {
         
         textField.borderStyle = .roundedRect
         textField.delegate = self
-        
+
         view.translatesAutoresizingMaskIntoConstraints = false
         textField.translatesAutoresizingMaskIntoConstraints = false
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -230,6 +232,10 @@ extension Input: Field {
         return self
     }
     
+    public var canShowNextButton: Bool {
+        return true
+    }
+    
     public var canBecomeFirstResponder: Bool {
         return true
     }
@@ -239,14 +245,14 @@ extension Input: Field {
     }
     
     public func resignFirstResponder(){
-        textField.becomeFirstResponder()
+        textField.resignFirstResponder()
     }
 }
 
 extension Input: UITextFieldDelegate {
     
     public func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        form.assign(firstResponder: view)
+        form.assign(activeField: self)
         return true
     }
     

@@ -21,6 +21,7 @@ class PickerInputView: UIView {
         
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 3
+        button.isHidden = true
         
 //        shadowView.layer.shadowColor = UIColor.gray.cgColor
 //        shadowView.layer.shadowRadius = 1

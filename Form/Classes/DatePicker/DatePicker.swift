@@ -60,6 +60,8 @@ final public class DatePicker: NSObject {
     
     /// The constraint used to show and hide the field.
     public var topLayoutConstraint: NSLayoutConstraint?
+    public var rightContainerLayoutConstraint: NSLayoutConstraint!
+    public var rightScrollLayoutConstraint: NSLayoutConstraint!
     
     /// The underlying text field of this `DatePicker`. nil when embedded is true.
     var textField: UITextField?
@@ -109,7 +111,6 @@ final public class DatePicker: NSObject {
             textField.borderStyle = .roundedRect
             textField.inputView = datePickerInputView
             textField.form_fill(parentView: view, withPadding: padding)
-            textField.backgroundColor = .red
             datePickerInputView.backgroundColor = .lightGray
             self.textField = textField
         case .embedded:

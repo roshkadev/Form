@@ -14,6 +14,8 @@ final public class Switch: NSObject {
     public var label: UILabel
     public var `switch`: UISwitch
     public var topLayoutConstraint: NSLayoutConstraint?
+    public var rightContainerLayoutConstraint: NSLayoutConstraint!
+    public var rightScrollLayoutConstraint: NSLayoutConstraint!
     public var padding = Space.default
     public var key: String?
     public var value: Any? {
@@ -21,7 +23,17 @@ final public class Switch: NSObject {
     }
     
     private var onToggleCallback: ((Bool) -> ())?
-    private var toggledFieldGroups = [[Field]]()
+    internal var toggledFieldGroups = [[Field]]()
+    
+    public var peerFields = [Field]()
+    public var isContainedInGroup: Bool {
+        let switches = form.fields.flatMap { $0 as? Switch }
+        return switches.filter { aSwitch in
+            aSwitch.toggledFieldGroups.flatMap { $0 }.map { aNestedSwitch in
+                return aNestedSwitch.view
+            }.contains(self.view)
+        }.first != nil
+    }
     
     @discardableResult
     public init(_ form: Form) {

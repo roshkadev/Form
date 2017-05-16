@@ -20,7 +20,6 @@ class NextInputAccessoryView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         nextButton.translatesAutoresizingMaskIntoConstraints = false
         nextButton.setTitle("Next", for: .normal)
-        nextButton.backgroundColor = UIColor.red
         addSubview(nextButton)
         
         addConstraint(NSLayoutConstraint(item: nextButton, attribute: .left, relatedBy: .equal, toItem: self, attribute: .left, multiplier: 1, constant: 0))

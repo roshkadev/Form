@@ -16,6 +16,8 @@ final public class TextArea: NSObject {
         return nil
     }
     public var topLayoutConstraint: NSLayoutConstraint?
+    public var rightContainerLayoutConstraint: NSLayoutConstraint!
+    public var rightScrollLayoutConstraint: NSLayoutConstraint!
     public var padding = Space.default
     var label: UILabel
     var textView: UITextView
@@ -35,7 +37,6 @@ final public class TextArea: NSObject {
         textView.translatesAutoresizingMaskIntoConstraints = false
         
         textView.delegate = self
-        textView.backgroundColor = UIColor.orange
         textView.text = "Hello"
         textView.isScrollEnabled = false
         
@@ -51,6 +52,17 @@ final public class TextArea: NSObject {
         view.addConstraint(NSLayoutConstraint(item: textView, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: padding.left))
         view.addConstraint(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: textView, attribute: .right, multiplier: 1, constant: padding.right))
         view.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: textView, attribute: .bottom, multiplier: 1, constant: padding.bottom))
+        
+        
+        textView.font = UIFont.systemFont(ofSize: 17)
+        textView.layer.masksToBounds = true
+        textView.layer.borderWidth = 1 / UIScreen.main.scale
+        textView.layer.borderColor = UIColor.lightGray.cgColor
+        textView.layer.cornerRadius = 5
+        
+        view.backgroundColor = UIColor.brown
+        
+        
 //        view.addConstraint(NSLayoutConstraint(item: textView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 50))
     
         
@@ -86,7 +98,7 @@ extension TextArea: Field {
 
 extension TextArea: UITextViewDelegate {
     public func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
-        form.assign(firstResponder: view)
+        form.assign(activeField: self)
         return true
     }
 }

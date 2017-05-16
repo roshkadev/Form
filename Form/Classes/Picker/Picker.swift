@@ -76,6 +76,8 @@ final public class Picker: NSObject {
     
     /// The constraint used to show and hide the field.
     public var topLayoutConstraint: NSLayoutConstraint?
+    public var rightContainerLayoutConstraint: NSLayoutConstraint!
+    public var rightScrollLayoutConstraint: NSLayoutConstraint!
     
     /// The underlying text field of this `Picker`. Is nil when `Picker` is embedded.
     var textField: UITextField?
