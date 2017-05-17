@@ -9,10 +9,15 @@
 //  - Add new field (Switch) DONE
 //  - Add new field (Slider) DONE
 //  - Add new field (Stepper) DONE
-//  - Add new field (SegmentedSwitch)
+//  - Support device text size DONE
+//  - Support rotation DONE
+//  - Stop scroll on edges of fields DONE
+//  - Add new field (SegmentedSwitch) DONE
 //  - Add new Picker type (keyboard and table view based actionsheet)
 //  - Add new field Location (apple maps)
 //  - Add new field Image (gallery and camera)
+//  - Add new field File (via Activity VC, photo or video, iCloud Drive, Dropbox, Google Drive
+//  - Add new field Contact
 //  - Add Switch radio groups
 //  - Add Check radio groups
 //  - Add option to hide and also to disable fields
@@ -20,9 +25,7 @@
 //  - Add custom field example
 //  - Add currency option for Inputs
 //  - Add tags for text view and text field
-//  - Support rotation
-//  - Support device text size
-//  - Stop scroll on edges of fields
+
 //  - UI tests
 //  - Unit tests
 
@@ -88,6 +91,9 @@ public class Form: NSObject {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: .UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow), name: .UIKeyboardDidShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: .UIKeyboardWillHide, object: nil)
+        
+        // Register for dynamic type changes.
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory), name: .UIContentSizeCategoryDidChange, object: nil)
         
         nextView = UIView()
         nextView.backgroundColor = .green
@@ -208,6 +214,9 @@ extension Form {
         
         fields.append(field)
         
+        // Take the current dynamic font.
+        field.didChangeContentSizeCategory()
+        
         return self
     }
     
@@ -295,7 +304,12 @@ extension Form {
     }
 }
 
+
+
 extension Form {
+    
+    // #MARK: - Notifications
+    
     func keyboardWillShow(notification: Notification) {
         
         if let info = notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue {
@@ -325,6 +339,10 @@ extension Form {
     func keyboardWillHide(notification: Notification) {
         scrollView.contentInset = .zero
         scrollView.scrollIndicatorInsets = .zero
+    }
+    
+    func didChangeContentSizeCategory(notification: Notification) {
+        fields.forEach { $0.didChangeContentSizeCategory() }
     }
 }
 

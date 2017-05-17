@@ -108,6 +108,8 @@ final public class Picker: NSObject {
     var disabledRowRanges = [CountableClosedRange<Int>]()
     var selectedOption: PickerOption?
     var defaultIndex: Int?
+    
+    fileprivate var font = UIFont.preferredFont(forTextStyle: .body)
 
     
     public init(_ form: Form, style: PickerPresentationStyle = .keyboard) {
@@ -272,6 +274,10 @@ extension Picker: Field {
     public func becomeFirstResponder() {
         if style == .keyboard { textField?.becomeFirstResponder() }
     }
+    
+    public func didChangeContentSizeCategory() {
+        font = UIFont.preferredFont(forTextStyle: .body)
+    }
 }
 
 // #MARK: Construction.
@@ -309,7 +315,7 @@ extension Picker: UIPickerViewDataSource {
 extension Picker: UIPickerViewDelegate {
     
     public func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
-
+        
         var color = UIColor.black
         if isDisabled(row: row) {
             color = .gray
@@ -317,7 +323,17 @@ extension Picker: UIPickerViewDelegate {
         
         return NSAttributedString(string: options[row].title, attributes: [
             NSForegroundColorAttributeName: color,
+            NSFontAttributeName: font,
         ])
+    }
+    
+    public func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+        let label = UILabel()
+        label.font = font
+        label.textAlignment = .center
+        label.text = options[row].title
+        label.textColor = isDisabled(row: row) ? .gray : .black
+        return label
     }
     
     public func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {

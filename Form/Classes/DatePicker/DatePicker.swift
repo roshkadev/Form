@@ -180,6 +180,10 @@ extension DatePicker: Field {
     public func becomeFirstResponder() {
         if style == .keyboard { textField?.becomeFirstResponder() }
     }
+    
+    public func didChangeContentSizeCategory() {
+        textField?.font = UIFont.preferredFont(forTextStyle: .body)
+    }
 }
 
 /// Public interface for validating an instance of `DatePicker`.

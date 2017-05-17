@@ -61,6 +61,8 @@ public protocol Field {
     func hide()
     
     func toggleVisibility()
+    
+    func didChangeContentSizeCategory()
 }
 
 /// Provides a default implementation for some field behaviours.
@@ -96,7 +98,12 @@ extension Field {
         set { }
     }
     
-    var value: Any? { return nil }
+    public var key: String? {
+        get { return nil }
+        set { }
+    }
+    
+    public var value: Any? { return nil }
     
     
     public func show() {}
@@ -125,5 +132,9 @@ extension Field {
                 self.view.isHidden = true
             })
         }
+    }
+    
+    public func didChangeContentSizeCategory() {
+        // Do nothing.
     }
 }

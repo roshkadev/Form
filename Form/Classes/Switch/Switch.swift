@@ -115,4 +115,8 @@ extension Switch: Field {
         style(self)
         return self
     }
+    
+    public func didChangeContentSizeCategory() {
+        label.font = UIFont.preferredFont(forTextStyle: .body)
+    }
 }

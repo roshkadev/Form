@@ -83,6 +83,8 @@ final public class Input: NSObject {
         textField.translatesAutoresizingMaskIntoConstraints = false
         label.translatesAutoresizingMaskIntoConstraints = false
         
+        label.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        
         view.addSubview(label)
         view.addSubview(textField)
         
@@ -246,6 +248,11 @@ extension Input: Field {
     
     public func resignFirstResponder(){
         textField.resignFirstResponder()
+    }
+    
+    public func didChangeContentSizeCategory() {
+        label.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        textField.font = UIFont.preferredFont(forTextStyle: .body)
     }
 }
 

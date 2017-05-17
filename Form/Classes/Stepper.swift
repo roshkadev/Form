@@ -71,6 +71,10 @@ final public class Stepper: NSObject {
 
 extension Stepper: Field {
     
+    public func didChangeContentSizeCategory() {
+        label.font = UIFont.preferredFont(forTextStyle: .body)
+    }
+    
     @discardableResult
     public func style(_ style: ((Stepper) -> Void)) -> Self {
         style(self)

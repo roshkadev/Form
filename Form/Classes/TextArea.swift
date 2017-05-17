@@ -94,6 +94,11 @@ extension TextArea: Field {
         style(self)
         return self
     }
+    
+    public func didChangeContentSizeCategory() {
+        label.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        textView.font = UIFont.preferredFont(forTextStyle: .body)
+    }
 }
 
 extension TextArea: UITextViewDelegate {

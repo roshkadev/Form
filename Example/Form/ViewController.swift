@@ -50,6 +50,8 @@ class ViewController: UIViewController {
             
             Input(form).title("Enter your last name").placeholder("Last name").bind { user.lastName = $0 }
             
+            ImagePicker(form)
+            
             Picker(form, style: .embedded).placeholder("Profession").options([
                 PickerOption("Construction worker 👷", "construction"),
                 PickerOption("Astronaut 👩‍🚀", "astronaut"),

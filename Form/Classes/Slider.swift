@@ -62,6 +62,10 @@ final public class Slider: NSObject {
         print(sender.value)
     }
     
+    public func didChangeContentSizeCategory() {
+        label.font = UIFont.preferredFont(forTextStyle: .body)
+    }
+    
     @discardableResult
     public func title(_ title: String?) -> Self {
         label.text = title

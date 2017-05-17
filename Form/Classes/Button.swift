@@ -58,6 +58,10 @@ final public class Button: NSObject, Field {
         tapCallback?(self)
     }
     
+    public func didChangeContentSizeCategory() {
+        button.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
+    }
+    
     @discardableResult
     public func style(_ style: ((Button) -> Void)) -> Self {
         style(self)
