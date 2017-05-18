@@ -17,7 +17,6 @@
             <subviews>
                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="SF4-ZD-eEK">
                     <rect key="frame" x="0.0" y="0.0" width="300" height="100"/>
-                    <color key="backgroundColor" red="0.19467984839999999" green="0.78280855429999996" blue="0.73550968569999997" alpha="1" colorSpace="calibratedRGB"/>
                     <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="6lR-XL-w9K">
                         <size key="itemSize" width="50" height="50"/>
                         <size key="headerReferenceSize" width="0.0" height="0.0"/>

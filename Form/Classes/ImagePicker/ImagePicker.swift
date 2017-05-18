@@ -22,6 +22,8 @@ final public class ImagePicker: NSObject {
     var imagePickerView: ImagePickerView
     
     var images = [UIImage]()
+    
+    var cellDimension: CGFloat = 100
 
     @discardableResult
     public init(_ form: Form) {
@@ -34,10 +36,11 @@ final public class ImagePicker: NSObject {
         super.init()
         
         
+        imagePickerView.delegate = self
         imagePickerView.collectionView.register(UINib(nibName: "ImagePickerCell", bundle: Bundle(for: type(of: self))), forCellWithReuseIdentifier: "imagePickerCellReuseIdentifier")
         imagePickerView.collectionView.dataSource = self
         imagePickerView.collectionView.delegate = self
-//        imagePickerView.collectionView.isScrollEnabled = false
+        imagePickerView.adjustHeightToFitContent()
         
         view.translatesAutoresizingMaskIntoConstraints = false
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -54,15 +57,18 @@ final public class ImagePicker: NSObject {
         view.addConstraint(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: label, attribute: .right, multiplier: 1, constant: padding.right))
         view.addConstraint(NSLayoutConstraint(item: label, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: padding.top))
         
-        // Slider constraints.
+        // Image picker constraints.
         view.addConstraint(NSLayoutConstraint(item: imagePickerView, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: padding.left))
         view.addConstraint(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: imagePickerView, attribute: .right, multiplier: 1, constant: padding.right))
         view.addConstraint(NSLayoutConstraint(item: imagePickerView, attribute: .top, relatedBy: .equal, toItem: label, attribute: .bottom, multiplier: 1, constant: padding.top))
         view.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: imagePickerView, attribute: .bottom, multiplier: 1, constant: padding.bottom))
-        view.addConstraint(NSLayoutConstraint(item: imagePickerView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 50))
         
         form.add { self }
     }
+}
+
+extension ImagePicker: ImagePickerViewDelegate {
+    
 }
 
 extension ImagePicker: Field {
@@ -128,12 +134,18 @@ extension ImagePicker: UICollectionViewDelegate {
     }
 }
 
+extension ImagePicker: UICollectionViewDelegateFlowLayout {
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: cellDimension, height: cellDimension)
+    }
+}
+
 extension ImagePicker: UIImagePickerControllerDelegate {
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
             images.append(image)
         }
-        imagePickerView.collectionView.reloadData()
+        imagePickerView.reloadCollectionView()
         form.viewController.dismiss(animated: true, completion: nil)
     }
     
