@@ -10,6 +10,7 @@ import UIKit
 
 protocol ImagePickerViewDelegate {
     var cellDimension: CGFloat { get set }
+    func didLongPressWith(gestureRecognizer: UILongPressGestureRecognizer)
 }
 
 public class ImagePickerView: UIView {
@@ -39,6 +40,10 @@ public class ImagePickerView: UIView {
                 self.layoutIfNeeded()
             }, completion: nil)
         }
+    }
+
+    @IBAction func didLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
+        delegate.didLongPressWith(gestureRecognizer: gestureRecognizer)
     }
     
     deinit {

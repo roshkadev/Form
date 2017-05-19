@@ -24,6 +24,9 @@ final public class ImagePicker: NSObject {
     var images = [UIImage]()
     
     var cellDimension: CGFloat = 100
+    
+    let fixedIndexPaths = [IndexPath(item: 0, section: 0), IndexPath(item: 1, section: 0)]
+    let defaultIndexPath = IndexPath(item: 2, section: 0)
 
     @discardableResult
     public init(_ form: Form) {
@@ -68,6 +71,31 @@ final public class ImagePicker: NSObject {
 }
 
 extension ImagePicker: ImagePickerViewDelegate {
+    
+    func translate(indexPath: IndexPath) -> IndexPath {
+        var translatedIndexPath = indexPath
+        translatedIndexPath.item -= 2
+        return translatedIndexPath
+    }
+    
+    func didLongPressWith(gestureRecognizer: UILongPressGestureRecognizer) {
+        
+        let point = gestureRecognizer.location(in: imagePickerView.collectionView)
+        
+        switch gestureRecognizer.state {
+            
+        case .began:
+            guard let selectedIndexPath = imagePickerView.collectionView.indexPathForItem(at: point) else { break }
+            imagePickerView.collectionView.beginInteractiveMovementForItem(at: selectedIndexPath)
+        case .changed:
+            imagePickerView.collectionView.updateInteractiveMovementTargetPosition(point)
+        case .ended:
+            imagePickerView.collectionView.endInteractiveMovement()
+        default:
+            imagePickerView.collectionView.cancelInteractiveMovement()
+        }
+    }
+
     
 }
 
@@ -129,9 +157,32 @@ extension ImagePicker: UICollectionViewDelegate {
             imagePickerController.sourceType = .photoLibrary
             form.viewController.present(imagePickerController, animated: true, completion: nil)
         default:
+            let alertController = UIAlertController(title: "Edit", message: nil, preferredStyle: .actionSheet)
+            alertController.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
+                let translatedIndex = self.translate(indexPath: indexPath).item
+                self.images.remove(at: translatedIndex)
+                self.imagePickerView.collectionView.deleteItems(at: [indexPath])
+            })
+            alertController.addAction(UIAlertAction(title: "Cancel", style: .default))
+            self.form.viewController.present(alertController, animated: true, completion: nil)
             break
         }
     }
+    
+    public func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
+        return !fixedIndexPaths.contains(indexPath)
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let translatedSourceIndexPath = translate(indexPath: sourceIndexPath)
+        let translatedDestinationIndexPath = translate(indexPath: destinationIndexPath)
+        swap(&images[translatedSourceIndexPath.item], &images[translatedDestinationIndexPath.item])
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, targetIndexPathForMoveFromItemAt originalIndexPath: IndexPath, toProposedIndexPath proposedIndexPath: IndexPath) -> IndexPath {
+        return fixedIndexPaths.contains(proposedIndexPath) ? defaultIndexPath : proposedIndexPath
+    }
+    
 }
 
 extension ImagePicker: UICollectionViewDelegateFlowLayout {
