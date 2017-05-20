@@ -8,6 +8,8 @@
 
 import UIKit
 
+
+
 /// Encapsulates behaviours common to all form fields.
 public protocol Field {
     
@@ -15,7 +17,10 @@ public protocol Field {
     var form: Form { get set }
     
     /// This field's view.
-    var view: UIView { get set }
+    var view: FieldView { get set }
+    
+    /// This field's label.
+    var label: FieldLabel? { get set }
     
     /// This field's padding.
     var padding: Space { get set }

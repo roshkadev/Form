@@ -10,8 +10,8 @@ import UIKit
 
 final public class Switch: NSObject {
     public var form: Form
-    public var view: UIView
-    public var label: UILabel
+    public var view: FieldView
+    public var label: FieldLabel?
     public var `switch`: UISwitch
     public var topLayoutConstraint: NSLayoutConstraint?
     public var rightContainerLayoutConstraint: NSLayoutConstraint!
@@ -36,45 +36,44 @@ final public class Switch: NSObject {
     }
     
     @discardableResult
-    public init(_ form: Form) {
+    public init(_ form: Form, title: String? = nil) {
         self.form = form
-        view = UIView()
-        label = UILabel()
+        view = FieldView()
+        if let title = title {
+            label = FieldLabel()
+            label?.text = title
+        }
         `switch` = UISwitch()
         super.init()
         
-        view.translatesAutoresizingMaskIntoConstraints = false
-        label.translatesAutoresizingMaskIntoConstraints = false
-        `switch`.translatesAutoresizingMaskIntoConstraints = false
         
-        label.numberOfLines = 0
-        label.lineBreakMode = .byWordWrapping
         
-        view.addSubview(label)
-        view.addSubview(`switch`)
-        
-        // Horizontal constraints.
-        view.addConstraint(NSLayoutConstraint(item: label, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: padding.left))
-        view.addConstraint(NSLayoutConstraint(item: `switch`, attribute: .left, relatedBy: .equal, toItem: label, attribute: .right, multiplier: 1, constant: Space.left.space))
-        view.addConstraint(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: `switch`, attribute: .right, multiplier: 1, constant: Space.right.space))
-        
-        // Vertical constraints.
-        view.addConstraint(NSLayoutConstraint(item: label, attribute: .centerY, relatedBy: .equal, toItem: view, attribute: .centerY, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: `switch`, attribute: .centerY, relatedBy: .equal, toItem: view, attribute: .centerY, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: label, attribute: .top, relatedBy: .greaterThanOrEqual, toItem: view, attribute: .top, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .greaterThanOrEqual, toItem: label, attribute: .top, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: `switch`, attribute: .top, relatedBy: .greaterThanOrEqual, toItem: view, attribute: .top, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .greaterThanOrEqual, toItem: `switch`, attribute: .top, multiplier: 1, constant: 0))
-        
-        form.add { self }
-        
-        `switch`.addTarget(self, action: #selector(toggleAction), for: .valueChanged)
-    }
-    
-    @discardableResult
-    public func title(_ title: String?) -> Self {
-        label.text = title
-        return self
+//        view.translatesAutoresizingMaskIntoConstraints = false
+//        label.translatesAutoresizingMaskIntoConstraints = false
+//        `switch`.translatesAutoresizingMaskIntoConstraints = false
+//        
+//        label.numberOfLines = 0
+//        label.lineBreakMode = .byWordWrapping
+//        
+//        view.addSubview(label)
+//        view.addSubview(`switch`)
+//        
+//        // Horizontal constraints.
+//        view.addConstraint(NSLayoutConstraint(item: label, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: padding.left))
+//        view.addConstraint(NSLayoutConstraint(item: `switch`, attribute: .left, relatedBy: .equal, toItem: label, attribute: .right, multiplier: 1, constant: Space.left.space))
+//        view.addConstraint(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: `switch`, attribute: .right, multiplier: 1, constant: Space.right.space))
+//        
+//        // Vertical constraints.
+//        view.addConstraint(NSLayoutConstraint(item: label, attribute: .centerY, relatedBy: .equal, toItem: view, attribute: .centerY, multiplier: 1, constant: 0))
+//        view.addConstraint(NSLayoutConstraint(item: `switch`, attribute: .centerY, relatedBy: .equal, toItem: view, attribute: .centerY, multiplier: 1, constant: 0))
+//        view.addConstraint(NSLayoutConstraint(item: label, attribute: .top, relatedBy: .greaterThanOrEqual, toItem: view, attribute: .top, multiplier: 1, constant: 0))
+//        view.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .greaterThanOrEqual, toItem: label, attribute: .top, multiplier: 1, constant: 0))
+//        view.addConstraint(NSLayoutConstraint(item: `switch`, attribute: .top, relatedBy: .greaterThanOrEqual, toItem: view, attribute: .top, multiplier: 1, constant: 0))
+//        view.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .greaterThanOrEqual, toItem: `switch`, attribute: .top, multiplier: 1, constant: 0))
+//        
+//        form.add { self }
+//        
+//        `switch`.addTarget(self, action: #selector(toggleAction), for: .valueChanged)
     }
     
     @discardableResult
@@ -117,6 +116,6 @@ extension Switch: Field {
     }
     
     public func didChangeContentSizeCategory() {
-        label.font = UIFont.preferredFont(forTextStyle: .body)
+        label?.font = UIFont.preferredFont(forTextStyle: .body)
     }
 }

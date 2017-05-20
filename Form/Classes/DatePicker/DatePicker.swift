@@ -54,7 +54,8 @@ final public class DatePicker: NSObject {
     public var form: Form
     
     /// This field's view.
-    public var view: UIView
+    public var view: FieldView
+    public var label: FieldLabel?
     
     public var key: String?
     
@@ -89,11 +90,13 @@ final public class DatePicker: NSObject {
     
     fileprivate var lastDate: Date?
     
+    @discardableResult
     public init(_ form: Form, style: DatePickerPresentationStyle = .keyboard) {
         
         self.form = form
         self.style = style
-        view = UIView()
+        view = FieldView()
+        label = FieldLabel()
         
         datePickerInputView = UINib(nibName: "DatePickerInputView", bundle: Bundle(for: type(of: self))).instantiate(withOwner: nil, options: nil)[0] as! DatePickerInputView
         datePickerInputView.datePicker.datePickerMode = UIDatePickerMode.dateAndTime

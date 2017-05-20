@@ -8,6 +8,54 @@
 
 import UIKit
 
+public class FieldLabel: UILabel {
+    init() {
+        super.init(frame: .zero)
+        self.translatesAutoresizingMaskIntoConstraints = false
+        numberOfLines = 0
+        lineBreakMode = .byWordWrapping
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    public func assignPreferredFont() {
+        font = UIFont.preferredFont(forTextStyle: .body)
+    }
+}
+
+public class FieldView: UIView {
+    init() {
+        super.init(frame: .zero)
+        self.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+class Utilities {
+    class func constrain(field: Field, withView aView: UIView) {
+        
+        field.view.addSubview(aView)
+        field.view.addConstraint(NSLayoutConstraint(item: aView, attribute: .left, relatedBy: .equal, toItem: field.view, attribute: .left, multiplier: 1, constant: field.padding.left))
+        field.view.addConstraint(NSLayoutConstraint(item: field.view, attribute: .right, relatedBy: .equal, toItem: aView, attribute: .right, multiplier: 1, constant: field.padding.right))
+        field.view.addConstraint(NSLayoutConstraint(item: field.view, attribute: .bottom, relatedBy: .equal, toItem: aView, attribute: .bottom, multiplier: 1, constant: field.padding.bottom))
+        
+        if let label = field.label {
+            field.view.addSubview(label)
+            field.view.addConstraint(NSLayoutConstraint(item: label, attribute: .left, relatedBy: .equal, toItem: field.view, attribute: .left, multiplier: 1, constant: field.padding.left))
+            field.view.addConstraint(NSLayoutConstraint(item: label, attribute: .top, relatedBy: .equal, toItem: field.view, attribute: .top, multiplier: 1, constant: field.padding.top))
+            field.view.addConstraint(NSLayoutConstraint(item: field.view, attribute: .right, relatedBy: .equal, toItem: label, attribute: .right, multiplier: 1, constant: field.padding.right))
+            field.view.addConstraint(NSLayoutConstraint(item: aView, attribute: .top, relatedBy: .equal, toItem: label, attribute: .bottom, multiplier: 1, constant: 0))
+        } else {
+            field.view.addConstraint(NSLayoutConstraint(item: aView, attribute: .top, relatedBy: .equal, toItem: field.view, attribute: .top, multiplier: 1, constant: 0))
+        }
+    }
+}
+
 
 extension UIView {
     func form_fill(parentView: UIView, withPadding padding: Space) {

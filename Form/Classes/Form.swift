@@ -25,6 +25,21 @@
 //  - Add custom field example
 //  - Add currency option for Inputs
 //  - Add tags for text view and text field
+//  - Multiple fields on the same row
+//  - Input formatters:
+//      - Currency
+//      - Phone numbers
+//      - Credit cards
+//      - 
+//  - Required/non-required fields, asterisks to denote
+//  - Labels options:
+//      - leading aligned inside field (align input areas)
+//      - floating
+//      - above field
+//  - Input option to include leading/trailing icon
+//  - Include in README examples of forms such as contact on iOS, hotel, booking, signup, etc.
+//  - Add option to field to show help text.
+//  - Field hint popover box
 
 //  - UI tests
 //  - Unit tests
@@ -342,7 +357,7 @@ extension Form {
     }
     
     func didChangeContentSizeCategory(notification: Notification) {
-        fields.forEach { $0.didChangeContentSizeCategory() }
+        fields.forEach { $0.label?.assignPreferredFont() }
     }
 }
 

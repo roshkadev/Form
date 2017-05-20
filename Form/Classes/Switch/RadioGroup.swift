@@ -25,7 +25,7 @@ final public class RadioGroup: NSObject {
         
         // This adds the radios to the form.
         let fields = radios.map { radio in
-            Switch(form).title(radio.title)
+            Switch(form, title: radio.title)
         }
         
         fields.forEach { field in

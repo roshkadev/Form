@@ -51,6 +51,7 @@ public struct PickerOption {
     var title: String
     var value: String
     
+    @discardableResult
     public init(_ title: String, _ value: String? = nil) {
         self.title = title
         self.value = value ?? title
@@ -69,7 +70,7 @@ final public class Picker: NSObject {
     public var form: Form
     
     /// This field's view.
-    public var view: UIView
+    public var view: FieldView
     
     public var key: String?
     public var value: Any?
@@ -104,6 +105,8 @@ final public class Picker: NSObject {
     
     /// A `Picker` contains one or more `PickerOption` objects.
     var options = [PickerOption]()
+    
+    public var label: FieldLabel?
 
     var disabledRowRanges = [CountableClosedRange<Int>]()
     var selectedOption: PickerOption?
@@ -111,12 +114,14 @@ final public class Picker: NSObject {
     
     fileprivate var font = UIFont.preferredFont(forTextStyle: .body)
 
-    
+    @discardableResult
     public init(_ form: Form, style: PickerPresentationStyle = .keyboard) {
         
         self.form = form
         self.style = style
-        view = UIView()
+        view = FieldView()
+        label = FieldLabel()
+        label = FieldLabel()
         
         pickerInputView = UINib(nibName: "PickerInputView", bundle: Bundle(for: type(of: self))).instantiate(withOwner: nil, options: nil)[0] as! PickerInputView
         
@@ -124,7 +129,6 @@ final public class Picker: NSObject {
     
         pickerInputView.buttonCallback = { form.didTapNextFrom(field: self) }
         pickerView.delegate = self
-        view.translatesAutoresizingMaskIntoConstraints = false
         
         
         switch style {
@@ -151,6 +155,12 @@ final public class Picker: NSObject {
         }
         
         form.add { self }
+    }
+    
+    @discardableResult
+    public func title(_ title: String?) -> Self {
+        label?.text = title
+        return self
     }
     
     @discardableResult
@@ -209,6 +219,7 @@ final public class Picker: NSObject {
         return true
     }
     
+    @discardableResult
     public func options(_ options: [PickerOption]) -> Self {
         self.options = options
         return self

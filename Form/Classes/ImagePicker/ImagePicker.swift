@@ -11,14 +11,14 @@ import UIKit
 
 final public class ImagePicker: NSObject {
     public var form: Form
-    public var view: UIView
+    public var view: FieldView
+    public var label: FieldLabel?
     public var key: String?
     public var attachedTo: InputKey?
     public var topLayoutConstraint: NSLayoutConstraint?
     public var rightContainerLayoutConstraint: NSLayoutConstraint!
     public var rightScrollLayoutConstraint: NSLayoutConstraint!
     public var padding = Space.default
-    var label: UILabel
     var imagePickerView: ImagePickerView
     
     var images = [UIImage]()
@@ -29,8 +29,8 @@ final public class ImagePicker: NSObject {
     public init(_ form: Form) {
         
         self.form = form
-        view = UIView()
-        label = UILabel()
+        view = FieldView()
+        label = FieldLabel()
         imagePickerView = UINib(nibName: "ImagePickerView", bundle: Bundle(for: type(of: self))).instantiate(withOwner: nil, options: nil)[0] as! ImagePickerView
         
         super.init()
@@ -42,26 +42,7 @@ final public class ImagePicker: NSObject {
         imagePickerView.collectionView.delegate = self
         imagePickerView.adjustHeightToFitContent()
         
-        view.translatesAutoresizingMaskIntoConstraints = false
-        label.translatesAutoresizingMaskIntoConstraints = false
-        imagePickerView.translatesAutoresizingMaskIntoConstraints = false
-        
-        label.numberOfLines = 0
-        label.lineBreakMode = .byWordWrapping
-        
-        view.addSubview(label)
-        view.addSubview(imagePickerView)
-        
-        // Label constraints.
-        view.addConstraint(NSLayoutConstraint(item: label, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: padding.left))
-        view.addConstraint(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: label, attribute: .right, multiplier: 1, constant: padding.right))
-        view.addConstraint(NSLayoutConstraint(item: label, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: padding.top))
-        
-        // Image picker constraints.
-        view.addConstraint(NSLayoutConstraint(item: imagePickerView, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: padding.left))
-        view.addConstraint(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: imagePickerView, attribute: .right, multiplier: 1, constant: padding.right))
-        view.addConstraint(NSLayoutConstraint(item: imagePickerView, attribute: .top, relatedBy: .equal, toItem: label, attribute: .bottom, multiplier: 1, constant: padding.top))
-        view.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: imagePickerView, attribute: .bottom, multiplier: 1, constant: padding.bottom))
+        Utilities.constrain(field: self, withView: imagePickerView)
         
         form.add { self }
     }
@@ -74,7 +55,7 @@ extension ImagePicker: ImagePickerViewDelegate {
 extension ImagePicker: Field {
     
     public func didChangeContentSizeCategory() {
-        label.font = UIFont.preferredFont(forTextStyle: .body)
+    
     }
     
     @discardableResult

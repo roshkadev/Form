@@ -53,24 +53,28 @@ public class InputKey {
 final public class Input: NSObject {
     
     public var form: Form
-    public var view: UIView
+    public var view: FieldView
+    public var label: FieldLabel?
     public var key: String?
     public var attachedTo: InputKey?
     public var topLayoutConstraint: NSLayoutConstraint?
     public var rightContainerLayoutConstraint: NSLayoutConstraint!
     public var rightScrollLayoutConstraint: NSLayoutConstraint!
     public var padding = Space.default
-    var label: UILabel
     var textField: UITextField
     
     public var validations = [InputValidation]()
     public var handlers = [(event: InputEvent, handler: ((Input) -> Void))]()
     
-    public init(_ form: Form) {
+    @discardableResult
+    public init(_ form: Form, title: String? = nil) {
         
         self.form = form
-        view = UIView()
-        label = UILabel()
+        view = FieldView()
+        if let title = title {
+            label = FieldLabel()
+            label?.text = title
+        }
         textField = UITextField()
         
         super.init()
@@ -79,23 +83,9 @@ final public class Input: NSObject {
         textField.borderStyle = .roundedRect
         textField.delegate = self
 
-        view.translatesAutoresizingMaskIntoConstraints = false
         textField.translatesAutoresizingMaskIntoConstraints = false
-        label.translatesAutoresizingMaskIntoConstraints = false
         
-        label.font = UIFont.preferredFont(forTextStyle: .subheadline)
-        
-        view.addSubview(label)
-        view.addSubview(textField)
-        
-        view.addConstraint(NSLayoutConstraint(item: label, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: padding.left))
-        view.addConstraint(NSLayoutConstraint(item: label, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: padding.top))
-        view.addConstraint(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: label, attribute: .right, multiplier: 1, constant: padding.right))
-        
-        view.addConstraint(NSLayoutConstraint(item: textField, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: padding.left))
-        view.addConstraint(NSLayoutConstraint(item: textField, attribute: .top, relatedBy: .equal, toItem: label, attribute: .bottom, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: textField, attribute: .right, multiplier: 1, constant: padding.right))
-        view.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: textField, attribute: .bottom, multiplier: 1, constant: padding.bottom))
+        Utilities.constrain(field: self, withView: textField)
         
         textField.addTarget(self, action: #selector(editingChanged), for: .editingChanged)
         
@@ -200,12 +190,6 @@ final public class Input: NSObject {
         textField.text = text
         return self
     }
-    
-    @discardableResult
-    public func title(_ title: String?) -> Self {
-        label.text = title
-        return self
-    }
 
     public func placeholder(_ placeholder: String?) -> Self {
         textField.placeholder = placeholder
@@ -251,7 +235,7 @@ extension Input: Field {
     }
     
     public func didChangeContentSizeCategory() {
-        label.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        label?.font = UIFont.preferredFont(forTextStyle: .subheadline)
         textField.font = UIFont.preferredFont(forTextStyle: .body)
     }
 }

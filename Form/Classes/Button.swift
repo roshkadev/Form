@@ -12,7 +12,8 @@ final public class Button: NSObject, Field {
     
     // #MARK - Field
     public var form: Form
-    public var view: UIView
+    public var view: FieldView
+    public var label: FieldLabel?
     public var key: String?
     public var value: Any?
     public var topLayoutConstraint: NSLayoutConstraint?
@@ -27,7 +28,8 @@ final public class Button: NSObject, Field {
     public init(_ form: Form, onTap: @escaping ((Button) -> Void)) {
         
         self.form = form
-        view = UIView()
+        view = FieldView()
+        label = FieldLabel()
         button = UIButton()
         tapCallback = onTap
         
