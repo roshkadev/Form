@@ -13,9 +13,20 @@ import UIKit
 /// Encapsulates behaviours common to all form fields.
 public protocol Field: class {
     
+    
+    // #MARK: - Initializers
+    
+    // The field's requiered initializer for adding it to a row.
     init(row: Row)
+    
+    // The field's requiered initializer for adding it directly to a form (it's implicitly wrapped in a row).
     init(form: Form)
+    
+    // The field's internal initializer.
     init()
+    
+    
+    // #MARK: - Others
     
     /// This field's containing field.
     var form: Form! { get set }
@@ -26,6 +37,9 @@ public protocol Field: class {
     /// This field's view.
     var view: FieldView { get set }
     
+    /// This field's stack view (its axis is either vertical, or horizontal) which is inside the field's view.
+    var stackView: UIStackView { get set }
+    
     /// This field's title.
     var title: String? { get set }
     
@@ -34,6 +48,8 @@ public protocol Field: class {
     
     /// This field's padding.
     var padding: Space { get set }
+    
+    func setupStackViewWith(contentView: UIView)
     
     /// The constraint used show/hide fields.
     var topLayoutConstraint: NSLayoutConstraint? { get set }
@@ -95,6 +111,20 @@ extension Field {
         self.init()
         self.form = form
         form.add(field: self)
+    }
+    
+    public func setupStackViewWith(contentView: UIView) {
+
+        stackView.axis = .vertical
+        stackView.distribution = .fillEqually
+        if let label = label {
+            stackView.addArrangedSubview(label)
+        }
+        stackView.addArrangedSubview(contentView)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(stackView)
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[stackView]|", options: [], metrics: nil, views: ["stackView": stackView]))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[stackView]|", options: [], metrics: nil, views: ["stackView": stackView]))
     }
 
     

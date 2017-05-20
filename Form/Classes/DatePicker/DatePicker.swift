@@ -54,6 +54,7 @@ final public class DatePicker: NSObject {
     public var form: Form!
     public var row: Row!
     public var view: FieldView
+    public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
     
@@ -94,6 +95,7 @@ final public class DatePicker: NSObject {
     override public init() {
         
         view = FieldView()
+        stackView = UIStackView()
         label = FieldLabel()
         
         datePickerInputView = UINib(nibName: "DatePickerInputView", bundle: Bundle(for: type(of: self))).instantiate(withOwner: nil, options: nil)[0] as! DatePickerInputView

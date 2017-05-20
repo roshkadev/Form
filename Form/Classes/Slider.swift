@@ -12,6 +12,7 @@ final public class Slider: NSObject {
     public var form: Form!
     public var row: Row!
     public var view: FieldView
+    public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
     public var slider: UISlider
@@ -28,6 +29,7 @@ final public class Slider: NSObject {
     @discardableResult
     public override init() {
         view = FieldView()
+        stackView = UIStackView()
         label = FieldLabel()
         slider = UISlider()
         super.init()

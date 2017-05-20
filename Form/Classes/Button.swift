@@ -14,6 +14,7 @@ final public class Button: NSObject, Field {
     public var form: Form!
     public var row: Row!
     public var view: FieldView
+    public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
     public var key: String?
@@ -29,6 +30,7 @@ final public class Button: NSObject, Field {
     
     public override init() {
         view = FieldView()
+        stackView = UIStackView()
         label = FieldLabel()
         button = UIButton()
         

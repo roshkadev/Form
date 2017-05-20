@@ -43,6 +43,8 @@ public class FieldView: UIView {
 class Utilities {
     class func constrain(field: Field, withView aView: UIView) {
         
+        
+        
         field.view.addSubview(aView)
         field.view.addConstraint(NSLayoutConstraint(item: aView, attribute: .left, relatedBy: .equal, toItem: field.view, attribute: .left, multiplier: 1, constant: field.padding.left))
         field.view.addConstraint(NSLayoutConstraint(item: field.view, attribute: .right, relatedBy: .equal, toItem: aView, attribute: .right, multiplier: 1, constant: field.padding.right))

@@ -15,6 +15,7 @@ final public class ImagePicker: NSObject {
     public var form: Form!
     public var row: Row!
     public var view: FieldView
+    public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
     public var key: String?
@@ -36,6 +37,7 @@ final public class ImagePicker: NSObject {
     override public init() {
 
         view = FieldView()
+        stackView = UIStackView()
         label = FieldLabel()
         imagePickerView = UINib(nibName: "ImagePickerView", bundle: Bundle(for: type(of: self))).instantiate(withOwner: nil, options: nil)[0] as! ImagePickerView
         

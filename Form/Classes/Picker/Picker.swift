@@ -70,6 +70,7 @@ final public class Picker: NSObject {
     public var form: Form!
     public var row: Row!
     public var view: FieldView
+    public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
     
@@ -117,7 +118,7 @@ final public class Picker: NSObject {
     override public init() {
     
         view = FieldView()
-        label = FieldLabel()
+        stackView = UIStackView()
         label = FieldLabel()
         
         pickerInputView = UINib(nibName: "PickerInputView", bundle: Bundle(for: type(of: self))).instantiate(withOwner: nil, options: nil)[0] as! PickerInputView

@@ -55,6 +55,7 @@ final public class Input: NSObject {
     public var form: Form!
     public var row: Row!
     public var view: FieldView
+    public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
     public var key: String?
@@ -67,45 +68,25 @@ final public class Input: NSObject {
     
     public var validations = [InputValidation]()
     public var handlers = [(event: InputEvent, handler: ((Input) -> Void))]()
-    
-//    @discardableResult
-//    public convenience init(row: Row, title: String? = nil) {
-//        self.init()
-//        self.row = row
-//        self.title = title
-//    }
-//    
-//    @discardableResult
-//    public convenience init(form: Form, title: String? = nil) {
-//        self.init()
-//        self.form = form
-//        self.title = title
-//    }
+
     
     @discardableResult
     public override init() {
-        
-        
+
         view = FieldView()
+        stackView = UIStackView()
         if let title = title {
             label = FieldLabel()
             label?.text = title
         }
         textField = UITextField()
-        
         super.init()
         
+        setupStackViewWith(contentView: textField)
         textField.borderStyle = .roundedRect
         textField.delegate = self
-        
-        
-        
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        
-        Utilities.constrain(field: self, withView: textField)
-        
         textField.addTarget(self, action: #selector(editingChanged), for: .editingChanged)
-
+    
     }
     
     @discardableResult

@@ -12,6 +12,7 @@ final public class Stepper: NSObject {
     public var form: Form!
     public var row: Row!
     public var view: FieldView
+    public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
     public var stepper: UIStepper
@@ -28,6 +29,7 @@ final public class Stepper: NSObject {
     @discardableResult
     override public init() {
         view = FieldView()
+        stackView = UIStackView()
         if let title = title {
             label = FieldLabel()
             label?.text = title

@@ -15,12 +15,14 @@ class GoogleSignUpViewController: UIViewController {
         super.viewDidLoad()
         
         Form(in: self, constructor: { form in
+            
             Row(in: form) { row in
+                Input(row: row)
                 Input(row: row)
                 Input(row: row)
             }
             
-//            Input(form: form)
+            Input(form: form)
 //            DatePicker(form)
 //            Picker(form).title("Gender").placeholder("I am...").options([
 //                PickerOption("Female"),
