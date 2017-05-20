@@ -11,13 +11,23 @@ import UIKit
 
 
 /// Encapsulates behaviours common to all form fields.
-public protocol Field {
+public protocol Field: class {
     
-    /// This field's containing `Form`.
-    var form: Form { get set }
+    init(row: Row)
+    init(form: Form)
+    init()
+    
+    /// This field's containing field.
+    var form: Form! { get set }
+    
+    /// This field's containing row.
+    var row: Row! { get set }
     
     /// This field's view.
     var view: FieldView { get set }
+    
+    /// This field's title.
+    var title: String? { get set }
     
     /// This field's label.
     var label: FieldLabel? { get set }
@@ -72,6 +82,21 @@ public protocol Field {
 
 /// Provides a default implementation for some field behaviours.
 extension Field {
+    
+    @discardableResult
+    public init(row: Row) {
+        self.init()
+        self.row = row
+        row.add(field: self)
+    }
+    
+    @discardableResult
+    public init(form: Form) {
+        self.init()
+        self.form = form
+        form.add(field: self)
+    }
+
     
     public var canShowNextButton: Bool {
         return false

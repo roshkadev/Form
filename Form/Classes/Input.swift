@@ -52,8 +52,10 @@ public class InputKey {
 
 final public class Input: NSObject {
     
-    public var form: Form
+    public var form: Form!
+    public var row: Row!
     public var view: FieldView
+    public var title: String?
     public var label: FieldLabel?
     public var key: String?
     public var attachedTo: InputKey?
@@ -66,10 +68,24 @@ final public class Input: NSObject {
     public var validations = [InputValidation]()
     public var handlers = [(event: InputEvent, handler: ((Input) -> Void))]()
     
+//    @discardableResult
+//    public convenience init(row: Row, title: String? = nil) {
+//        self.init()
+//        self.row = row
+//        self.title = title
+//    }
+//    
+//    @discardableResult
+//    public convenience init(form: Form, title: String? = nil) {
+//        self.init()
+//        self.form = form
+//        self.title = title
+//    }
+    
     @discardableResult
-    public init(_ form: Form, title: String? = nil) {
+    public override init() {
         
-        self.form = form
+        
         view = FieldView()
         if let title = title {
             label = FieldLabel()
@@ -78,19 +94,18 @@ final public class Input: NSObject {
         textField = UITextField()
         
         super.init()
-    
         
         textField.borderStyle = .roundedRect
         textField.delegate = self
-
+        
+        
+        
         textField.translatesAutoresizingMaskIntoConstraints = false
         
         Utilities.constrain(field: self, withView: textField)
         
         textField.addTarget(self, action: #selector(editingChanged), for: .editingChanged)
-        
-        form.add { self }
-        
+
     }
     
     @discardableResult

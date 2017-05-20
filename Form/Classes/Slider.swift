@@ -9,8 +9,10 @@
 import UIKit
 
 final public class Slider: NSObject {
-    public var form: Form
+    public var form: Form!
+    public var row: Row!
     public var view: FieldView
+    public var title: String?
     public var label: FieldLabel?
     public var slider: UISlider
     public var topLayoutConstraint: NSLayoutConstraint?
@@ -24,16 +26,13 @@ final public class Slider: NSObject {
     
     
     @discardableResult
-    public init(_ form: Form, title: String? = nil) {
-        self.form = form
+    public override init() {
         view = FieldView()
         label = FieldLabel()
         slider = UISlider()
         super.init()
-    
-        Utilities.constrain(field: self, withView: slider)
         
-        form.add { self }
+        Utilities.constrain(field: self, withView: slider)
         
         slider.addTarget(self, action: #selector(slideAction), for: .valueChanged)
     }

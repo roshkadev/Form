@@ -13,26 +13,23 @@ class ImagePickerCell: UICollectionViewCell {
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var label: UILabel!
     
-    var gradientLayer: CAGradientLayer!
+    var borderLayer: CAShapeLayer?
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
+        contentView.backgroundColor = UIColor.orange
+        
+//        borderLayer = CAShapeLayer()
+//        borderLayer!.strokeColor = UIColor.lightGray.cgColor
+//        borderLayer!.fillColor = nil
+//        borderLayer!.lineDashPattern = [4, 2]
+//        borderLayer!.cornerRadius = 5
+//        imageView.layer.addSublayer(borderLayer!)
+        
         reset()
     }
     
-    override var bounds: CGRect {
-        didSet {
-            if let gradientLayer = gradientLayer {
-                gradientLayer.removeFromSuperlayer()
-            }
-            gradientLayer = CAGradientLayer()
-            gradientLayer.frame = bounds
-            gradientLayer.colors = [UIColor.white.cgColor, UIColor.black.cgColor]
-            gradientLayer.locations = [0, 1]//stride(from: 0, to: 1, by: 0.2).map { NSNumber(value: $0) }
-            imageView.layer.insertSublayer(gradientLayer, at: 0)
-        }
-    }
     
     
     
@@ -44,11 +41,10 @@ class ImagePickerCell: UICollectionViewCell {
     fileprivate func reset() {
         imageView.image = nil
         label.text = nil
-        contentView.layer.borderWidth = 0
-        contentView.layer.borderColor = UIColor.clear.cgColor
-        if let gradientLayer = gradientLayer {
-            gradientLayer.removeFromSuperlayer()
-        }
+//        contentView.layer.borderWidth = 0
+//        contentView.layer.borderColor = UIColor.clear.cgColor
+//        borderLayer?.removeFromSuperlayer()
+//        borderLayer = nil
     }
     
     func showBorder() {

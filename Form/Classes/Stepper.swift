@@ -9,8 +9,10 @@
 import UIKit
 
 final public class Stepper: NSObject {
-    public var form: Form
+    public var form: Form!
+    public var row: Row!
     public var view: FieldView
+    public var title: String?
     public var label: FieldLabel?
     public var stepper: UIStepper
     public var topLayoutConstraint: NSLayoutConstraint?
@@ -24,8 +26,7 @@ final public class Stepper: NSObject {
     
     
     @discardableResult
-    public init(_ form: Form, title: String? = nil) {
-        self.form = form
+    override public init() {
         view = FieldView()
         if let title = title {
             label = FieldLabel()
@@ -35,8 +36,6 @@ final public class Stepper: NSObject {
         super.init()
         
         Utilities.constrain(field: self, withView: stepper)
-        
-        form.add { self }
         
         stepper.addTarget(self, action: #selector(stepAction), for: .valueChanged)
     }

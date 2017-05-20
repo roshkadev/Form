@@ -66,11 +66,12 @@ extension PickerOption: Equatable {
 
 final public class Picker: NSObject {
     
-    /// This field's containing `Form`.
-    public var form: Form
-    
-    /// This field's view.
+    // #MARK - Field
+    public var form: Form!
+    public var row: Row!
     public var view: FieldView
+    public var title: String?
+    public var label: FieldLabel?
     
     public var key: String?
     public var value: Any?
@@ -95,7 +96,7 @@ final public class Picker: NSObject {
     public var padding = Space.default
     
     ///
-    var style: PickerPresentationStyle
+    var style: PickerPresentationStyle = .keyboard
     
     /// Storage for this field's validations.
     public var validations = [PickerValidation]()
@@ -105,8 +106,6 @@ final public class Picker: NSObject {
     
     /// A `Picker` contains one or more `PickerOption` objects.
     var options = [PickerOption]()
-    
-    public var label: FieldLabel?
 
     var disabledRowRanges = [CountableClosedRange<Int>]()
     var selectedOption: PickerOption?
@@ -115,10 +114,8 @@ final public class Picker: NSObject {
     fileprivate var font = UIFont.preferredFont(forTextStyle: .body)
 
     @discardableResult
-    public init(_ form: Form, style: PickerPresentationStyle = .keyboard) {
-        
-        self.form = form
-        self.style = style
+    override public init() {
+    
         view = FieldView()
         label = FieldLabel()
         label = FieldLabel()
@@ -127,7 +124,7 @@ final public class Picker: NSObject {
         
         super.init()
     
-        pickerInputView.buttonCallback = { form.didTapNextFrom(field: self) }
+        pickerInputView.buttonCallback = { self.form.didTapNextFrom(field: self) }
         pickerView.delegate = self
         
         
@@ -153,8 +150,7 @@ final public class Picker: NSObject {
         case .dialog:
             break
         }
-        
-        form.add { self }
+    
     }
     
     @discardableResult

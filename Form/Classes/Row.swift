@@ -10,15 +10,28 @@ import UIKit
 
 public class Row: NSObject {
     
+    
     var horizontalStackView: UIStackView
+    var form: Form!
     
     @discardableResult
-    public init(in form: Form, constructor: (() -> Void)? = nil) {
+    public init(in form: Form, constructor: ((Row) -> ())? = nil) {
         horizontalStackView = UIStackView()
+        horizontalStackView.translatesAutoresizingMaskIntoConstraints = false
         horizontalStackView.axis = .horizontal
-        horizontalStackView.distribution = .fill
+        horizontalStackView.distribution = .fillEqually
         horizontalStackView.spacing = 0
         
-        constructor?()
+        super.init()
+        
+        form.add(row: self)
+        
+        constructor?(self)
+    }
+    
+    @discardableResult
+    public func add(field: Field) -> Self {
+        horizontalStackView.addArrangedSubview(field.view)
+        return self
     }
 }

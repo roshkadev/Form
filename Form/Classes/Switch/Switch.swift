@@ -9,8 +9,12 @@
 import UIKit
 
 final public class Switch: NSObject {
-    public var form: Form
+    
+    // #MARK - Field
+    public var form: Form!
+    public var row: Row!
     public var view: FieldView
+    public var title: String?
     public var label: FieldLabel?
     public var `switch`: UISwitch
     public var topLayoutConstraint: NSLayoutConstraint?
@@ -36,8 +40,8 @@ final public class Switch: NSObject {
     }
     
     @discardableResult
-    public init(_ form: Form, title: String? = nil) {
-        self.form = form
+    override public init() {
+    
         view = FieldView()
         if let title = title {
             label = FieldLabel()

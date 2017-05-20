@@ -11,8 +11,10 @@ import UIKit
 final public class Button: NSObject, Field {
     
     // #MARK - Field
-    public var form: Form
+    public var form: Form!
+    public var row: Row!
     public var view: FieldView
+    public var title: String?
     public var label: FieldLabel?
     public var key: String?
     public var value: Any?
@@ -25,13 +27,10 @@ final public class Button: NSObject, Field {
     
     var tapCallback: ((Button) -> Void)?
     
-    public init(_ form: Form, onTap: @escaping ((Button) -> Void)) {
-        
-        self.form = form
+    public override init() {
         view = FieldView()
         label = FieldLabel()
         button = UIButton()
-        tapCallback = onTap
         
         super.init()
         
@@ -39,15 +38,13 @@ final public class Button: NSObject, Field {
         button.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(button)
-
+        
         view.addConstraint(NSLayoutConstraint(item: button, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: padding.left))
         view.addConstraint(NSLayoutConstraint(item: button, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: padding.top))
         view.addConstraint(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: button, attribute: .right, multiplier: 1, constant: padding.right))
         view.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: button, attribute: .bottom, multiplier: 1, constant: padding.bottom))
         
         button.addTarget(self, action: #selector(action), for: .touchUpInside)
-        
-        form.add { self }
     }
     
     @discardableResult

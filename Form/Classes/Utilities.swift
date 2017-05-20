@@ -8,6 +8,10 @@
 
 import UIKit
 
+class FormScrollView: UIScrollView {
+    var form: Form!
+}
+
 public class FieldLabel: UILabel {
     init() {
         super.init(frame: .zero)

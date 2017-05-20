@@ -50,11 +50,11 @@ public typealias DatePickerValidationResult = (isValid: Bool, reaction: DatePick
 
 final public class DatePicker: NSObject {
     
-    /// This field's containing `Form`.
-    public var form: Form
-    
-    /// This field's view.
+    // #MARK - Field
+    public var form: Form!
+    public var row: Row!
     public var view: FieldView
+    public var title: String?
     public var label: FieldLabel?
     
     public var key: String?
@@ -80,7 +80,7 @@ final public class DatePicker: NSObject {
     
     
     /// 
-    var style: DatePickerPresentationStyle
+    var style: DatePickerPresentationStyle = .embedded
     
     /// Storage for this date picker's validations.
     public var validations = [DatePickerValidation]()
@@ -91,10 +91,8 @@ final public class DatePicker: NSObject {
     fileprivate var lastDate: Date?
     
     @discardableResult
-    public init(_ form: Form, style: DatePickerPresentationStyle = .keyboard) {
+    override public init() {
         
-        self.form = form
-        self.style = style
         view = FieldView()
         label = FieldLabel()
         
@@ -103,7 +101,7 @@ final public class DatePicker: NSObject {
         
         super.init()
         
-        datePickerInputView.buttonCallback = { form.didTapNextFrom(field: self) }
+        datePickerInputView.buttonCallback = { self.form.didTapNextFrom(field: self) }
         datePicker.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
         
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -121,8 +119,6 @@ final public class DatePicker: NSObject {
         case .dialog:
             break
         }
-        
-        form.add { self }
     }
     
     public var value: Any? {
