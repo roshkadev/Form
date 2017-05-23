@@ -23,6 +23,7 @@ class GoogleSignUpViewController: UIViewController {
             }
             
             Input(form: form)
+            Input(form: form)
 //            DatePicker(form)
 //            Picker(form).title("Gender").placeholder("I am...").options([
 //                PickerOption("Female"),
