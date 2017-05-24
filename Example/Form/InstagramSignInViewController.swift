@@ -50,6 +50,7 @@ class InstagramSignInViewController: UIViewController {
             
             
             Input(form: form).placeholder("Phone number, username or email").style { input in
+                input.padding.top = 40
                 input.textField.font = UIFont.systemFont(ofSize: 11)
             }
 
