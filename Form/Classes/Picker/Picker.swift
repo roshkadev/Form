@@ -270,6 +270,7 @@ final public class Picker: NSObject {
 
 extension Picker: Field {
 
+    @discardableResult
     public func style(_ style: ((Picker) -> Void)) -> Self {
         style(self)
         return self

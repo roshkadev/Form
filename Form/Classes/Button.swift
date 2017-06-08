@@ -22,30 +22,24 @@ final public class Button: NSObject, Field {
     public var topLayoutConstraint: NSLayoutConstraint?
     public var rightContainerLayoutConstraint: NSLayoutConstraint!
     public var rightScrollLayoutConstraint: NSLayoutConstraint!
-    public var padding = Space.none
+    public var padding = Space.default
     
-    var button: UIButton
+    public var button: UIButton
     
     var tapCallback: ((Button) -> Void)?
     
     public override init() {
         view = FieldView()
         stackView = UIStackView()
-        label = FieldLabel()
+        if let title = title {
+            label = FieldLabel()
+            label?.text = title
+        }
         button = UIButton()
-        
         super.init()
         
-        view.translatesAutoresizingMaskIntoConstraints = false
-        button.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(button)
-        
-        view.addConstraint(NSLayoutConstraint(item: button, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: padding.left))
-        view.addConstraint(NSLayoutConstraint(item: button, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: padding.top))
-        view.addConstraint(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: button, attribute: .right, multiplier: 1, constant: padding.right))
-        view.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: button, attribute: .bottom, multiplier: 1, constant: padding.bottom))
-        
+        setupStackViewWith(contentView: button)
+        button.heightAnchor.constraint(equalToConstant: 44).isActive = true
         button.addTarget(self, action: #selector(action), for: .touchUpInside)
     }
     

@@ -66,16 +66,18 @@ public class Form: NSObject {
     var containingView: UIView
     
     /// A scroll view to allow the form to scroll vertically.
-    var scrollView: FormScrollView
+    var scrollView = FormScrollView()
     
     /// The vertical stack view contains one arranged subview for each row.
-    var verticalStackView: UIStackView
+    var verticalStackView = UIStackView()
     
     /// The form's rows (a row contains one or more fields).
-    var rows: [Row]
+    var rows = [Row]()
     
     /// The form's fields.
-    var fields: [Field]
+    var fields: [Field] {
+        return rows.flatMap { $0.fields }
+    }
     
     var activeField: Field?
     var enableNavigation = true
@@ -86,20 +88,16 @@ public class Form: NSObject {
     var nextViewVerticalConstraint: NSLayoutConstraint!
     var currentField: Field?
     
-    /// The constraint used to add fields.
-    var bottomLayoutConstraint: NSLayoutConstraint?
-    
     let nextButtonWidth: CGFloat = 30
     
+    var padding: Space
+    
     @discardableResult
-    public init(in viewController: UIViewController, constructor: ((Form) -> Void)? = nil) {
+    public init(in viewController: UIViewController, padding: Space = .none, constructor: ((Form) -> Void)? = nil) {
         
         self.viewController = viewController
+        self.padding = padding
         containingView = viewController.view
-        scrollView = FormScrollView()
-        verticalStackView = UIStackView()
-        rows = []
-        fields = []
         
         super.init()
         
@@ -107,8 +105,8 @@ public class Form: NSObject {
         scrollView.delegate = self
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         containingView.addSubview(scrollView)
-        containingView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[scrollView]|", options: [], metrics: nil, views: [ "scrollView": scrollView ]))
-        containingView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[scrollView]|", options: [], metrics: nil, views: [ "scrollView": scrollView ]))
+        containingView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(\(padding.left))-[scrollView]-(\(padding.right))-|", options: [], metrics: nil, views: [ "scrollView": scrollView ]))
+        containingView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(\(padding.top))-[scrollView]-(\(padding.bottom))-|", options: [], metrics: nil, views: [ "scrollView": scrollView ]))
         
         verticalStackView.axis = .vertical
         verticalStackView.alignment = .fill
@@ -120,6 +118,11 @@ public class Form: NSObject {
         containingView.addConstraint(NSLayoutConstraint(item: containingView, attribute: .right, relatedBy: .equal, toItem: verticalStackView, attribute: .right, multiplier: 1, constant: 0))
         scrollView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[verticalStackView]|", options: [], metrics: nil, views: [ "verticalStackView": verticalStackView ]))
         
+//        let spaceView = UIView()
+//        spaceView.translatesAutoresizingMaskIntoConstraints = false
+//        spaceView.backgroundColor = UIColor.green
+//        spaceView.setContentHuggingPriority(UILayoutPriorityDefaultLow, for: .vertical)
+//        verticalStackView.addArrangedSubview(spaceView)
         
         // Add the fields to the form.
         constructor?(self)
@@ -212,10 +215,13 @@ extension Form: UIScrollViewDelegate {
 
 extension Form {
 
+    /// Add a field to the form (the field is implicitly wrapped in a new row).
     @discardableResult
     public func add(field: Field) -> Self {
         let row = Row(in: self)
-        row.horizontalStackView.addArrangedSubview(field.view)
+        row.add(field: field)
+        
+        // Add the row to the form.
         add(row: row)
         
         // Take the current dynamic font.
@@ -224,9 +230,23 @@ extension Form {
         return self
     }
     
+    /// Add a row to the form.
     @discardableResult
     public func add(row: Row) -> Self {
         verticalStackView.addArrangedSubview(row.horizontalStackView)
+        rows.append(row)
+        return self
+    }
+    
+    /// Add a view to the form.
+    @discardableResult
+    public func add(view: UIView) -> Self {
+        let row = Row(in: self)
+        row.add(view: view)
+        
+        // Add the row to the form.
+        add(row: row)
+
         return self
     }
     

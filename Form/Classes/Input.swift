@@ -63,8 +63,10 @@ final public class Input: NSObject {
     public var topLayoutConstraint: NSLayoutConstraint?
     public var rightContainerLayoutConstraint: NSLayoutConstraint!
     public var rightScrollLayoutConstraint: NSLayoutConstraint!
+    
     public var padding = Space.default
-    var textField: UITextField
+    
+    public var textField: UITextField
     
     public var validations = [InputValidation]()
     public var handlers = [(event: InputEvent, handler: ((Input) -> Void))]()
@@ -187,6 +189,7 @@ final public class Input: NSObject {
         return self
     }
 
+    @discardableResult
     public func placeholder(_ placeholder: String?) -> Self {
         textField.placeholder = placeholder
         return self
@@ -209,6 +212,7 @@ final public class Input: NSObject {
 
 extension Input: Field {
     
+    @discardableResult
     public func style(_ style: ((Input) -> Void)) -> Self {
         style(self)
         return self
