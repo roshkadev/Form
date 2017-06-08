@@ -33,7 +33,11 @@ class InstagramSignInViewController: UIViewController {
                 input.textField.font = UIFont.systemFont(ofSize: 11)
             }
             
-            Separator(form: form).title("OR")
+            Separator(form: form).title("OR").style {
+                $0.label?.textColor = .gray
+                $0.label?.font = UIFont.systemFont(ofSize: 11)
+                
+            }
 
             Button(form: form).title("Login").style { button in
                 button.button.backgroundColor = .blue
@@ -59,7 +63,7 @@ class InstagramView: PastelView {
             UIColor(red: 32/255, green: 158/255, blue: 255/255, alpha: 1.0),
             UIColor(red: 90/255, green: 120/255, blue: 127/255, alpha: 1.0),
             UIColor(red: 58/255, green: 255/255, blue: 217/255, alpha: 1.0),
-            ])
+        ])
         
         let instaImageView = UIImageView(image: UIImage(named: "Instagram Text Logo"))
         instaImageView.translatesAutoresizingMaskIntoConstraints = false
