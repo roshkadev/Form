@@ -16,80 +16,86 @@ class InstagramSignInViewController: UIViewController {
 
     let label = ActiveLabel()
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
-        
-        
-        label.isUserInteractionEnabled = true
-        label.frame = self.view.bounds
-        label.backgroundColor = .green
-        label.numberOfLines = 2
-        label.text = "This is a post"
-        label.textColor = .black
-        
-        let customType = ActiveType.custom(pattern: "is") //Regex that looks for "with"
-        label.enabledTypes = [customType]
-        
-        label.customColor[customType] = UIColor.purple
-        label.customSelectedColor[customType] = UIColor.green
-        
-        label.handleCustomTap(for: customType) { element in
-            print("Custom type tapped: \(element)")
-        }
-        self.view.addSubview(label)
 
-//        Form(in: self, constructor: { form in
-//
-//            // Add the instagram pastel header.
-//            let instaView = InstagramView(frame: self.view.bounds)
-//            form.add(view: instaView)
-//            instaView.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
-//            instaView.heightAnchor.constraint(equalToConstant: 140).isActive = true
-//
-//
-//            Input(form: form).placeholder("Phone number, username or email").style { input in
-////                input.padding.top = 40
-//                input.textField.font = UIFont.systemFont(ofSize: 11)
-//            }
-//
-//            Input(form: form).placeholder("Password").secure(true).style { input in
-//                input.textField.font = UIFont.systemFont(ofSize: 11)
-//            }
-//            
-//            Separator(form: form).title("OR").style {
-//                $0.label?.textColor = .gray
-//                $0.label?.font = UIFont.systemFont(ofSize: 11)
-//                
-//            }
-//
-//            Button(form: form).title("Login").style { button in
-//                button.button.backgroundColor = .blue
-//                button.button.layer.cornerRadius = 4
-//                button.button.layer.masksToBounds = true
-//            }
-//            
-////            let label = ActiveLabel()
-////            label.textAlignment = .center
-////            label.textColor = .gray
-////            label.font = UIFont.systemFont(ofSize: 12)
-////            label.text = "Forgot your login details? Get help signing in."
-////            let customType = ActiveType.custom(pattern: "\\Q Get help signing in.\\E")
-////            label.enabledTypes = [ customType, .hashtag ]
-////            label.customColor[customType] =  .blue
-////            label.customSelectedColor[customType] = .red
-////            label.handleCustomTap(for: customType, handler: { e in
-////                print(e)
-////            })
-////            label.handleHashtagTap { e in
-////                print(e)
-////            }
-//
-//            
-//            
-//
-//        })
+        setNeedsStatusBarAppearanceUpdate()
+
+        Form(in: self, constructor: { form in
+
+            // Add the instagram pastel header.
+            let instaView = InstagramView(frame: self.view.bounds)
+            form.add(view: instaView)
+            instaView.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
+            instaView.heightAnchor.constraint(equalToConstant: 140).isActive = true
+
+
+            Input(form: form).placeholder("Phone number, username or email").style { input in
+//                input.padding.top = 40
+                input.textField.font = UIFont.systemFont(ofSize: 11)
+            }
+
+            Input(form: form).placeholder("Password").secure(true).style { input in
+                input.textField.font = UIFont.systemFont(ofSize: 11)
+            }
+            
+            
+            let label = ActiveLabel()
+            label.textAlignment = .center
+            label.textColor = .gray
+            label.font = UIFont.systemFont(ofSize: 12)
+            label.text = "Forgot your login details? Get help signing in."
+            let customType = ActiveType.custom(pattern: "\\Q Get help signing in.\\E")
+            label.enabledTypes = [ customType ]
+            label.customColor[customType] =  .blue
+            label.customSelectedColor[customType] = .blue
+            label.customize { label in
+                label.handleCustomTap(for: customType, handler: { e in
+                    print(e)
+                })
+            }
+            form.add(view: label)
+            
+            Separator(form: form).title("OR").style {
+                $0.label?.textColor = .gray
+                $0.label?.font = UIFont.systemFont(ofSize: 11)
+            }
+            
+            let button = UIButton()
+            button.setTitleColor(.blue, for: .normal)
+            button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+            button.setImage(UIImage(named: "the-f"), for: .normal)
+            button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+            button.setTitle("Log In With Facebook", for: .normal)
+            form.add(view: button)
+
+            Button(form: form).title("Login").style { button in
+                button.button.backgroundColor = .blue
+                button.button.layer.cornerRadius = 4
+                button.button.layer.masksToBounds = true
+            }
+            
+            let signupLabel = ActiveLabel()
+            signupLabel.textAlignment = .center
+            signupLabel.textColor = .gray
+            signupLabel.font = UIFont.systemFont(ofSize: 12)
+            signupLabel.text = "Don't have an account? Sign up."
+            let signupCustomType = ActiveType.custom(pattern: "\\Q Sign up.\\E")
+            signupLabel.enabledTypes = [ signupCustomType ]
+            signupLabel.customColor[signupCustomType] =  .blue
+            signupLabel.customSelectedColor[customType] = .blue
+            signupLabel.customize { label in
+                signupLabel.handleCustomTap(for: signupCustomType, handler: { e in
+                    print(e)
+                })
+            }
+            form.add(view: signupLabel)
+
+        })
     }
 }
 
