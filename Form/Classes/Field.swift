@@ -111,10 +111,10 @@ extension Field {
     
     @discardableResult
     public init(form: Form) {
-        
+
         // Call the field's own initializer.
         self.init()
-        
+
         form.add(field: self)
     }
     

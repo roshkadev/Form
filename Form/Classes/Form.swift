@@ -218,12 +218,11 @@ extension Form {
     /// Add a field to the form (the field is implicitly wrapped in a new row).
     @discardableResult
     public func add(field: Field) -> Self {
+
         let row = Row(in: self)
+
         row.add(field: field)
-        
-        // Add the row to the form.
-        add(row: row)
-        
+
         // Take the current dynamic font.
         field.didChangeContentSizeCategory()
         
@@ -278,51 +277,45 @@ extension Form {
         self.activeField = activeField
     }
     
+//    internal func moveNextButton(to field: Field?) {
+//        if let constraint = nextViewVerticalConstraint {
+//            containingView.removeConstraint(constraint)
+//        }
+//        
+//        guard let toField = field else {
+//            nextView.isHidden = true
+//            return
+//        }
+//        
+//        nextView.isHidden = false
+//        toField.rightContainerLayoutConstraint.constant = 100
+//        toField.rightScrollLayoutConstraint.constant = 100
+//        
+//        nextViewVerticalConstraint = NSLayoutConstraint(item: nextView, attribute: .bottom, relatedBy: .equal, toItem: toField.view, attribute: .bottom, multiplier: 1, constant: 0)
+//        containingView.addConstraint(nextViewVerticalConstraint!)
+//        currentField = toField
+//    }
+    
+    internal func moveFocusFrom(field fromField: Field, toField: Field) {
+        if toField.canBecomeFirstResponder {
+            toField.becomeFirstResponder()
+        } else {
+            fromField.resignFirstResponder()
+        }
+    }
+    
     /// Assign the next field as first responder.
-    internal func didTapNextFrom(field: Field) {
+    internal func didTapNextFrom(field fromField: Field) {
         
-        func moveNextButton(to toField: Field?) {
-            if let constraint = nextViewVerticalConstraint {
-                containingView.removeConstraint(constraint)
-            }
-            
-            guard let toField = toField else {
-                nextView.isHidden = true
-                return
-            }
-            
-            nextView.isHidden = false
-            toField.rightContainerLayoutConstraint.constant = 100
-            toField.rightScrollLayoutConstraint.constant = 100
-            
-            nextViewVerticalConstraint = NSLayoutConstraint(item: nextView, attribute: .bottom, relatedBy: .equal, toItem: toField.view, attribute: .bottom, multiplier: 1, constant: 0)
-            containingView.addConstraint(nextViewVerticalConstraint!)
-            currentField = toField
-        }
-        
-        func moveFocus(fromField: Field, toField: Field) {
-            if toField.canBecomeFirstResponder {
-                toField.becomeFirstResponder()
-                if toField.canShowNextButton == false {
-                    moveNextButton(to: toField)
-                } else {
-                    moveNextButton(to: nil)
-                }
-            } else {
-                fromField.resignFirstResponder()
-                moveNextButton(to: toField)
-            }
-        }
-        
-        let index = fields.filter { $0.view.isHidden == false }.index { $0.view == field.view }
+        let index = fields.filter { $0.view.isHidden == false }.index { $0.view == fromField.view }
         if let nextIndex = index?.advanced(by: 1), fields.indices.contains(nextIndex) {
             let nextField = fields[fields.startIndex.distance(to: nextIndex)]
-            moveFocus(fromField: field, toField: nextField)
+            moveFocusFrom(field: fromField, toField: nextField)
         } else {
             // Wrap around to bring focus to the first field in the form.
             if fields.indices.contains(fields.startIndex) {
                 let nextField = fields[fields.startIndex]
-                moveFocus(fromField: field, toField: nextField)
+                moveFocusFrom(field: fromField, toField: nextField)
             }
         }
     }

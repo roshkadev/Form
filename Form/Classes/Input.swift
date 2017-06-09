@@ -248,6 +248,7 @@ extension Input: UITextFieldDelegate {
     }
     
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        print(form.fields.count)
         attachedTo?.key = textField.text
         return validateForEvent(event: .onChange, with: ((textField.text ?? "") as NSString).replacingCharacters(in: range, with: string))
     }
