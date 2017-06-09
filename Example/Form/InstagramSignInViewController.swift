@@ -9,45 +9,90 @@
 import UIKit
 import Form
 import Pastel
+import ActiveLabel
+import TTTAttributedLabel
 
 class InstagramSignInViewController: UIViewController {
 
+    let label = ActiveLabel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        
+        
+        label.isUserInteractionEnabled = true
+        label.frame = self.view.bounds
+        label.backgroundColor = .green
+        label.numberOfLines = 2
+        label.text = "This is a post"
+        label.textColor = .black
+        
+        let customType = ActiveType.custom(pattern: "is") //Regex that looks for "with"
+        label.enabledTypes = [customType]
+        
+        label.customColor[customType] = UIColor.purple
+        label.customSelectedColor[customType] = UIColor.green
+        
+        label.handleCustomTap(for: customType) { element in
+            print("Custom type tapped: \(element)")
+        }
+        self.view.addSubview(label)
 
-        Form(in: self, constructor: { form in
-            
-            // Add the instagram pastel header.
-            let instaView = InstagramView(frame: self.view.bounds)
-            form.add(view: instaView)
-            instaView.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
-            instaView.heightAnchor.constraint(equalToConstant: 140).isActive = true
-
-
-            Input(form: form).placeholder("Phone number, username or email").style { input in
-//                input.padding.top = 40
-                input.textField.font = UIFont.systemFont(ofSize: 11)
-            }
-
-            Input(form: form).placeholder("Password").secure(true).style { input in
-                input.textField.font = UIFont.systemFont(ofSize: 11)
-            }
-            
-            Separator(form: form).title("OR").style {
-                $0.label?.textColor = .gray
-                $0.label?.font = UIFont.systemFont(ofSize: 11)
-                
-            }
-
-            Button(form: form).title("Login").style { button in
-                button.button.backgroundColor = .blue
-                button.button.layer.cornerRadius = 4
-                button.button.layer.masksToBounds = true
-            }
-
-        })
+//        Form(in: self, constructor: { form in
+//
+//            // Add the instagram pastel header.
+//            let instaView = InstagramView(frame: self.view.bounds)
+//            form.add(view: instaView)
+//            instaView.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
+//            instaView.heightAnchor.constraint(equalToConstant: 140).isActive = true
+//
+//
+//            Input(form: form).placeholder("Phone number, username or email").style { input in
+////                input.padding.top = 40
+//                input.textField.font = UIFont.systemFont(ofSize: 11)
+//            }
+//
+//            Input(form: form).placeholder("Password").secure(true).style { input in
+//                input.textField.font = UIFont.systemFont(ofSize: 11)
+//            }
+//            
+//            Separator(form: form).title("OR").style {
+//                $0.label?.textColor = .gray
+//                $0.label?.font = UIFont.systemFont(ofSize: 11)
+//                
+//            }
+//
+//            Button(form: form).title("Login").style { button in
+//                button.button.backgroundColor = .blue
+//                button.button.layer.cornerRadius = 4
+//                button.button.layer.masksToBounds = true
+//            }
+//            
+////            let label = ActiveLabel()
+////            label.textAlignment = .center
+////            label.textColor = .gray
+////            label.font = UIFont.systemFont(ofSize: 12)
+////            label.text = "Forgot your login details? Get help signing in."
+////            let customType = ActiveType.custom(pattern: "\\Q Get help signing in.\\E")
+////            label.enabledTypes = [ customType, .hashtag ]
+////            label.customColor[customType] =  .blue
+////            label.customSelectedColor[customType] = .red
+////            label.handleCustomTap(for: customType, handler: { e in
+////                print(e)
+////            })
+////            label.handleHashtagTap { e in
+////                print(e)
+////            }
+//
+//            
+//            
+//
+//        })
     }
 }
+
 
 class InstagramView: PastelView {
     override init(frame: CGRect) {

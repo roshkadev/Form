@@ -10,7 +10,8 @@
 #endif
 #endif
 
+#import "TTTAttributedLabel.h"
 
-FOUNDATION_EXPORT double PastelVersionNumber;
-FOUNDATION_EXPORT const unsigned char PastelVersionString[];
+FOUNDATION_EXPORT double TTTAttributedLabelVersionNumber;
+FOUNDATION_EXPORT const unsigned char TTTAttributedLabelVersionString[];
 

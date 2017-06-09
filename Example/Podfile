@@ -1,8 +1,10 @@
 use_frameworks!
 
 target 'Form_Example' do
-  pod "Pastel"
   pod 'Form', :path => '../'
+  pod "Pastel"
+  pod 'ActiveLabel'
+  pod 'TTTAttributedLabel'
 
   target 'Form_Tests' do
     inherit! :search_paths

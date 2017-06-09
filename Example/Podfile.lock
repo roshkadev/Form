@@ -1,4 +1,5 @@
 PODS:
+  - ActiveLabel (0.7.1)
   - FBSnapshotTestCase (2.1.4):
     - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
   - FBSnapshotTestCase/Core (2.1.4)
@@ -14,27 +15,32 @@ PODS:
     - Quick
   - Pastel (0.3.0)
   - Quick (1.0.0)
+  - TTTAttributedLabel (2.0.0)
 
 DEPENDENCIES:
+  - ActiveLabel
   - FBSnapshotTestCase
   - Form (from `../`)
   - Nimble (~> 5.1.1)
   - Nimble-Snapshots
   - Pastel
   - Quick (~> 1.0.0)
+  - TTTAttributedLabel
 
 EXTERNAL SOURCES:
   Form:
     :path: "../"
 
 SPEC CHECKSUMS:
+  ActiveLabel: 68625f22775f51c31bb691ca8de20f1e5a3bc825
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
   Form: d56c875c0e67a0d240e56c62c86324de45293656
   Nimble: 415e3aa3267e7bc2c96b05fa814ddea7bb686a29
   Nimble-Snapshots: e743439f26c2fa99d8f7e0d7c01c99bcb40aa6f2
   Pastel: 738740c84f2b15bbcd96ebe99c4e6c2f5dd42262
   Quick: 8024e4a47e6cc03a9d5245ef0948264fc6d27cff
+  TTTAttributedLabel: 8cffe8e127e4e82ff3af1e5386d4cd0ad000b656
 
-PODFILE CHECKSUM: 3b29564a2f54ad8637b4863b10543ecba85f6cdb
+PODFILE CHECKSUM: 70fbf7c18988f3e010e0cabde435ed7283ebcf0d
 
-COCOAPODS: 1.1.1
+COCOAPODS: 1.2.1

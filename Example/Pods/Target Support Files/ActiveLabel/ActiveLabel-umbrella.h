@@ -11,6 +11,6 @@
 #endif
 
 
-FOUNDATION_EXPORT double PastelVersionNumber;
-FOUNDATION_EXPORT const unsigned char PastelVersionString[];
+FOUNDATION_EXPORT double ActiveLabelVersionNumber;
+FOUNDATION_EXPORT const unsigned char ActiveLabelVersionString[];
 
