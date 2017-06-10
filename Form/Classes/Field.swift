@@ -94,6 +94,10 @@ public protocol Field: class {
     func toggleVisibility()
     
     func didChangeContentSizeCategory()
+    
+    func isValid() -> Bool
+    
+    func isValidForSubmit() -> Bool
 }
 
 /// Provides a default implementation for some field behaviours.
@@ -205,5 +209,13 @@ extension Field {
     
     public func didChangeContentSizeCategory() {
         // Do nothing.
+    }
+    
+    public func isValid() -> Bool {
+        return true
+    }
+    
+    public func isValidForSubmit() -> Bool {
+        return true
     }
 }

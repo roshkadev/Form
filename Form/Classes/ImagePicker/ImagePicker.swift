@@ -94,6 +94,7 @@ extension ImagePicker: Field {
         style(self)
         return self
     }
+
 }
 
 extension ImagePicker: UICollectionViewDataSource {

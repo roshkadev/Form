@@ -79,6 +79,8 @@ public class Form: NSObject {
         return rows.flatMap { $0.fields }
     }
     
+    var handlers = [(event: FormEvent, handler: ((Void) -> ()))]()
+    
     var activeField: Field?
     var enableNavigation = true
     var isPagedScrollingEnabled = false
@@ -154,6 +156,12 @@ public class Form: NSObject {
         
     }
     
+    @discardableResult
+    public func bind(_ event: FormEvent, handler: @escaping ((Void) -> ())) -> Self {
+        handlers.append((event, handler))
+        return self
+    }
+    
     public var parameters: [String: Any]? {
         return fields.reduce([String: Any](), { partialResult, field in
             guard let key = field.key else { return partialResult }
@@ -162,6 +170,13 @@ public class Form: NSObject {
             updatedResult[key] = value
             return updatedResult
         })
+    }
+    
+    public var isValid: Bool {
+        return fields.reduce(true) { partialResult, input in
+            let isInputValid = input.isValidForSubmit()
+            return partialResult || isInputValid
+        }
     }
     
     deinit {
@@ -219,9 +234,7 @@ extension Form {
     @discardableResult
     public func add(field: Field) -> Self {
 
-        let row = Row(in: self)
-
-        row.add(field: field)
+        Row(in: self).add(field: field)
 
         // Take the current dynamic font.
         field.didChangeContentSizeCategory()
@@ -240,11 +253,8 @@ extension Form {
     /// Add a view to the form.
     @discardableResult
     public func add(view: UIView) -> Self {
-        let row = Row(in: self)
-        row.add(view: view)
         
-        // Add the row to the form.
-        add(row: row)
+        Row(in: self).add(view: view)
 
         return self
     }

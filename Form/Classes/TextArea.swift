@@ -83,6 +83,7 @@ extension TextArea: Field {
     public func didChangeContentSizeCategory() {
         textView.font = UIFont.preferredFont(forTextStyle: .body)
     }
+
 }
 
 extension TextArea: UITextViewDelegate {

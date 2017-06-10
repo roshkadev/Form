@@ -12,6 +12,7 @@ import UIKit
 public enum InputEvent {
     case shouldFocus    // Return `false` to disable `Input` focus.
     case focus          // The `Input` gained focus.
+    case beforeChange   // The value of the `Input` has changed.
     case onChange       // The value of the `Input` has changed.
     case shouldBlur     // Return `false` to disable `Input` blur.
     case blur           // The `Input` lost focus.
@@ -92,7 +93,7 @@ final public class Input: NSObject {
     }
     
     @discardableResult
-    public func bind(_ binding:@escaping ((String?) -> Void)) -> Self {
+    public func bind(_ binding: @escaping ((String?) -> Void)) -> Self {
         bind(.onChange, handler: {
             binding($0.text)
         })
@@ -156,7 +157,8 @@ final public class Input: NSObject {
     }
     
     func editingChanged(textField: UITextField) {
-        handlers.filter { $0.event == .onChange }.forEach { $0.handler(self) }
+        handlers.filter { $0.event == InputEvent.onChange }.forEach { $0.handler(self) }
+        form.handlers.filter { $0.event == FormEvent.onChange }.forEach { $0.handler() }
     }
     
     public var value: Any? {
@@ -164,6 +166,14 @@ final public class Input: NSObject {
             return text
         }
         return nil
+    }
+    
+    public var isEmpty: Bool {
+        if let text = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines), text.isEmpty == false {
+            return false
+        } else {
+            return true
+        }
     }
     
     public var text: String? {
@@ -238,6 +248,15 @@ extension Input: Field {
         label?.font = UIFont.preferredFont(forTextStyle: .subheadline)
         textField.font = UIFont.preferredFont(forTextStyle: .body)
     }
+    
+    public func isValid() -> Bool {
+        return validateForEvent(event: .onChange, with: textField.text)
+    }
+    
+    public func isValidForSubmit() -> Bool {
+        return validateForEvent(event: .submit)
+    }
+
 }
 
 extension Input: UITextFieldDelegate {
@@ -250,7 +269,7 @@ extension Input: UITextFieldDelegate {
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         print(form.fields.count)
         attachedTo?.key = textField.text
-        return validateForEvent(event: .onChange, with: ((textField.text ?? "") as NSString).replacingCharacters(in: range, with: string))
+        return validateForEvent(event: .beforeChange, with: ((textField.text ?? "") as NSString).replacingCharacters(in: range, with: string))
     }
     
     public func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {

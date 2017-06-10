@@ -287,6 +287,7 @@ extension Picker: Field {
     public func didChangeContentSizeCategory() {
         font = UIFont.preferredFont(forTextStyle: .body)
     }
+
 }
 
 // #MARK: Construction.
