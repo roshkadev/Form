@@ -19,11 +19,12 @@ final public class Stepper: NSObject {
     public var topLayoutConstraint: NSLayoutConstraint?
     public var rightContainerLayoutConstraint: NSLayoutConstraint!
     public var rightScrollLayoutConstraint: NSLayoutConstraint!
-    public var padding = Space.default
+    public var margin = [Margin]()
     public var key: String?
     public var value: Any? {
         return nil
     }
+    public var formBindings = [(event: FormEvent, field: Field, handler: ((Field) -> Void))]()
     
     
     @discardableResult

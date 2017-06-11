@@ -23,12 +23,13 @@ final public class ImagePicker: NSObject {
     public var topLayoutConstraint: NSLayoutConstraint?
     public var rightContainerLayoutConstraint: NSLayoutConstraint!
     public var rightScrollLayoutConstraint: NSLayoutConstraint!
-    public var padding = Space.default
+    public var margin = [Margin]()
     var imagePickerView: ImagePickerView
     
     var images = [UIImage]()
     
     var cellDimension: CGFloat = 100
+    public var formBindings = [(event: FormEvent, field: Field, handler: ((Field) -> Void))]()
     
     let fixedIndexPaths = [IndexPath(item: 0, section: 0), IndexPath(item: 1, section: 0)]
     let defaultIndexPath = IndexPath(item: 2, section: 0)

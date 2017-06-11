@@ -9,20 +9,22 @@
 import UIKit
 
 
-//public enum Gap: Int {
-//    case top
-//    case right
-//    case bottom
-//    case left
-//}
-//
-//public struct GapSet: OptionSet {
-//    public let rawValue : Int
-//    
-//    public init(rawValue: Gap) {
-//        self.rawValue = rawValue.rawValue
-//    }
-//}
+public enum Margin: CGFloat {
+    case top
+    case right
+    case bottom
+    case left
+    case horizontal
+    case vertical
+}
+
+public struct GapSet: OptionSet {
+    public let rawValue : Int
+    
+    public init(rawValue: Gap) {
+        self.rawValue = rawValue.rawValue
+    }
+}
 
 public struct Space: OptionSet {
     let space: CGFloat = 8

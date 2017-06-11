@@ -21,11 +21,13 @@ final public class Switch: NSObject {
     public var topLayoutConstraint: NSLayoutConstraint?
     public var rightContainerLayoutConstraint: NSLayoutConstraint!
     public var rightScrollLayoutConstraint: NSLayoutConstraint!
-    public var padding = Space.default
+    public var margin = [Margin]()
     public var key: String?
     public var value: Any? {
         return `switch`.isOn
     }
+    
+    public var formBindings = [(event: FormEvent, field: Field, handler: ((Field) -> Void))]()
     
     private var onToggleCallback: ((Bool) -> ())?
     internal var toggledFieldGroups = [[Field]]()

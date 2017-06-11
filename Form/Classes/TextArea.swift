@@ -22,9 +22,11 @@ final public class TextArea: NSObject {
     public var topLayoutConstraint: NSLayoutConstraint?
     public var rightContainerLayoutConstraint: NSLayoutConstraint!
     public var rightScrollLayoutConstraint: NSLayoutConstraint!
-    public var padding = Space.default
+    public var margin = [Margin]()
     
     var textView: UITextView
+    
+    public var formBindings = [(event: FormEvent, field: Field, handler: ((Field) -> Void))]()
     
     
     override public init() {

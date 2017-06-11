@@ -16,7 +16,8 @@ public enum InputEvent {
     case onChange       // The value of the `Input` has changed.
     case shouldBlur     // Return `false` to disable `Input` blur.
     case blur           // The `Input` lost focus.
-    case submit         // The containing `Form` received a `FormEvent.submit` event.
+    case formOnChange   // The containing `Form` received a `FormEvent.onChange` event.
+    case formOnSubmit   // The containing `Form` received a `FormEvent.onSubmit` event.
 }
 
 /// An `InputRestriction` is an condition that an `Input` may satisfy.
@@ -65,13 +66,13 @@ final public class Input: NSObject {
     public var rightContainerLayoutConstraint: NSLayoutConstraint!
     public var rightScrollLayoutConstraint: NSLayoutConstraint!
     
-    public var padding = Space.default
+    public var margin = [Margin]()
     
     public var textField: UITextField
     
     public var validations = [InputValidation]()
     public var handlers = [(event: InputEvent, handler: ((Input) -> Void))]()
-
+    public var formBindings = [(event: FormEvent, field: Field, handler: ((Field) -> Void))]()
     
     @discardableResult
     public override init() {
@@ -118,7 +119,7 @@ final public class Input: NSObject {
         return self
     }
     
-    public func validateForEvent(event: InputEvent, with text: String? = nil) -> Bool {
+    public func validateForEvent(event: InputEvent, with text: String? = nil, react: Bool = true) -> Bool {
         
         let trimmedText = text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let hasText = trimmedText.isEmpty == false
@@ -142,13 +143,16 @@ final public class Input: NSObject {
         }.filter { $0.isValid == false }.first
         
         if let failingValidation = failingValidation {
-            switch failingValidation.reaction {
-            case .shake:
-                textField.shake()
-            case .alert(let message):
-                print(message)
-            default:
-                break
+            
+            if react {
+                switch failingValidation.reaction {
+                case .shake:
+                    textField.shake()
+                case .alert(let message):
+                    print(message)
+                default:
+                    break
+                }
             }
             return false
         }
@@ -158,7 +162,13 @@ final public class Input: NSObject {
     
     func editingChanged(textField: UITextField) {
         handlers.filter { $0.event == InputEvent.onChange }.forEach { $0.handler(self) }
-        form.handlers.filter { $0.event == FormEvent.onChange }.forEach { $0.handler() }
+        
+        let formBindings = form.fields.flatMap { $0.formBindings }.filter { $0.event == .onChange }.forEach { (event, field, handler) in
+            handler(field)
+        }
+        
+        
+//        form.handlers.filter { $0.event == FormEvent.onChange }.forEach { $0.handler(self) }
     }
     
     public var value: Any? {
@@ -254,7 +264,7 @@ extension Input: Field {
     }
     
     public func isValidForSubmit() -> Bool {
-        return validateForEvent(event: .submit)
+        return validateForEvent(event: .formOnSubmit, with: textField.text, react: false)
     }
 
 }

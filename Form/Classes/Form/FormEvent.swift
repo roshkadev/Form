@@ -10,5 +10,5 @@ import UIKit
 
 public enum FormEvent {
     case onChange
-    case omSubmit
+    case onSubmit
 }

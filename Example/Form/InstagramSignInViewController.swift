@@ -27,7 +27,6 @@ class InstagramSignInViewController: UIViewController {
 
         Form(in: self, constructor: { form in
             
-            var submitButton: Button!
 
             // Add the instagram pastel header.
             let instaView = InstagramView(frame: self.view.bounds)
@@ -35,67 +34,42 @@ class InstagramSignInViewController: UIViewController {
             instaView.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
             instaView.heightAnchor.constraint(equalToConstant: 140).isActive = true
 
-            Input(form: form).placeholder("Phone number, username or email").style { input in
-//                input.padding.top = 40
+            Input(form: form, padding: [.top(20), horizontal(16)]).placeholder("Phone number, username or email").style { input in
                 input.textField.font = UIFont.systemFont(ofSize: 11)
-            }.bind(.submit, .nonempty)
+            }.bind(.formOnSubmit, .nonempty, .shake)
 
             Input(form: form).placeholder("Password").secure(true).style { input in
                 input.textField.font = UIFont.systemFont(ofSize: 11)
-            }.bind(.submit, .nonempty)
+            }.bind(.formOnSubmit, .nonempty, .shake)
             
-            
-            let label = ActiveLabel()
-            label.textAlignment = .center
-            label.textColor = .gray
-            label.font = UIFont.systemFont(ofSize: 12)
-            label.text = "Forgot your login details? Get help signing in."
-            let customType = ActiveType.custom(pattern: "\\Q Get help signing in.\\E")
-            label.enabledTypes = [ customType ]
-            label.customColor[customType] =  .blue
-            label.customSelectedColor[customType] = .blue
-            label.customize { label in
-                label.handleCustomTap(for: customType, handler: { e in
-                    print(e)
-                })
+            Button(form: form).title("Login").style { button in
+                button.button.backgroundColor = .blue
+                button.button.layer.cornerRadius = 4
+                button.button.layer.masksToBounds = true
+                button.view.alpha = 0.5
+            }.bind(.formOnChange) { loginButton in
+                print(form.isValid)
+                loginButton.view.alpha = form.isValid ? 1 : 0.5
             }
-            form.add(view: label)
+            
+            
+            let signinLabel = LinkLabel(title: "Forgot your login details? Get help signing in.", pattern: "\\Q Get help signing in.\\E", handler: {
+                print("Sign in.")
+            })
+            form.add(view: signinLabel)
             
             Separator(form: form).title("OR").style {
                 $0.label?.textColor = .gray
                 $0.label?.font = UIFont.systemFont(ofSize: 11)
             }
             
-            let button = UIButton()
-            button.setTitleColor(.blue, for: .normal)
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-            button.setImage(UIImage(named: "the-f"), for: .normal)
-            button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
-            button.setTitle("Log In With Facebook", for: .normal)
-            form.add(view: button)
 
-            Button(form: form).title("Login").style { button in
-                button.button.backgroundColor = .blue
-                button.button.layer.cornerRadius = 4
-                button.button.layer.masksToBounds = true
-            }.form.bind(.onChange) {
-                button.isHidden = form.isValid
-            }
+            form.add(view: FacebookButton())
+
             
-            let signupLabel = ActiveLabel()
-            signupLabel.textAlignment = .center
-            signupLabel.textColor = .gray
-            signupLabel.font = UIFont.systemFont(ofSize: 12)
-            signupLabel.text = "Don't have an account? Sign up."
-            let signupCustomType = ActiveType.custom(pattern: "\\Q Sign up.\\E")
-            signupLabel.enabledTypes = [ signupCustomType ]
-            signupLabel.customColor[signupCustomType] =  .blue
-            signupLabel.customSelectedColor[customType] = .blue
-            signupLabel.customize { label in
-                signupLabel.handleCustomTap(for: signupCustomType, handler: { e in
-                    print(e)
-                })
-            }
+            let signupLabel = LinkLabel(title: "Don't have an account? Sign up.", pattern: "\\Q Sign up.\\E", handler: {
+                print("Sign up")
+            })
             form.add(view: signupLabel)
 
         }).navigation(true)
@@ -104,6 +78,45 @@ class InstagramSignInViewController: UIViewController {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         self.view.endEditing(true)
+    }
+}
+
+class FacebookButton: UIButton {
+    init() {
+        super.init(frame: .zero)
+        setTitleColor(.blue, for: .normal)
+        titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        setImage(UIImage(named: "the-f"), for: .normal)
+        titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+        setTitle("Log In With Facebook", for: .normal)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+
+class LinkLabel: ActiveLabel {
+    init(title: String, pattern: String, handler: @escaping ((Void) -> Void)) {
+        super.init(frame: .zero)
+        textAlignment = .center
+        textColor = .gray
+        font = UIFont.systemFont(ofSize: 12)
+        text = title
+        let customType = ActiveType.custom(pattern: pattern)
+        enabledTypes = [ customType ]
+        customColor[customType] =  .blue
+        customSelectedColor[customType] = .blue
+        customize { label in
+            self.handleCustomTap(for: customType, handler: { e in
+                handler()
+            })
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 

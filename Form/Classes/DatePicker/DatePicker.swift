@@ -77,7 +77,7 @@ final public class DatePicker: NSObject {
     }
     
     /// This field's padding.
-    public var padding = Space.default
+    public var margin = [Margin]()
     
     
     /// 
@@ -90,6 +90,8 @@ final public class DatePicker: NSObject {
     public var handlers = [(event: DatePickerEvent, handler: ((DatePicker) -> Void))]()
     
     fileprivate var lastDate: Date?
+    
+    public var formBindings = [(event: FormEvent, field: Field, handler: ((Field) -> Void))]()
     
     @discardableResult
     override public init() {

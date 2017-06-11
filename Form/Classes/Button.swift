@@ -8,6 +8,14 @@
 
 import UIKit
 
+/// An `ButtonEvent` is a user-interaction driven event associated with an `ButtonEvent`.
+public enum ButtonEvent {
+    case tap            // User taps button.
+    case submit         // Same as `tap`, but transmits intent of submission to form. 
+    case formOnChange   // The containing `Form` received a `FormEvent.onChange` event.
+    case formOnSubmit   // The containing `Form` received a `FormEvent.onSubmit` event.
+}
+
 final public class Button: NSObject, Field {
     
     // #MARK - Field
@@ -22,11 +30,12 @@ final public class Button: NSObject, Field {
     public var topLayoutConstraint: NSLayoutConstraint?
     public var rightContainerLayoutConstraint: NSLayoutConstraint!
     public var rightScrollLayoutConstraint: NSLayoutConstraint!
-    public var padding = Space.default
+    public var margin = [Margin]()
     
     public var button: UIButton
     
-    var tapCallback: ((Button) -> Void)?
+    public var formBindings = [(event: FormEvent, field: Field, handler: ((Field) -> Void))]()
+    public var handlers = [(event: ButtonEvent, handler: ((Button) -> Void))]()
     
     public override init() {
         view = FieldView()
@@ -43,24 +52,46 @@ final public class Button: NSObject, Field {
         button.addTarget(self, action: #selector(action), for: .touchUpInside)
     }
     
-    @discardableResult
-    public func title(_ text: String?) -> Self {
-        button.setTitle(text, for: .normal)
-        return self
-    }
-    
     func action(button: UIButton) {
-        tapCallback?(self)
+        
+        // Fire any tap-related handlers for this button.
+        handlers.filter { $0.event == .tap || $0.event == .submit }.forEach { $0.handler(self) }
     }
     
     public func didChangeContentSizeCategory() {
         button.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
     }
 
+    @discardableResult
+    public func title(_ text: String?) -> Self {
+        button.setTitle(text, for: .normal)
+        return self
+    }
     
     @discardableResult
     public func style(_ style: ((Button) -> Void)) -> Self {
         style(self)
+        return self
+    }
+    
+    @discardableResult
+    public func bind(_ event: ButtonEvent, handler: @escaping ((Button) -> Void)) -> Self {
+        
+        switch event {
+        case .tap:
+            handlers.append((event, handler))
+        case .submit:
+            handlers.append((event, handler))
+        case .formOnChange:
+            formBindings.append((.onChange, self, { field in
+                handler(self)
+            }))
+        case .formOnSubmit:
+            formBindings.append((.onSubmit, self, { field in
+                handler(self)
+            }))
+        }
+        
         return self
     }
 }

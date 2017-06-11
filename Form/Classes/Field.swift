@@ -47,7 +47,7 @@ public protocol Field: class {
     var label: FieldLabel? { get set }
     
     /// This field's padding.
-    var padding: Space { get set }
+    var margin: [Margin] { get set }
     
     func setupStackViewWith(contentView: UIView)
     
@@ -98,6 +98,8 @@ public protocol Field: class {
     func isValid() -> Bool
     
     func isValidForSubmit() -> Bool
+    
+    var formBindings: [(event: FormEvent, field: Field, handler: ((Field) -> Void))] { get set }
 }
 
 /// Provides a default implementation for some field behaviours.
@@ -118,6 +120,7 @@ extension Field {
 
         // Call the field's own initializer.
         self.init()
+        
 
         form.add(field: self)
     }
@@ -133,10 +136,10 @@ extension Field {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(stackView)
         
-        padding.topConstraint = NSLayoutConstraint(item: stackView, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: padding.top)
-        padding.rightConstraint = NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: stackView, attribute: .right, multiplier: 1, constant: padding.right)
-        padding.bottomConstraint = NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: stackView, attribute: .bottom, multiplier: 1, constant: padding.bottom)
-        padding.leftConstraint = NSLayoutConstraint(item: stackView, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: padding.left)
+        NSLayoutConstraint(item: stackView, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: margin.top.rawValue)
+        NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: stackView, attribute: .right, multiplier: 1, constant: margin.right.rawValue)
+        NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: stackView, attribute: .bottom, multiplier: 1, constant: margin.bottom.rawValue)
+        NSLayoutConstraint(item: stackView, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: margin.left.rawValue)
         view.addConstraints([padding.topConstraint, padding.rightConstraint, padding.bottomConstraint, padding.leftConstraint])
     }
 

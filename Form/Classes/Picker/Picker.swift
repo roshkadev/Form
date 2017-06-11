@@ -90,11 +90,13 @@ final public class Picker: NSObject {
         return pickerInputView.pickerView
     }
     
+    public var formBindings = [(event: FormEvent, field: Field, handler: ((Field) -> Void))]()
+    
     /// The underlying picker view of this `Picker`.
     var pickerInputView: PickerInputView
     
     /// This field's padding.
-    public var padding = Space.default
+    public var margin = [Margin]()
     
     ///
     var style: PickerPresentationStyle = .keyboard

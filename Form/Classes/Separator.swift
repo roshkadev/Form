@@ -21,7 +21,7 @@ final public class Separator: UIView {
     public var topLayoutConstraint: NSLayoutConstraint?
     public var rightContainerLayoutConstraint: NSLayoutConstraint!
     public var rightScrollLayoutConstraint: NSLayoutConstraint!
-    public var padding = Space.default
+    public var margin = [Margin]()
     
     let leftView: UIView!
     let rightView: UIView!
@@ -32,7 +32,7 @@ final public class Separator: UIView {
             rightView.backgroundColor = separatorColor
         }
     }
-
+    public var formBindings = [(event: FormEvent, field: Field, handler: ((Field) -> Void))]()
     
     @discardableResult
     public required init() {
