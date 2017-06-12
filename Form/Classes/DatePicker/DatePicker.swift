@@ -54,6 +54,7 @@ final public class DatePicker: NSObject {
     public var form: Form!
     public var row: Row!
     public var view: FieldView
+    public var contentView: UIView!
     public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
@@ -77,7 +78,7 @@ final public class DatePicker: NSObject {
     }
     
     /// This field's padding.
-    public var margin = [Margin]()
+    public var padding = Space.default
     
     
     /// 

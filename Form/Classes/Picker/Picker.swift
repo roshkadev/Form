@@ -70,6 +70,7 @@ final public class Picker: NSObject {
     public var form: Form!
     public var row: Row!
     public var view: FieldView
+    public var contentView: UIView!
     public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
@@ -96,7 +97,7 @@ final public class Picker: NSObject {
     var pickerInputView: PickerInputView
     
     /// This field's padding.
-    public var margin = [Margin]()
+    public var padding = Space.default
     
     ///
     var style: PickerPresentationStyle = .keyboard

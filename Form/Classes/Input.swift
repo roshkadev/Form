@@ -57,6 +57,7 @@ final public class Input: NSObject {
     public var form: Form!
     public var row: Row!
     public var view: FieldView
+    public var contentView: UIView!
     public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
@@ -66,7 +67,7 @@ final public class Input: NSObject {
     public var rightContainerLayoutConstraint: NSLayoutConstraint!
     public var rightScrollLayoutConstraint: NSLayoutConstraint!
     
-    public var margin = [Margin]()
+    public var padding = Space.default
     
     public var textField: UITextField
     
@@ -84,6 +85,7 @@ final public class Input: NSObject {
             label?.text = title
         }
         textField = UITextField()
+        contentView = textField
         super.init()
         
         setupStackViewWith(contentView: textField)

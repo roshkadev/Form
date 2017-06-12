@@ -22,6 +22,7 @@ final public class Button: NSObject, Field {
     public var form: Form!
     public var row: Row!
     public var view: FieldView
+    public var contentView: UIView!
     public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
@@ -30,7 +31,7 @@ final public class Button: NSObject, Field {
     public var topLayoutConstraint: NSLayoutConstraint?
     public var rightContainerLayoutConstraint: NSLayoutConstraint!
     public var rightScrollLayoutConstraint: NSLayoutConstraint!
-    public var margin = [Margin]()
+    public var padding = Space.default
     
     public var button: UIButton
     
@@ -45,6 +46,7 @@ final public class Button: NSObject, Field {
             label?.text = title
         }
         button = UIButton()
+        contentView = button
         super.init()
         
         setupStackViewWith(contentView: button)

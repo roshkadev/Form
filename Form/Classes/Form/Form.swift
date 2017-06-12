@@ -90,7 +90,7 @@ public class Form: NSObject {
     
     let nextButtonWidth: CGFloat = 30
     
-    var padding: Space
+    public var padding = Space.default
     
     @discardableResult
     public init(in viewController: UIViewController, padding: Space = .none, constructor: ((Form) -> Void)? = nil) {

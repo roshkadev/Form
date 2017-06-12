@@ -13,6 +13,7 @@ final public class Separator: UIView {
     public var form: Form!
     public var row: Row!
     public var view: FieldView
+    public var contentView: UIView!
     public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
@@ -21,7 +22,7 @@ final public class Separator: UIView {
     public var topLayoutConstraint: NSLayoutConstraint?
     public var rightContainerLayoutConstraint: NSLayoutConstraint!
     public var rightScrollLayoutConstraint: NSLayoutConstraint!
-    public var margin = [Margin]()
+    public var padding = Space.default
     
     let leftView: UIView!
     let rightView: UIView!

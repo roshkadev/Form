@@ -9,9 +9,20 @@
 import UIKit
 
 
+public protocol Margin {
+    func top(_ const: CGFloat) -> Field
+    func right(_ const: CGFloat) -> Field
+    func bottom(_ const: CGFloat) -> Field
+    func left(_ const: CGFloat) -> Field
+    func horizontal(_ const: CGFloat) -> Field
+    func vertical(_ const: CGFloat) -> Field
+    func width(_ const: CGFloat) -> Field
+    func height(_ const: CGFloat) -> Field
+}
+
 
 /// Encapsulates behaviours common to all form fields.
-public protocol Field: class {
+public protocol Field: class, Margin {
     
     
     // #MARK: - Initializers
@@ -37,6 +48,8 @@ public protocol Field: class {
     /// This field's view.
     var view: FieldView { get set }
     
+    var contentView: UIView! { get set }
+    
     /// This field's stack view (its axis is either vertical, or horizontal) which is inside the field's view.
     var stackView: UIStackView { get set }
     
@@ -47,7 +60,9 @@ public protocol Field: class {
     var label: FieldLabel? { get set }
     
     /// This field's padding.
-    var margin: [Margin] { get set }
+    var padding: Space { get set }
+    
+    func pad(_ padding: Space) -> Self
     
     func setupStackViewWith(contentView: UIView)
     
@@ -120,13 +135,12 @@ extension Field {
 
         // Call the field's own initializer.
         self.init()
-        
 
         form.add(field: self)
     }
     
     public func setupStackViewWith(contentView: UIView) {
-
+        contentView.backgroundColor = UIColor.orange
         stackView.axis = .vertical
         stackView.distribution = .fillEqually
         if let label = label {
@@ -136,11 +150,21 @@ extension Field {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(stackView)
         
-        NSLayoutConstraint(item: stackView, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: margin.top.rawValue)
-        NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: stackView, attribute: .right, multiplier: 1, constant: margin.right.rawValue)
-        NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: stackView, attribute: .bottom, multiplier: 1, constant: margin.bottom.rawValue)
-        NSLayoutConstraint(item: stackView, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: margin.left.rawValue)
+        padding.topConstraint = NSLayoutConstraint(item: stackView, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: padding.top)
+        padding.rightConstraint = NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: stackView, attribute: .right, multiplier: 1, constant: padding.right)
+        padding.bottomConstraint = NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: stackView, attribute: .bottom, multiplier: 1, constant: padding.bottom)
+        padding.leftConstraint = NSLayoutConstraint(item: stackView, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: padding.left)
         view.addConstraints([padding.topConstraint, padding.rightConstraint, padding.bottomConstraint, padding.leftConstraint])
+    }
+    
+    @discardableResult
+    public func pad(_ padding: Space) -> Self {
+        self.padding = padding
+//        padding.topConstraint.constant = padding.top
+//        padding.rightConstraint.constant = padding.right
+//        padding.bottomConstraint.constant = padding.bottom
+//        padding.leftConstraint.constant = padding.left
+        return self
     }
 
     
@@ -220,5 +244,63 @@ extension Field {
     
     public func isValidForSubmit() -> Bool {
         return true
+    }
+}
+
+extension Field {
+    
+    @discardableResult
+    public func top(_ const: CGFloat) -> Field {
+        padding.topConstraint.constant = const
+        return self
+    }
+    
+    @discardableResult
+    public func right(_ const: CGFloat) -> Field {
+        padding.rightConstraint.constant = const
+        return self
+    }
+    
+    @discardableResult
+    public func bottom(_ const: CGFloat) -> Field {
+        padding.bottomConstraint.constant = const
+        return self
+    }
+    
+    @discardableResult
+    public func left(_ const: CGFloat) -> Field {
+        padding.leftConstraint.constant = const
+        return self
+    }
+    
+    @discardableResult
+    public func horizontal(_ const: CGFloat) -> Field {
+        padding.leftConstraint.constant = const
+        padding.rightConstraint.constant = const
+        return self
+    }
+    
+    @discardableResult
+    public func vertical(_ const: CGFloat) -> Field {
+        padding.topConstraint.constant = const
+        padding.bottomConstraint.constant = const
+        return self
+    }
+    
+    @discardableResult
+    public func width(_ const: CGFloat) -> Field {
+        padding.topConstraint.constant = const
+        return self
+    }
+    
+    @discardableResult
+    public func height(_ const: CGFloat) -> Field {
+        if let constraint = padding.heightConstraint {
+            constraint.constant = const
+        } else {
+            padding.heightConstraint = NSLayoutConstraint(item: contentView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: const)
+            view.addConstraint(padding.heightConstraint)
+        }
+        return self
     }
 }

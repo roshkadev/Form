@@ -14,6 +14,7 @@ final public class Switch: NSObject {
     public var form: Form!
     public var row: Row!
     public var view: FieldView
+    public var contentView: UIView!
     public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
@@ -21,7 +22,7 @@ final public class Switch: NSObject {
     public var topLayoutConstraint: NSLayoutConstraint?
     public var rightContainerLayoutConstraint: NSLayoutConstraint!
     public var rightScrollLayoutConstraint: NSLayoutConstraint!
-    public var margin = [Margin]()
+    public var padding = Space.default
     public var key: String?
     public var value: Any? {
         return `switch`.isOn
