@@ -135,22 +135,22 @@ public class Form: NSObject {
         // Register for dynamic type changes.
         NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory), name: .UIContentSizeCategoryDidChange, object: nil)
         
-        nextView = UIView()
-        nextView.backgroundColor = .green
-        nextView.translatesAutoresizingMaskIntoConstraints = false
-        containingView.addSubview(nextView)
-        nextButton = UIButton()
-        nextButton.translatesAutoresizingMaskIntoConstraints = false
-        nextButton.setTitle("▶️", for: .normal)
-        nextButton.addTarget(self, action: #selector(nextButtonAction), for: .touchUpInside)
-        nextView.addSubview(nextButton)
-        containingView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:[nextView(\(nextButtonWidth))]|", options: [], metrics: nil, views: [ "nextView": nextView ]))
-        containingView.addConstraint(NSLayoutConstraint(item: nextView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 0, constant: 50))
-        nextViewVerticalConstraint = NSLayoutConstraint(item: nextView, attribute: .bottom, relatedBy: .equal, toItem: containingView, attribute: .bottom, multiplier: 1, constant: 0)
-        containingView.addConstraint(nextViewVerticalConstraint!)
-        
-        nextView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[nextButton]|", options: [], metrics: nil, views: [ "nextButton": nextButton ]))
-        nextView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[nextButton]|", options: [], metrics: nil, views: [ "nextButton": nextButton ]))
+//        nextView = UIView()
+//        nextView.backgroundColor = .green
+//        nextView.translatesAutoresizingMaskIntoConstraints = false
+//        containingView.addSubview(nextView)
+//        nextButton = UIButton()
+//        nextButton.translatesAutoresizingMaskIntoConstraints = false
+//        nextButton.setTitle("▶️", for: .normal)
+//        nextButton.addTarget(self, action: #selector(nextButtonAction), for: .touchUpInside)
+//        nextView.addSubview(nextButton)
+//        containingView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:[nextView(\(nextButtonWidth))]|", options: [], metrics: nil, views: [ "nextView": nextView ]))
+//        containingView.addConstraint(NSLayoutConstraint(item: nextView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 0, constant: 50))
+//        nextViewVerticalConstraint = NSLayoutConstraint(item: nextView, attribute: .bottom, relatedBy: .equal, toItem: containingView, attribute: .bottom, multiplier: 1, constant: 0)
+//        containingView.addConstraint(nextViewVerticalConstraint!)
+//        
+//        nextView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[nextButton]|", options: [], metrics: nil, views: [ "nextButton": nextButton ]))
+//        nextView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[nextButton]|", options: [], metrics: nil, views: [ "nextButton": nextButton ]))
         
     }
     

@@ -10,7 +10,7 @@ import UIKit
 import Form
 import Pastel
 import ActiveLabel
-import TTTAttributedLabel
+
 
 class InstagramSignInViewController: UIViewController {
 
@@ -27,7 +27,6 @@ class InstagramSignInViewController: UIViewController {
 
         Form(in: self, constructor: { form in
             
-
             // Add the instagram pastel header.
             let instaView = InstagramView(frame: self.view.bounds)
             form.add(view: instaView)
@@ -75,7 +74,7 @@ class InstagramSignInViewController: UIViewController {
             Separator(form: form).title("OR").style {
                 $0.label?.textColor = .gray
                 $0.label?.font = UIFont.systemFont(ofSize: 11)
-            }.vertical(20).horizontal(36)
+            }.horizontal(36).vertical(20)
             
 
             form.add(view: FacebookButton())
@@ -84,6 +83,8 @@ class InstagramSignInViewController: UIViewController {
             let signupLabel = LinkLabel(title: "Don't have an account? Sign up.", pattern: "\\Q Sign up.\\E", handler: {
                 print("Sign up")
             })
+            signupLabel.font = UIFont.boldSystemFont(ofSize: 10)
+            signupLabel.heightAnchor.constraint(equalToConstant: 80).isActive = true
             form.add(view: signupLabel)
 
         }).navigation(true)
