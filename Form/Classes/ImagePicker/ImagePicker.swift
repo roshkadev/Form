@@ -22,8 +22,6 @@ final public class ImagePicker: NSObject {
     public var key: String?
     public var attachedTo: InputKey?
     public var topLayoutConstraint: NSLayoutConstraint?
-    public var rightContainerLayoutConstraint: NSLayoutConstraint!
-    public var rightScrollLayoutConstraint: NSLayoutConstraint!
     public var padding = Space.default
     var imagePickerView: ImagePickerView
     

@@ -116,9 +116,9 @@ final public class Picker: NSObject {
     var defaultIndex: Int?
     
     fileprivate var font = UIFont.preferredFont(forTextStyle: .body)
-
+    
     @discardableResult
-    override public init() {
+    public convenience init(style: PickerPresentationStyle) {
     
         view = FieldView()
         stackView = UIStackView()
@@ -126,7 +126,7 @@ final public class Picker: NSObject {
         
         pickerInputView = UINib(nibName: "PickerInputView", bundle: Bundle(for: type(of: self))).instantiate(withOwner: nil, options: nil)[0] as! PickerInputView
         
-        super.init()
+        
     
         pickerInputView.buttonCallback = { self.form.didTapNextFrom(field: self) }
         pickerView.delegate = self

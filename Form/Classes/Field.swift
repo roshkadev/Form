@@ -33,6 +33,8 @@ public protocol Field: class, Margin {
     // The field's requiered initializer for adding it directly to a form (it's implicitly wrapped in a row).
     init(form: Form)
     
+    init(form: Form, title: String?)
+    
     // The field's internal initializer.
     init()
     
@@ -68,10 +70,6 @@ public protocol Field: class, Margin {
     
     /// The constraint used show/hide fields.
     var topLayoutConstraint: NSLayoutConstraint? { get set }
-    
-    /// The constraint that is adjusted to show/hide the next button, if applicable.
-    var rightContainerLayoutConstraint: NSLayoutConstraint! { get set }
-    var rightScrollLayoutConstraint: NSLayoutConstraint! { get set }
     
     /// A closure to arbitrarily style the field.
     func style(_ style: ((Self) -> Void)) -> Self
@@ -136,6 +134,16 @@ extension Field {
         // Call the field's own initializer.
         self.init()
 
+        form.add(field: self)
+    }
+    
+    @discardableResult
+    public init(form: Form, title: String?) {
+        
+        // Call the field's own initializer.
+        self.init()
+        
+        self.title = title
         form.add(field: self)
     }
     

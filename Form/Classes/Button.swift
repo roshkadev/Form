@@ -29,8 +29,6 @@ final public class Button: NSObject, Field {
     public var key: String?
     public var value: Any?
     public var topLayoutConstraint: NSLayoutConstraint?
-    public var rightContainerLayoutConstraint: NSLayoutConstraint!
-    public var rightScrollLayoutConstraint: NSLayoutConstraint!
     public var padding = Space.default
     
     public var button: UIButton

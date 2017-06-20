@@ -55,6 +55,36 @@
 //  - Date picker, add common date formatters
 
 
+//  Other's Features
+//  - All rows can automatically contain a label (outside, inside, floating)
+//  - All rows can be disabled
+//  - Navigation via (< and > arrows, skip disabled or non-first responder fields)
+//  - Show/hide rows
+//  - Validation reaction (add red, inline message)
+//  -
+//  - Date picker (embedded or keyboard), short style, long style
+//  - Check on/off
+//  - Switch row (radio, check, switch)
+//  - Slider row (value label to the right)
+//  - Stepper row (value label to the left)
+//  - Segmented row
+//  - Action sheet row (list of options)
+//  - Alert row (list of options)
+//  - Push row (shows table view supporting sections, multiple selection) on a new screen with list of options
+//  - Location row (Apple Maps), look into Google Maps option too using Google Maps pod
+//  - Image row (one image)
+//  - Picker row (embedded or keyboard)
+//  - Input row (text, decimal, integer, url, name, phone, password, email, twitter, account?, zip code, currency, scientific, spell out, weight, energy), restrictions (equal to other row)
+//
+
+
+//  - Instagram Signup (100%)
+//  - Add event iOS form (from Calender app)
+
+
+
+
+
 import UIKit
 
 public class Form: NSObject {
