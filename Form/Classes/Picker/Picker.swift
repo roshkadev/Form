@@ -119,6 +119,12 @@ final public class Picker: NSObject {
     
     @discardableResult
     public convenience init(style: PickerPresentationStyle) {
+        self.style = style
+        self.init()
+    }
+
+    @discardableResult
+    override public init() {
     
         view = FieldView()
         stackView = UIStackView()
@@ -126,7 +132,7 @@ final public class Picker: NSObject {
         
         pickerInputView = UINib(nibName: "PickerInputView", bundle: Bundle(for: type(of: self))).instantiate(withOwner: nil, options: nil)[0] as! PickerInputView
         
-        
+        super.init()
     
         pickerInputView.buttonCallback = { self.form.didTapNextFrom(field: self) }
         pickerView.delegate = self
