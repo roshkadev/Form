@@ -153,7 +153,6 @@
 		CAFA5E486BCE117A7D8C0FBF9DA6666B /* UIImage+Compare.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B1BA606A19733B89DCFF9ED3E33EA4C /* UIImage+Compare.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		CB7558CCDD935C9E82BBF454022ED1D3 /* Expectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7807EDAB4F627816F2AAED3DD03851E6 /* Expectation.swift */; settings = {COMPILER_FLAGS = "-DPRODUCT_NAME=Nimble/Nimble"; }; };
 		CC8DC2F78AC7B5446A6102D5F628A788 /* TTTAttributedLabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 4AE952A66A303DC247225AB497398046 /* TTTAttributedLabel.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CDAA0DC4CC49F8D5DE95CEDD78E3D17C /* NextInputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366C1482C49218C2ED418A2A59FA602C /* NextInputAccessoryView.swift */; };
 		CE321502D9515DFDBB050BEEA65500CB /* PickerInputView.xib in Sources */ = {isa = PBXBuildFile; fileRef = F6F135CDCDEAC61DE653212350CAF12A /* PickerInputView.xib */; };
 		CE3FA6AE0944D4AE737F0E57CFF4A615 /* HaveCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90ABD8952A2FC0072710CAAEC2AEE015 /* HaveCount.swift */; settings = {COMPILER_FLAGS = "-DPRODUCT_NAME=Nimble/Nimble"; }; };
 		CE4CEF6328E255B380E2B2692B351CF8 /* MatchError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D236FB7F48D2DC956C4FF7F8AA580324 /* MatchError.swift */; settings = {COMPILER_FLAGS = "-DPRODUCT_NAME=Nimble/Nimble"; }; };
@@ -330,7 +329,6 @@
 		34B7CD4A721CAC13FE13DD34A9644A4D /* UIApplication+StrictKeyWindow.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIApplication+StrictKeyWindow.h"; path = "FBSnapshotTestCase/Categories/UIApplication+StrictKeyWindow.h"; sourceTree = "<group>"; };
 		352333CD876815089B210FC7825E8ACA /* ImagePickerCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ImagePickerCell.swift; sourceTree = "<group>"; };
 		35CD25812EF7B97867E2C23A413C31D2 /* TTTAttributedLabel-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "TTTAttributedLabel-dummy.m"; sourceTree = "<group>"; };
-		366C1482C49218C2ED418A2A59FA602C /* NextInputAccessoryView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NextInputAccessoryView.swift; sourceTree = "<group>"; };
 		36783BF8E27063A77B476F7C503F6453 /* TTTAttributedLabel.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = TTTAttributedLabel.m; path = TTTAttributedLabel/TTTAttributedLabel.m; sourceTree = "<group>"; };
 		380DA99D711938FA5A04E3525310C9EB /* Pods-Form_Tests-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Form_Tests-resources.sh"; sourceTree = "<group>"; };
 		3892FDFB78F77BE55586DF1BB368F7A3 /* PostNotification.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PostNotification.swift; path = Sources/Nimble/Matchers/PostNotification.swift; sourceTree = "<group>"; };
@@ -1132,7 +1130,6 @@
 				2101EC341F784E92500CD2E4600CC70D /* Button.swift */,
 				6200333E8817473229953D786983B0AC /* Field.swift */,
 				5690E9256E337969D9B74D47179AE8CB /* Input.swift */,
-				366C1482C49218C2ED418A2A59FA602C /* NextInputAccessoryView.swift */,
 				B0FF6A3F1B54505B99F2F62865E14685 /* Row.swift */,
 				A811F8E78CE9D2CB05357CD325CF3AE9 /* Separator.swift */,
 				16096237E08443D582C298875C60124A /* Slider.swift */,
@@ -1630,7 +1627,6 @@
 				630C3089C6C2AAF44FCFAF09761C7C73 /* Input.swift in Sources */,
 				D1CCCD9067F48F15D1F95CCBCE4304F8 /* LocationPicker.swift in Sources */,
 				36A4BAE26E9435D98A9CA53FF4555986 /* LocationPickerViewController.swift in Sources */,
-				CDAA0DC4CC49F8D5DE95CEDD78E3D17C /* NextInputAccessoryView.swift in Sources */,
 				F7E2B2FAC1201FC1741808CC2D44B6B6 /* Picker.swift in Sources */,
 				67035E01D4FAC91F90841D54C86B8A54 /* PickerInputView.swift in Sources */,
 				CE321502D9515DFDBB050BEEA65500CB /* PickerInputView.xib in Sources */,

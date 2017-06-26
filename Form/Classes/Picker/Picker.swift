@@ -70,7 +70,7 @@ final public class Picker: NSObject {
     public var form: Form!
     public var row: Row!
     public var view: FieldView
-    public var contentView: UIView!
+    public var contentView: UIView
     public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
@@ -79,9 +79,6 @@ final public class Picker: NSObject {
     public var value: Any?
     
     /// The constraint used to show and hide the field.
-    public var topLayoutConstraint: NSLayoutConstraint?
-    public var rightContainerLayoutConstraint: NSLayoutConstraint!
-    public var rightScrollLayoutConstraint: NSLayoutConstraint!
     
     /// The underlying text field of this `Picker`. Is nil when `Picker` is embedded.
     var textField: UITextField?
@@ -126,7 +123,7 @@ final public class Picker: NSObject {
         label = FieldLabel()
         
         pickerInputView = UINib(nibName: "PickerInputView", bundle: Bundle(for: type(of: self))).instantiate(withOwner: nil, options: nil)[0] as! PickerInputView
-        
+        contentView = pickerInputView
         super.init()
     
         pickerInputView.buttonCallback = { self.form.didTapNextFrom(field: self) }

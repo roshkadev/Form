@@ -54,7 +54,7 @@ final public class DatePicker: NSObject {
     public var form: Form!
     public var row: Row!
     public var view: FieldView
-    public var contentView: UIView!
+    public var contentView: UIView
     public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
@@ -62,7 +62,6 @@ final public class DatePicker: NSObject {
     public var key: String?
     
     /// The constraint used to show and hide the field.
-    public var topLayoutConstraint: NSLayoutConstraint?
     
     /// The underlying text field of this `DatePicker`. nil when embedded is true.
     var textField: UITextField?
@@ -101,7 +100,7 @@ final public class DatePicker: NSObject {
         
         datePickerInputView = UINib(nibName: "DatePickerInputView", bundle: Bundle(for: type(of: self))).instantiate(withOwner: nil, options: nil)[0] as! DatePickerInputView
         datePickerInputView.datePicker.datePickerMode = UIDatePickerMode.dateAndTime
-        
+        contentView = datePickerInputView
         super.init()
         
         datePickerInputView.buttonCallback = { self.form.didTapNextFrom(field: self) }

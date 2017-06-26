@@ -15,15 +15,12 @@ final public class LocationPicker: NSObject {
     public var form: Form!
     public var row: Row!
     public var view: FieldView
-    public var contentView: UIView!
+    public var contentView: UIView
     public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
     public var key: String?
     public var attachedTo: InputKey?
-    public var topLayoutConstraint: NSLayoutConstraint?
-    public var rightContainerLayoutConstraint: NSLayoutConstraint!
-    public var rightScrollLayoutConstraint: NSLayoutConstraint!
     public var padding = Space.default
     public var formBindings = [(event: FormEvent, field: Field, handler: ((Field) -> Void))]()
     
@@ -38,7 +35,7 @@ final public class LocationPicker: NSObject {
         label = FieldLabel()
         button = UIButton()
         button.setTitle("Select location", for: .normal)
-        
+        contentView = button
         super.init()
         
  

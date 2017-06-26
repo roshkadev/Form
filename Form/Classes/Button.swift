@@ -22,13 +22,12 @@ final public class Button: NSObject, Field {
     public var form: Form!
     public var row: Row!
     public var view: FieldView
-    public var contentView: UIView!
+    public var contentView: UIView
     public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
     public var key: String?
     public var value: Any?
-    public var topLayoutConstraint: NSLayoutConstraint?
     public var padding = Space.default
     
     public var button: UIButton
@@ -47,7 +46,7 @@ final public class Button: NSObject, Field {
         contentView = button
         super.init()
         
-        setupStackViewWith(contentView: button)
+        setupStackView()
         button.heightAnchor.constraint(equalToConstant: 44).isActive = true
         button.addTarget(self, action: #selector(action), for: .touchUpInside)
     }

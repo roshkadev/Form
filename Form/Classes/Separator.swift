@@ -13,15 +13,12 @@ final public class Separator: UIView {
     public var form: Form!
     public var row: Row!
     public var view: FieldView
-    public var contentView: UIView!
+    public var contentView: UIView
     public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
     public var key: String?
     public var attachedTo: InputKey?
-    public var topLayoutConstraint: NSLayoutConstraint?
-    public var rightContainerLayoutConstraint: NSLayoutConstraint!
-    public var rightScrollLayoutConstraint: NSLayoutConstraint!
     public var padding = Space.default
     
     let leftView: UIView!
@@ -48,6 +45,8 @@ final public class Separator: UIView {
         leftView = UIView()
         rightView = UIView()
         
+        contentView = label!
+        
         super.init(frame: .zero)
         
         stackView.axis = .horizontal
@@ -67,7 +66,6 @@ final public class Separator: UIView {
         leftView.heightAnchor.constraint(equalToConstant: 1 / UIScreen.main.scale).isActive = true
         leftSeparatorView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[leftView]|", options: [], metrics: nil, views: ["leftView": leftView]))
         leftSeparatorView.addConstraint(NSLayoutConstraint(item: leftView, attribute: .centerY, relatedBy: .equal, toItem: leftSeparatorView, attribute: .centerY, multiplier: 1, constant: 0))
-        
         
         stackView.addArrangedSubview(label!)
         

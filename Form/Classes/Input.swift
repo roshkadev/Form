@@ -57,15 +57,16 @@ final public class Input: NSObject {
     public var form: Form!
     public var row: Row!
     public var view: FieldView
-    public var contentView: UIView!
+    public var contentView: UIView
     public var stackView: UIStackView
-    public var title: String?
+    public var title: String? {
+        didSet {
+            label?.text = title
+        }
+    }
     public var label: FieldLabel?
     public var key: String?
     public var attachedTo: InputKey?
-    public var topLayoutConstraint: NSLayoutConstraint?
-    public var rightContainerLayoutConstraint: NSLayoutConstraint!
-    public var rightScrollLayoutConstraint: NSLayoutConstraint!
     
     public var padding = Space.default
     
@@ -80,15 +81,12 @@ final public class Input: NSObject {
 
         view = FieldView()
         stackView = UIStackView()
-        if let title = title {
-            label = FieldLabel()
-            label?.text = title
-        }
+        label = FieldLabel()
         textField = UITextField()
         contentView = textField
         super.init()
         
-        setupStackViewWith(contentView: textField)
+        setupStackView()
         textField.borderStyle = .roundedRect
         textField.delegate = self
         textField.addTarget(self, action: #selector(editingChanged), for: .editingChanged)

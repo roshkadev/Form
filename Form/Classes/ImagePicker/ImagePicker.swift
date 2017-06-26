@@ -15,13 +15,12 @@ final public class ImagePicker: NSObject {
     public var form: Form!
     public var row: Row!
     public var view: FieldView
-    public var contentView: UIView!
+    public var contentView: UIView
     public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
     public var key: String?
     public var attachedTo: InputKey?
-    public var topLayoutConstraint: NSLayoutConstraint?
     public var padding = Space.default
     var imagePickerView: ImagePickerView
     
@@ -40,10 +39,10 @@ final public class ImagePicker: NSObject {
         stackView = UIStackView()
         label = FieldLabel()
         imagePickerView = UINib(nibName: "ImagePickerView", bundle: Bundle(for: type(of: self))).instantiate(withOwner: nil, options: nil)[0] as! ImagePickerView
-        
+        contentView = imagePickerView
         super.init()
         
-        
+
         imagePickerView.delegate = self
         imagePickerView.collectionView.register(UINib(nibName: "ImagePickerCell", bundle: Bundle(for: type(of: self))), forCellWithReuseIdentifier: "imagePickerCellReuseIdentifier")
         imagePickerView.collectionView.dataSource = self

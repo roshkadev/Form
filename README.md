@@ -5,6 +5,13 @@
 [![License](https://img.shields.io/cocoapods/l/Form.svg?style=flat)](http://cocoapods.org/pods/Form)
 [![Platform](https://img.shields.io/cocoapods/p/Form.svg?style=flat)](http://cocoapods.org/pods/Form)
 
+
+## Usage
+
+### How to create a form
+
+
+
 ## Instagram Example
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.

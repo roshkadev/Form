@@ -24,13 +24,12 @@ public protocol Margin {
 /// Encapsulates behaviours common to all form fields.
 public protocol Field: class, Margin {
     
-    
     // #MARK: - Initializers
     
     // The field's requiered initializer for adding it to a row.
     init(row: Row)
     
-    // The field's requiered initializer for adding it directly to a form (it's implicitly wrapped in a row).
+    // The field's requiered initializer for adding it directly to a form (it is implicitly wrapped in a row).
     init(form: Form)
     
     init(form: Form, title: String?)
@@ -50,7 +49,7 @@ public protocol Field: class, Margin {
     /// This field's view.
     var view: FieldView { get set }
     
-    var contentView: UIView! { get set }
+    var contentView: UIView { get set }
     
     /// This field's stack view (its axis is either vertical, or horizontal) which is inside the field's view.
     var stackView: UIStackView { get set }
@@ -66,10 +65,7 @@ public protocol Field: class, Margin {
     
     func pad(_ padding: Space) -> Self
     
-    func setupStackViewWith(contentView: UIView)
-    
-    /// The constraint used show/hide fields.
-    var topLayoutConstraint: NSLayoutConstraint? { get set }
+    func setupStackView()
     
     /// A closure to arbitrarily style the field.
     func style(_ style: ((Self) -> Void)) -> Self
@@ -138,6 +134,17 @@ extension Field {
     }
     
     @discardableResult
+    public init(row: Row, title: String?) {
+        
+        // Call the field's own initializer.
+        self.init()
+        
+        self.title = title
+        self.row = row
+        row.add(field: self)
+    }
+    
+    @discardableResult
     public init(form: Form, title: String?) {
         
         // Call the field's own initializer.
@@ -147,7 +154,7 @@ extension Field {
         form.add(field: self)
     }
     
-    public func setupStackViewWith(contentView: UIView) {
+    public func setupStackView() {
         contentView.backgroundColor = UIColor.orange
         stackView.axis = .vertical
         stackView.distribution = .fillEqually
@@ -222,23 +229,8 @@ extension Field {
         
         if view.isHidden {
             view.isHidden = false
-            view.alpha = 0
-            topLayoutConstraint?.constant = 0
-            UIView.animate(withDuration: 0.5, animations: {
-                self.view.alpha = 1
-                self.form.scrollView.layoutIfNeeded()
-            }, completion: { _ in
-                
-            })
         } else {
-            topLayoutConstraint?.constant =  -view.frame.height
-            view.alpha = 1
-            UIView.animate(withDuration: 0.5, animations: {
-                self.view.alpha = 0
-                self.form.scrollView.layoutIfNeeded()
-            }, completion: { _ in
-                self.view.isHidden = true
-            })
+            view.isHidden = true
         }
     }
     

@@ -14,14 +14,11 @@ final public class Switch: NSObject {
     public var form: Form!
     public var row: Row!
     public var view: FieldView
-    public var contentView: UIView!
+    public var contentView: UIView
     public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
     public var `switch`: UISwitch
-    public var topLayoutConstraint: NSLayoutConstraint?
-    public var rightContainerLayoutConstraint: NSLayoutConstraint!
-    public var rightScrollLayoutConstraint: NSLayoutConstraint!
     public var padding = Space.default
     public var key: String?
     public var value: Any? {
@@ -53,6 +50,7 @@ final public class Switch: NSObject {
             label?.text = title
         }
         `switch` = UISwitch()
+        contentView = `switch`
         super.init()
         
         

@@ -286,7 +286,7 @@ extension Form {
         enableNavigation = navigation
         fields.flatMap { $0 as? Input }.forEach {
             if $0.textField.keyboardType == .numberPad || $0.textField.keyboardType == .decimalPad || $0.textField.keyboardType == .phonePad {
-                $0.textField.inputAccessoryView = NextInputAccessoryView()
+//                $0.textField.inputAccessoryView = NextInputAccessoryView()
             } else {
                 $0.textField.returnKeyType = .next
             }

@@ -12,14 +12,11 @@ final public class Stepper: NSObject {
     public var form: Form!
     public var row: Row!
     public var view: FieldView
-    public var contentView: UIView!
+    public var contentView: UIView
     public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
     public var stepper: UIStepper
-    public var topLayoutConstraint: NSLayoutConstraint?
-    public var rightContainerLayoutConstraint: NSLayoutConstraint!
-    public var rightScrollLayoutConstraint: NSLayoutConstraint!
     public var padding = Space.default
     public var key: String?
     public var value: Any? {
@@ -37,6 +34,7 @@ final public class Stepper: NSObject {
             label?.text = title
         }
         stepper = UIStepper()
+        contentView = stepper
         super.init()
         
         Utilities.constrain(field: self, withView: stepper)

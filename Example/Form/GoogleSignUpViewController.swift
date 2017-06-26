@@ -17,20 +17,12 @@ class GoogleSignUpViewController: UIViewController {
         Form(in: self, constructor: { form in
             
             Row(in: form) { row in
-                Input(row: row)
-                Input(row: row)
-                Input(row: row)
+                Input(row: row, title: "First name")
+                Input(row: row, title: "Last name")
             }
             
-            Input(form: form)
-            Input(form: form)
-//            DatePicker(form)
-//            Picker(form).title("Gender").placeholder("I am...").options([
-//                PickerOption("Female"),
-//                PickerOption("Male"),
-//                PickerOption("Other"),
-//                PickerOption("Rather not say"),
-//            ])
+            DatePicker(form: form)
+            
         })
 
     }
