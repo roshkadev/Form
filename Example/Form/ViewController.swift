@@ -52,7 +52,7 @@ class ViewController: UIViewController {
             
 //            ImagePicker(form: form)
             
-            Picker(form, style: .embedded).placeholder("Profession").options([
+            Picker(form: form).placeholder("Profession").options([
                 PickerOption("Construction worker 👷", "construction"),
                 PickerOption("Astronaut 👩‍🚀", "astronaut"),
                 PickerOption("Clerk 💁", "clerk"),

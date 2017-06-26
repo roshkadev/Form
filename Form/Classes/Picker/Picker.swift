@@ -116,12 +116,7 @@ final public class Picker: NSObject {
     var defaultIndex: Int?
     
     fileprivate var font = UIFont.preferredFont(forTextStyle: .body)
-    
-    @discardableResult
-    public convenience init(style: PickerPresentationStyle) {
-        self.style = style
-        self.init()
-    }
+
 
     @discardableResult
     override public init() {
