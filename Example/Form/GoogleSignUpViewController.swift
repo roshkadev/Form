@@ -21,10 +21,10 @@ class GoogleSignUpViewController: UIViewController {
                 Input(row: row).placeholder("Last")
             }
             
-            Input(form: form, title: "Choose your username").bind(.blur, .regex, .help("Please use only letters (a-z), numbers, and periods."))
-//                .bind(.blur, InputRestriction.not(.regex("^[0-9]{8,}$")), .help("Sorry, usernames of 8 or more characters must include at least one alphabetical character (a-z)"))
+            Input(form: form, title: "Choose your username").bind(.onChange, .nonempty, .shake)//.bind(.onChange, .regex("^(?(?=.{8,})(.*[a-z].*)|.*)"), .help("Sorry, usernames of 8 or more characters must include at least one alphabetical character (a-z)"))
             
             
+            //^(?(?=.{8,})(.*[a-z].*)|.*)
             
             DatePicker(form: form)
             
