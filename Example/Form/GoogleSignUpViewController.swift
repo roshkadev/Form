@@ -17,11 +17,13 @@ class GoogleSignUpViewController: UIViewController {
         Form(in: self, constructor: { form in
             
             Row(in: form) { row in
-                Input(row: row, title: "Name").placeholder("First")
+                
+                Input(row: row).placeholder("First").bind(.onChange, .max(7), .help("xxx"))
+                
                 Input(row: row).placeholder("Last")
             }
             
-            Input(form: form, title: "Choose your username").bind(.onChange, .nonempty, .shake)//.bind(.onChange, .regex("^(?(?=.{8,})(.*[a-z].*)|.*)"), .help("Sorry, usernames of 8 or more characters must include at least one alphabetical character (a-z)"))
+            Input(form: form, title: "Choose your username").bind(.onChange, .regex("^(?(?=.{8,})(.*[a-z].*)|.*)"), .help("Sorry, usernames of 8 or more characters must include at least one alphabetical character (a-z)"))
             
             
             //^(?(?=.{8,})(.*[a-z].*)|.*)
