@@ -28,7 +28,7 @@ public class Row: NSObject {
         super.init()
         horizontalStackView.translatesAutoresizingMaskIntoConstraints = false
         horizontalStackView.axis = .horizontal
-        horizontalStackView.distribution = .fill
+        horizontalStackView.distribution = .fillEqually
         horizontalStackView.spacing = 0
         form.add(row: self)
         constructor?(self)

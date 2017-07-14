@@ -137,6 +137,9 @@ final public class Picker: NSObject {
             textField.borderStyle = .roundedRect
             textField.delegate = self
             textField.inputView = pickerInputView
+            textField.rightViewMode = .always
+            textField.rightView = PickerArrowView()
+            textField.rightView?.backgroundColor = UIColor.red
             
             
             textField.form_fill(parentView: view, withPadding: padding)
@@ -240,8 +243,6 @@ final public class Picker: NSObject {
         return self
     }
     
-    
-    
     public var text: String? {
         return textField?.text
     }
@@ -251,6 +252,7 @@ final public class Picker: NSObject {
         return self
     }
     
+    @discardableResult
     public func placeholder(_ placeholder: String?) -> Self {
         textField?.placeholder = placeholder
         return self

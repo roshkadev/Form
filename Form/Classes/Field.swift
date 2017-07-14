@@ -155,7 +155,6 @@ extension Field {
     }
     
     public func setupStackView() {
-        contentView.backgroundColor = UIColor.orange
         stackView.axis = .vertical
         stackView.distribution = .fillEqually
         if let label = label {

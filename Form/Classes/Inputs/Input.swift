@@ -277,6 +277,7 @@ final public class Input: NSObject {
         return self
     }
     
+    @discardableResult
     public func text(_ text: String?) -> Self {
         textField.text = text
         return self
