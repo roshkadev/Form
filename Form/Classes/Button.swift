@@ -23,6 +23,7 @@ final public class Button: NSObject, Field {
     public var row: Row!
     public var view: FieldView
     public var contentView: UIView
+    public var helpLabel = HelpLabel()
     public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
@@ -47,7 +48,7 @@ final public class Button: NSObject, Field {
         super.init()
         
         setupStackView()
-        button.heightAnchor.constraint(equalToConstant: 44).isActive = true
+//        button.heightAnchor.constraint(equalToConstant: 44).isActive = true
         button.addTarget(self, action: #selector(action), for: .touchUpInside)
     }
     

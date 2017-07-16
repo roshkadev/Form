@@ -51,6 +51,8 @@ public protocol Field: class, Margin {
     
     var contentView: UIView { get set }
     
+    var helpLabel: HelpLabel { get set }
+    
     /// This field's stack view (its axis is either vertical, or horizontal) which is inside the field's view.
     var stackView: UIStackView { get set }
     
@@ -161,6 +163,8 @@ extension Field {
             stackView.addArrangedSubview(label)
         }
         stackView.addArrangedSubview(contentView)
+        helpLabel.isHidden = true
+        stackView.addArrangedSubview(helpLabel)
         stackView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(stackView)
         
@@ -243,6 +247,28 @@ extension Field {
     
     public func isValidForSubmit() -> Bool {
         return true
+    }
+    
+    // #MARK: - Some handy methods.
+    
+    static func isEmpty(text: String?) -> Bool {
+        return trimmed(text: text).isEmpty == true
+    }
+    
+    static func trimmed(text: String?) -> String {
+        return text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+    }
+    
+    static func length(text: String?) -> Int {
+        return text?.characters.count ?? 0
+    }
+    
+    static func trimmedLength(text: String?) -> Int {
+        return trimmed(text: text).characters.count ?? 0
+    }
+    
+    static func textAfterReplacingCharactersIn(range: NSRange, replacementString string: String, inText text: String?) -> String {
+        return (text as NSString?)?.replacingCharacters(in: range, with: string) ?? string
     }
 }
 

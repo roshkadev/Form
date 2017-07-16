@@ -60,6 +60,7 @@ final public class Input: NSObject {
     public var row: Row!
     public var view: FieldView
     public var contentView: UIView
+    public var helpLabel = HelpLabel()
     public var stackView: UIStackView
     public var title: String? {
         didSet {
@@ -72,7 +73,7 @@ final public class Input: NSObject {
     
     public var padding = Space.default
     
-    public var textField: UITextField
+    public var textField: TextField
     
     public var validations = [InputValidation]()
     public var handlers = [(event: InputEvent, handler: ((Input) -> Void))]()
@@ -84,7 +85,7 @@ final public class Input: NSObject {
         view = FieldView()
         stackView = UIStackView()
         label = FieldLabel()
-        textField = UITextField()
+        textField = TextField()
         contentView = textField
         super.init()
         
@@ -127,88 +128,95 @@ final public class Input: NSObject {
         return self
     }
     
-    public func validateForEvent(event: InputEvent, with text: String? = nil, react: Bool = true) -> Bool {
+//    public func validateForEvent(event: InputEvent, with text: String? = nil, react: Bool = true) -> Bool {
+//        
+//        let trimmedText = text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+//        let hasText = trimmedText.isEmpty == false
+//        let lengthOfText = trimmedText.characters.count
+//        
+//        let failingValidation: InputValidationResult? = validations.map {
+//            
+//            var res: InputValidationResult!
+//            
+//            switch $0 {
+//            case (event, .empty, let reaction):
+//                res = (true, reaction)
+//            case (event, .nonempty, _):
+//                res = (hasText, .shake)
+//            case (event, .max(let max), let reaction):
+//                print("MAX")
+//                res = (lengthOfText <= max, reaction)
+//            case (event, .min(let min), let reaction):
+//                res = (lengthOfText >= min, reaction)
+//            case (event, .range(let min, let max), let reaction):
+//                res = (lengthOfText > max || lengthOfText < min, reaction)
+//            case (event, .regex(let r), let reaction):
+//                print("REGEX")
+//                res = (trimmedText.range(of: r, options: .regularExpression) != nil, reaction)
+//            default:
+//                res = (true, .none)
+//            }
+//            
+//            return res
+//            
+//        }.filter { $0.isValid == false }.first
+//        
+//        if let failingValidation = failingValidation {
+//            
+//            if react {
+//                switch failingValidation.reaction {
+//                case .shake:
+//                    textField.shake()
+//                case .outline:
+//                    print("Outlined!!!")
+//                case .help(let message):
+//                    print(message)
+//                case .alert(let message):
+//                    print(message)
+//                default:
+//                    break
+//                }
+//            }
+//            return false
+//        }
+//        
+//        return true
+//    }
+    
+    @discardableResult
+    func fails(restriction: InputRestriction, forText: String? = nil) -> Bool {
         
-        let trimmedText = text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        let hasText = trimmedText.isEmpty == false
-        let lengthOfText = trimmedText.characters.count
+        let textToCheck = forText ?? self.text
         
-        let failingValidation: InputValidationResult? = validations.map {
-            
-            var res: InputValidationResult!
-            
-            switch $0 {
-            case (event, .empty, let reaction):
-                res = (true, reaction)
-            case (event, .nonempty, _):
-                res = (hasText, .shake)
-            case (event, .max(let max), let reaction):
-                print("MAX")
-                res = (lengthOfText <= max, reaction)
-            case (event, .min(let min), let reaction):
-                res = (lengthOfText >= min, reaction)
-            case (event, .range(let min, let max), let reaction):
-                res = (lengthOfText > max || lengthOfText < min, reaction)
-            case (event, .regex(let r), let reaction):
-                print("REGEX")
-                res = (trimmedText.range(of: r, options: .regularExpression) != nil, reaction)
-            default:
-                res = (true, .none)
-            }
-            
-            return res
-            
-        }.filter { $0.isValid == false }.first
-        
-        if let failingValidation = failingValidation {
-            
-            if react {
-                switch failingValidation.reaction {
-                case .shake:
-                    textField.shake()
-                case .outline:
-                    print("Outlined!!!")
-                case .help(let message):
-                    print(message)
-                case .alert(let message):
-                    print(message)
-                default:
-                    break
-                }
-            }
+        switch restriction {
+        case .empty where !Input.isEmpty(text: textToCheck):
+            return true
+        case .nonempty where Input.isEmpty(text: textToCheck):
+            return true
+        case .max(let max) where Input.trimmedLength(text: textToCheck) > max:
+            return true
+        case .min(let min) where Input.trimmedLength(text: textToCheck) < min:
+            return true
+        case .range(let min, let max) where Input.trimmedLength(text: textToCheck) < min || Input.trimmedLength(text: textToCheck) > max:
+            return true
+        case .regex(let r) where Input.trimmed(text: textToCheck).range(of: r, options: .regularExpression) != nil:
+            return true
+        default:
             return false
         }
-        
-        return true
     }
     
-    func applyRestrictionFrom(validation: InputValidation) {
-        switch validation.restriction {
-        case .empty where !isEmpty:
-            applyReactionFrom(validation: validation)
-        case .nonempty where isEmpty:
-            applyReactionFrom(validation: validation)
-        case .max(let max) where length > max:
-            applyReactionFrom(validation: validation)
-        case .min(let min) where length < min:
-            applyReactionFrom(validation: validation)
-        case .range(let min, let max) where length < min || length > max:
-            applyReactionFrom(validation: validation)
-        case .regex(let r) where trimmedText.range(of: r, options: .regularExpression) != nil:
-            applyReactionFrom(validation: validation)
-        default:
-            break
-        }
-    }
-    
-    func applyReactionFrom(validation: InputValidation) {
-        switch validation.reaction {
+    func apply(reaction: InputReaction?) {
+        guard let reaction = reaction else { return }
+        switch reaction {
         case .shake:
             textField.shake()
         case .outline:
             print("Outlined!!!")
         case .help(let message):
-            print(message)
+            self.helpLabel.text = message
+            self.helpLabel.isHidden = false
+            
         case .alert(let message):
             print(message)
         default:
@@ -217,11 +225,13 @@ final public class Input: NSObject {
     }
     
     func editingChanged(textField: UITextField) {
-        print(textField.text)
-        validations.filter { $0.event == .onChange }.forEach {
-            applyRestrictionFrom(validation: $0)
-
-        }
+        let reaction = validations.filter {
+            $0.event == .onChange
+        }.first {
+            fails(restriction: $0.restriction)
+        }?.reaction
+        apply(reaction: reaction)
+        
         
 //        handlers.filter { $0.event == InputEvent.onChange }.forEach { $0.handler(self) }
 //        
@@ -241,22 +251,15 @@ final public class Input: NSObject {
     }
     
     public var trimmedText: String {
-        let trimmedText = text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return trimmedText
+        return Input.trimmed(text: text)
     }
     
     public var length: Int {
-        let trimmedText = text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        let lengthOfText = trimmedText.characters.count
-        return lengthOfText
+        return Input.trimmedLength(text: text)
     }
     
     public var isEmpty: Bool {
-        if let text = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines), text.isEmpty == false {
-            return false
-        } else {
-            return true
-        }
+        return Input.isEmpty(text: text)
     }
     
     public var text: String? {
@@ -299,6 +302,26 @@ final public class Input: NSObject {
         return self
     }
     
+    @discardableResult
+    public func left(text: String, mode: UITextFieldViewMode = .always, inset: CGFloat = 0) -> Self {
+        let leftLabel = UILabel()
+        leftLabel.text = text
+        textField.leftViewInset = inset
+        textField.leftViewMode = mode
+        textField.leftView = leftLabel
+        return self
+    }
+    
+    @discardableResult
+    public func right(text: String, mode: UITextFieldViewMode = .always, inset: CGFloat = 0) -> Self {
+        let rightLabel = UILabel()
+        rightLabel.text = text
+        textField.rightViewInset = inset
+        textField.rightViewMode = mode
+        textField.rightView = rightLabel
+        return self
+    }
+    
     deinit {
         print("Input deinitialized")
     }
@@ -334,11 +357,13 @@ extension Input: Field {
     }
     
     public func isValid() -> Bool {
-        return validateForEvent(event: .onChange, with: textField.text)
+//        return validateForEvent(event: .onChange, with: textField.text)
+        return true
     }
     
     public func isValidForSubmit() -> Bool {
-        return validateForEvent(event: .formOnSubmit, with: textField.text, react: false)
+//        return validateForEvent(event: .formOnSubmit, with: textField.text, react: false)
+        return true
     }
 
 }
@@ -352,7 +377,11 @@ extension Input: UITextFieldDelegate {
     
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         attachedTo?.key = textField.text
-        return validateForEvent(event: .beforeChange, with: ((textField.text ?? "") as NSString).replacingCharacters(in: range, with: string))
+        
+        let text = Input.textAfterReplacingCharactersIn(range: range, replacementString: string, inText: textField.text)
+        return validations.filter { $0.event == .onChange }.contains {
+            fails(restriction: $0.restriction, forText: text) == false
+        }
     }
     
     public func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
@@ -361,9 +390,7 @@ extension Input: UITextFieldDelegate {
         handlers.filter { $0.event == .blur }.forEach { $0.handler(self) }
         
         // Apply any blur validations.
-        validateForEvent(event: .blur, with: textField.text)
-        
-        return true
+        return validations.filter { $0.event == .blur }.contains { fails(restriction: $0.restriction) }
     }
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {

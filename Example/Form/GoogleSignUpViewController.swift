@@ -9,6 +9,13 @@
 import UIKit
 import Form
 
+// Someone already has that username. Note that we ignore periods and capitalization in usernames. Try another?
+// Sorry, usernames of 8 or more characters must include at least one alphabetical character (a-z)
+// That username is taken. Try another.
+// Please use only letters (a-z), numbers, and periods.
+// 
+
+
 class GoogleSignUpViewController: UIViewController {
 
     override func viewDidLoad() {
@@ -24,7 +31,7 @@ class GoogleSignUpViewController: UIViewController {
             }
             
             //.bind(.onChange, .regex("^(?(?=.{8,})(.*[a-z].*)|.*)"), .help("Sorry, usernames of 8 or more characters must include at least one alphabetical character (a-z)"))
-            Input(form: form, title: "Choose your username")
+            Input(form: form, title: "Choose your username").right(text: "@gmail.com", inset: 4).bind(.onChange, .max(3), .help("Blah blah"))
             //^(?(?=.{8,})(.*[a-z].*)|.*)
             
             Input(form: form, title: "Create a password")
@@ -62,7 +69,7 @@ class GoogleSignUpViewController: UIViewController {
             ])
             
             Button(form: form).title("Continue").style {
-                $0.view.backgroundColor = .blue
+                $0.contentView.backgroundColor = .blue
             }
             
             

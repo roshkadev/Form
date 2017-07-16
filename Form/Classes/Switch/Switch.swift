@@ -15,6 +15,7 @@ final public class Switch: NSObject {
     public var row: Row!
     public var view: FieldView
     public var contentView: UIView
+    public var helpLabel = HelpLabel()
     public var stackView: UIStackView
     public var title: String?
     public var label: FieldLabel?
